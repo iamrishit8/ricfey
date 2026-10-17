@@ -117,3 +117,69 @@ reports `db` as data, so a host won't restart a healthy process during a DB blip
 **Q:** In what situation would you _want_ a health check to fail because the DB is down?
 
 My answer:
+
+---
+
+## C3. LLM layer and the cost test
+
+**Brief**
+
+1. **What:** shared Zod schemas for `CourseOutline` and `DayContent`; an `LlmProvider` interface
+   with Gemini and Fake implementations; a daily cap; an `llmCalls` log; `gen:sample`; a cost report.
+2. **Why:** this is the phase gate. If lessons are weak or a course-day costs more than credits
+   can cover, the product doesn't work, and we want to know before building auth and UI.
+3. **Risk:** Gemini returns JSON that parses but is wrong (thin lessons, a quiz answer index
+   pointing at the wrong option). Zod catches shape errors, not quality. You read the samples.
+4. **Risk:** free-tier limits are not published in the docs, only shown inside AI Studio,
+   so the cost report needs you to read them off your account.
+5. **Risk:** prices change. Gemini 3.8 Flash paid pricing doubles on 1 Jan 2027, so the
+   report must show both prices and keep prices in one config file.
+
+### 1. Why a fake provider?
+
+The FakeProvider returns canned responses through the same `LlmProvider` interface as Gemini.
+
+**Q:** What can tests prove using the FakeProvider that would be slow, flaky or expensive with
+the real one? And what can they never prove, however many fake tests we write?
+
+My answer:
+
+### 2. Schema in the request, Zod on the response
+
+Gemini can be given a JSON schema and asked to follow it. We still validate the response with
+Zod, and on failure retry once with the validation error in the prompt.
+
+**Q:** If the model is already told the schema, why validate again? And why retry exactly
+once rather than zero times or until it succeeds?
+
+My answer:
+
+### 3. Tokens are the unit of cost
+
+Models bill per token (roughly ¾ of an English word), and output tokens cost more than input:
+on Gemini 3.8 Flash, $0.75 vs $3.75 per million (pricing page, until 31 Dec 2026).
+
+**Q:** One call that generates lesson + task + quiz together, or three separate calls: which
+costs more in tokens, and what do you gain by paying it?
+
+My answer:
+
+### 4. Enforcing a daily cap
+
+The cap is checked in one place before every call: "if today's calls or tokens ≥ limit, refuse".
+
+**Q:** Two requests arrive at the same instant when we are one call under the cap. Both read
+the counter, both see "under", both call Gemini. How could we stop that, and does it matter
+much at our scale?
+
+My answer:
+
+### 5. Free tier data terms
+
+Gemini's pricing page says free-tier content is "used to improve our products"; paid-tier
+content is not.
+
+**Q:** What does that mean for what we may send to Gemini in Phase 1, and what must change
+before real users type their own goals and answers into Ricfey?
+
+My answer:
