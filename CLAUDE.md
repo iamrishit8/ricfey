@@ -15,6 +15,8 @@ Ricfey turns "learn X, to depth Y, in Z weeks" into a day-by-day course (lesson,
 ```sh
 bun install            # install all workspaces
 bun run dev:api        # API on :4000 with watch (reads root .env)
+bun run gen:sample -- --skill X --depth working --weeks 4 [--model M] [--provider fake]
+bun run cost:report    # docs/phase-1-cost-report.md from docs/samples/*/*/usage.json
 bun run typecheck      # tsc in every workspace
 bun run lint           # eslint, whole repo
 bun run format         # prettier --write
@@ -26,6 +28,7 @@ bun run check          # all of the above; must be green before a PR
 
 ```
 apps/api/        Fastify server: src/{app,server}.ts, config/, lib/, plugins/, routes/, db/, models/
+                 src/llm/ provider interface, cap + llmCalls log, prompts, pricing; scripts/
 apps/web/        Vite React app (C5)
 packages/shared/ Zod schemas + types shared by api and web
 docs/phases/     scope and gate per phase

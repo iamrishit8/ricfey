@@ -19,6 +19,7 @@ export const ERROR_CODES = [
   'RATE_LIMITED',
   'LLM_CAP_REACHED',
   'LLM_INVALID_OUTPUT',
+  'LLM_UNAVAILABLE',
   'INTERNAL_ERROR',
 ] as const;
 

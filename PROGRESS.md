@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** C2 done, awaiting review (draft PR, stacked on C1).
-- **Next:** C3, LLM layer and cost test.
-- **Blocked:** Gemini API key (C3 can start on FakeProvider).
+- **Now:** C3 built on the fake provider; stopped for the Gemini key.
+- **Next:** run 6 samples (3 skills × 2 models), cost report, you read the lessons.
+- **Blocked:** `GEMINI_API_KEY` and your AI Studio free-tier limits.
 
 ---
 
@@ -30,15 +30,17 @@
 
 ### C3. LLM layer and cost test (the gate)
 
-- [ ] Look up current Gemini models and free-tier limits (cite URLs)
-- [ ] Shared Zod schemas: `CourseOutline`, `DayContent` (lesson, task + rubric, quiz)
-- [ ] `LlmProvider` interface, `GeminiProvider`, `FakeProvider`
-- [ ] Retry once on invalid JSON with the validation error, then `AppError`
-- [ ] Single daily cap on calls and tokens
-- [ ] `llmCalls` collection: purpose, model, tokens in/out, latency, estimated cost
-- [ ] `bun run gen:sample` writes outline + day 1 to docs/samples/
-- [ ] Samples: Python, personal finance, music theory
-- [ ] docs/phase-1-cost-report.md
+- [x] Look up current Gemini models and free-tier limits (cite URLs). Limits are only in AI Studio.
+- [x] Shared Zod schemas: `CourseOutline`, `DayContent` (lesson, task + rubric, quiz)
+- [x] `LlmProvider` interface, `FakeProvider`
+- [ ] `GeminiProvider` run against the live API (code written, [UNVERIFIED])
+- [x] Retry once on invalid JSON with the validation error, then `AppError`
+- [x] Single daily cap on calls and tokens
+- [x] `llmCalls` collection: purpose, model, tokens in/out/thinking, latency, estimated cost
+- [x] Cost estimator by model and date (3.8 Flash vs 3.5 Flash-Lite; 2027 prices primary)
+- [x] `bun run gen:sample` writes outline + day 1 (verified with `--provider fake`)
+- [ ] Samples: Python, personal finance, music theory × 2 models (needs key)
+- [ ] docs/phase-1-cost-report.md (`bun run cost:report` built; needs real samples + AI Studio limits)
 
 ### C4. Auth
 

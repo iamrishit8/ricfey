@@ -13,7 +13,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "bun test --pass-with-no-tests",
-    "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
+    "check": "bun run typecheck && bun run lint && bun run format:check && bun run test",
+    "gen:sample": "bun --env-file=.env apps/api/scripts/gen-sample.ts",
+    "cost:report": "bun apps/api/scripts/cost-report.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -10,6 +10,7 @@ const STATUS_BY_CODE: Record<ErrorCode, number> = {
   RATE_LIMITED: 429,
   LLM_CAP_REACHED: 429,
   LLM_INVALID_OUTPUT: 502,
+  LLM_UNAVAILABLE: 503,
   INTERNAL_ERROR: 500,
 };
 
@@ -22,8 +23,9 @@ export class AppError extends Error {
   readonly statusCode: number;
   readonly details?: unknown;
 
-  constructor(code: ErrorCode, message: string, details?: unknown) {
-    super(message);
+  /** `details` is sent to the client. `cause` is for logs and scripts only, never sent. */
+  constructor(code: ErrorCode, message: string, details?: unknown, cause?: unknown) {
+    super(message, cause === undefined ? undefined : { cause });
     this.name = 'AppError';
     this.code = code;
     this.statusCode = STATUS_BY_CODE[code];

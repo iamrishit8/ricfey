@@ -102,3 +102,50 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 - **Why:** the web app can switch on `error.code` with type safety. `AppError` maps each code
   to one HTTP status, so routes can't invent mismatched pairs.
 - **Revisit:** add codes as features need them, in the same PR as the feature.
+
+### 2026-10-18 · LLM layer: one base class does cap, log, validate, retry
+
+- **Why:** the brief wants `generateStructured` on the provider interface and the cap in one
+  place. `BaseLlmProvider` implements both; Gemini and Fake only implement `callModel`. So
+  retry and logging can't drift between providers.
+- **Rejected:** each provider implementing retry itself (duplicated, will diverge); a separate
+  wrapper object around a "transport" (adds a type with no extra benefit right now).
+- **Revisit:** if a provider needs a different retry policy (e.g. rate-limit backoff).
+
+### 2026-10-18 · Gemini call: `models.generateContent` + `responseJsonSchema`, schema stripped
+
+- **Why:** `@google/genai` 2.30 supports it; its type docs list the JSON-Schema keywords
+  Gemini accepts. Zod's output includes others (`minLength`, `$schema`), so we strip to that
+  allowlist and let Zod enforce the rest on the response.
+- **Rejected:** the newer Interactions API shown in the structured-output docs (less familiar,
+  no gain for single-shot calls).
+- **Revisit:** when the key exists, if Gemini rejects or ignores the schema.
+
+### 2026-10-18 · Cost model and prices
+
+- **Why:** you asked for model comparison and 2027 prices. `pricing.ts` holds dated price
+  periods per model (source URL and read date in the file); cost = f(model, tokens, date).
+  The report's primary figure uses prices from 2027-01-01, today's beside. Thinking tokens
+  count as output. Retries and failed attempts count because they are billed.
+- **Rejected:** a single "current price" constant (silently wrong on 1 Jan 2027).
+- **Revisit:** whenever the pricing page changes; re-read and update the read date.
+
+### 2026-10-18 · Daily cap is per UTC day, global, and checked before every call
+
+- **Why:** no users yet, so global. Retries are checked too. Google's free-tier RPD resets at
+  midnight Pacific (rate-limits page), so keep `LLM_DAILY_CALL_CAP` below your RPD.
+- **Known gap:** concurrent requests can both pass the check (read-then-call race). Harmless at
+  script scale; needs an atomic counter before real traffic.
+- **Revisit:** Phase 2, when users can trigger generation; add per-user caps then.
+
+### 2026-10-18 · Default 5 learning days per week
+
+- **Why:** the brief says "Z weeks" but not days per week. 5 is my pick (realistic for adults);
+  `gen:sample --days-per-week` overrides it. The cost report uses per-course-day figures, so
+  this choice doesn't distort the 30-day extrapolation.
+- **Revisit:** when designing the intake form (Phase 2): probably the learner's choice.
+
+### 2026-10-18 · Fake samples are never committed to docs/samples
+
+- **Why:** placeholder text next to real samples is easy to mistake for real output.
+  `cost:report` skips fake samples unless `--include-fake` (only for testing the script).

@@ -50,3 +50,29 @@ Manual:
 | Replica-set guard           | point `MONGODB_URI` at a standalone mongod (no `--replSet`)                             | "MongoDB must be a replica set", exits 1                                               |
 | Health against Atlas        | real `MONGODB_URI`, `bun run dev:api`, `curl localhost:4000/health`                     | `"db":"connected"`                                                                     |
 | Graceful shutdown           | Ctrl+C the server                                                                       | log line `SIGINT received, shutting down`                                              |
+
+## C3. LLM layer and cost test
+
+Automated (`bun run test`):
+
+| File                                          | Covers                                                                                                                                                                                                                             |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/shared/src/schemas/schemas.test.ts` | outline day numbering; depth enum; quiz `answerIndex` in range; rubric and lesson length required                                                                                                                                  |
+| `apps/api/src/llm/pricing.test.ts`            | 3.8 Flash price doubles on 2027-01-01; Flash-Lite single price; cost formula; unknown model → `null`                                                                                                                               |
+| `apps/api/src/llm/json-schema.test.ts`        | unsupported JSON-Schema keywords stripped; structure, required, bounds kept                                                                                                                                                        |
+| `apps/api/src/llm/base-provider.test.ts`      | success logs one call; retry once with the error fed back; invalid twice → `LLM_INVALID_OUTPUT`, no third call; provider error → `LLM_UNAVAILABLE`; call cap, token cap, cap on retry; UTC day boundary; no internals in `details` |
+| `apps/api/src/llm/course-generator.test.ts`   | wrong days per week and off-outline quiz topics trigger the retry; prompts contain the request                                                                                                                                     |
+| `apps/api/src/llm/cost.test.ts`               | per course-day and 30-day math; today = half of 2027 for 3.8 Flash; retries counted; unpriced model fails                                                                                                                          |
+| `apps/api/src/llm/usage-store.test.ts`        | writes to `llmCalls`; sums only today. **Needs `MONGODB_URI_TEST`.**                                                                                                                                                               |
+| `apps/api/scripts/gen-sample.test.ts`         | `gen:sample --provider fake` end to end: files written, parse against the schemas                                                                                                                                                  |
+
+Manual:
+
+| What                     | Steps                                                                    | Expected                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Offline pipeline         | `bun run gen:sample -- --skill "Python" --provider fake --out /tmp/s`    | 5 files in `/tmp/s/python/fake/`, all text marked `[FAKE]`                                       |
+| Report pipeline          | `bun run cost:report -- --samples /tmp/s --out /tmp/r.md --include-fake` | `/tmp/r.md` has tables with `$0.00000`                                                           |
+| Missing key is clear     | `GEMINI_API_KEY= bun run gen:sample -- --skill "Python"`                 | one line: "GEMINI_API_KEY is not set…", exit 1                                                   |
+| Bad args                 | `bun run gen:sample -- --skill X --depth guru --weeks 40`                | lists both problems, exit 2                                                                      |
+| **Real run (needs key)** | `bun run gen:sample -- --skill "Python" --depth working --weeks 4`       | outline + day 1 in `docs/samples/python/gemini-3-8-flash/`; one `llmCalls` doc per call in Atlas |
+| **Cap (needs key)**      | `LLM_DAILY_CALL_CAP=1 bun run gen:sample -- --skill "Python"`            | outline succeeds, day 1 fails "Daily AI usage limit reached"                                     |
