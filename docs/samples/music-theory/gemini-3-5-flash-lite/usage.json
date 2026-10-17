@@ -1,0 +1,29 @@
+{
+  "skill": "Music theory",
+  "depth": "working",
+  "weeks": 4,
+  "daysPerWeek": 5,
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "generatedAt": "2026-10-17T19:32:07.345Z",
+  "calls": [
+    {
+      "purpose": "course_outline",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 278,
+      "tokensOut": 1955,
+      "tokensThinking": 0,
+      "latencyMs": 6465
+    },
+    {
+      "purpose": "day_content",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 983,
+      "tokensOut": 2052,
+      "tokensThinking": 0,
+      "latencyMs": 6377
+    }
+  ]
+}

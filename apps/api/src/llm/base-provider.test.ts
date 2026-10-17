@@ -83,6 +83,70 @@ describe('generateStructured', () => {
     });
   });
 
+  test('transient 503: backs off and retries, each try logged', async () => {
+    const usage = new InMemoryLlmUsageStore();
+    const waits: number[] = [];
+    const overloaded = () => {
+      throw Object.assign(new Error('high demand'), { status: 503 });
+    };
+    const llm = new FakeProvider(
+      {
+        usage,
+        caps: { maxCallsPerDay: 10, maxTokensPerDay: 1e9 },
+        now: () => NOW,
+        sleep: async (ms) => void waits.push(ms),
+        transientBackoffMs: [5, 20],
+      },
+      [overloaded, overloaded, '{"answer": 7}'],
+    );
+    const res = await llm.generateStructured(Schema, 'q', 'day_content');
+    expect(res.data.answer).toBe(7);
+    expect(waits).toEqual([5, 20]);
+    expect(usage.calls.map((c) => c.status)).toEqual(['error', 'error', 'ok']);
+  });
+
+  test('transient errors past the backoff list give LLM_UNAVAILABLE', async () => {
+    const overloaded = () => {
+      throw Object.assign(new Error('rate limited'), { status: 429 });
+    };
+    const usage = new InMemoryLlmUsageStore();
+    const llm = new FakeProvider(
+      {
+        usage,
+        caps: { maxCallsPerDay: 10, maxTokensPerDay: 1e9 },
+        now: () => NOW,
+        sleep: async () => {},
+        transientBackoffMs: [1],
+      },
+      [overloaded, overloaded, '{"answer": 7}'],
+    );
+    const err = await rejection(llm.generateStructured(Schema, 'q', 'day_content'));
+    expect(err.code).toBe('LLM_UNAVAILABLE');
+    expect(usage.calls).toHaveLength(2);
+  });
+
+  test('a daily-quota 429 is not retried', async () => {
+    const usage = new InMemoryLlmUsageStore();
+    const exhausted = () => {
+      throw Object.assign(new Error('quotaId: GenerateRequestsPerDayPerProjectPerModel-FreeTier'), {
+        status: 429,
+      });
+    };
+    const llm = new FakeProvider(
+      {
+        usage,
+        caps: { maxCallsPerDay: 10, maxTokensPerDay: 1e9 },
+        now: () => NOW,
+        sleep: async () => {},
+        transientBackoffMs: [1, 1],
+      },
+      [exhausted, '{"answer": 7}'],
+    );
+    const err = await rejection(llm.generateStructured(Schema, 'q', 'day_content'));
+    expect(err.code).toBe('LLM_UNAVAILABLE');
+    expect(usage.calls).toHaveLength(1);
+  });
+
   test('call cap: refuses before calling the model', async () => {
     const { llm, usage } = setup(['{"answer": 1}', '{"answer": 2}'], {
       maxCallsPerDay: 1,

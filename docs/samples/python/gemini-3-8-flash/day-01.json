@@ -1,0 +1,97 @@
+{
+  "day": 1,
+  "title": "Variables, Numeric Types, and Input",
+  "lesson": {
+    "markdown": "Every automation script starts by holding data in memory, doing math on it, and asking users for details. Today you will build your foundation: storing numbers in variables, doing accurate financial calculations, and capturing user input from the terminal.\n\n### Storing Data in Variables\n\nIn Python, a variable is a label attached to a piece of data stored in memory. You assign values using the `=` operator:\n\n```python\nitem_name = \"Office Chair\"\nunit_price = 4500\nquantity = 3\n```\n\nPython follows specific naming conventions called `snake_case`:\n- Use all lowercase letters.\n- Separate words with underscores (`item_count`, not `itemCount` or `ItemCount`).\n- Variable names cannot start with a digit (`item_1` is valid; `1_item` is an error).\n- Never use reserved keywords such as `print`, `input`, `class`, or `for` as variable names.\n\n### Numeric Types: Integers vs. Floats\n\nPython uses two main numeric types for calculations:\n\n1. **`int` (Integer)**: Whole numbers without decimals. Examples: `5`, `0`, `-12`, `1800`.\n2. **`float` (Floating-point number)**: Numbers with decimal points. Examples: `18.5`, `0.05`, `249.99`.\n\nPython automatically chooses the right type based on the value you assign:\n\n```python\nsubtotal = 3500          # int\ngst_rate = 0.18          # float (18% Goods and Services Tax)\ngst_amount = subtotal * gst_rate  # result becomes a float: 630.0\n```\n\n### Arithmetic Operators\n\nPython provides standard arithmetic operators:\n\n| Operator | Meaning | Example | Result |\n|---|---|---|---|\n| `+` | Addition | `100 + 25` | `125` |\n| `-` | Subtraction | `100 - 25` | `75` |\n| `*` | Multiplication | `100 * 0.18` | `18.0` |\n| `/` | Division (always yields a float) | `100 / 4` | `25.0` |\n| `//` | Floor division (drops decimal part) | `100 // 3` | `33` |\n| `%` | Modulo (remainder) | `100 % 3` | `1` |\n| `**` | Exponentiation | `10 ** 2` | `100` |\n\nNotice that regular division (`/`) always produces a `float`, even when dividing two whole numbers evenly (`4 / 2` yields `2.0`).\n\n### Capturing Terminal Input\n\nThe `input()` function pauses execution and waits for the user to type something and press Enter. It prints a prompt message inside the parentheses:\n\n```python\ncustomer_name = input(\"Enter customer name: \")\nprint(\"Processing order for:\", customer_name)\n```\n\n### The Golden Rule of `input()`: Everything Is a String\n\nThe most common beginner bug in Python involves user input. **The `input()` function always returns text (a `str`), even if the user types digits.**\n\nLook at this mistake:\n\n```python\n# BUGGY CODE\nunits = input(\"Enter units: \")      # User types: 4 -> units is \"4\" (text)\nprice = 500\ntotal = units * price               # Results in \"4\" repeated 500 times!\n```\n\nIf you try to add numbers formatted as strings:\n\n```python\na = input(\"First number: \")   # User enters: 10 -> \"10\"\nb = input(\"Second number: \")  # User enters: 20 -> \"20\"\nprint(a + b)                  # Output: \"1020\", not 30!\n```\n\nTo do math, you must explicitly convert (or *cast*) the input into a numeric type using `int()` or `float()`:\n\n```python\n# Correct conversion\nunits = int(input(\"Enter units: \"))\nunit_price = float(input(\"Enter unit price (₹): \"))\n\nsubtotal = units * unit_price\ngst = subtotal * 0.18\ngrand_total = subtotal + gst\n\nprint(\"Subtotal:\", subtotal)\nprint(\"GST (18%):\", gst)\nprint(\"Grand Total:\", grand_total)\n```\n\nUse `int()` when the value cannot have fractions (headcount, days, item quantity). Use `float()` when fractional amounts are possible (prices, percentages, kilograms, litres).\n\n### Common Pitfalls to Avoid\n\n1. **Calling `int()` on decimal text**: Writing `int(\"19.50\")` raises a `ValueError`. To convert user input that might include a decimal point, use `float()`. If you need an integer later, convert the float: `int(float(\"19.50\"))`.\n2. **Shadowing built-in names**: Never name a variable `float`, `int`, `str`, or `input` (for instance, `input = input(\"Enter: \")`). This overwrites the built-in function, causing errors later in your script.\n\n### Day 1 Recap\n\n- Store values in descriptive `snake_case` variables without using Python keywords.\n- Python treats whole numbers as `int` and decimals as `float`; division (`/`) always returns a `float`.\n- The `input()` function returns text (`str`); you must wrap it in `int()` or `float()` before performing arithmetic.",
+    "estimatedMinutes": 25
+  },
+  "task": {
+    "prompt": "Write a Python script that calculates an electricity bill surcharge based on meter readings. The script must:\n1. Prompt the user to enter their customer name (text).\n2. Prompt the user to enter the previous meter reading in kilowatt-hours (kWh) as an integer.\n3. Prompt the user to enter the current meter reading in kilowatt-hours (kWh) as an integer.\n4. Prompt the user to enter the rate per kWh in rupees as a float (e.g., 7.50).\n5. Calculate the units consumed (`current_reading - previous_reading`).\n6. Calculate the base energy charge (`units_consumed * rate_per_kwh`).\n7. Calculate a 9% regulatory surcharge on the base charge (`base_charge * 0.09`).\n8. Calculate and print the total payable amount (`base_charge + surcharge`).\n\nPaste your complete Python script along with sample output showing what displays when the user inputs:\n- Name: Rajiv Sharma\n- Previous Reading: 1240\n- Current Reading: 1485\n- Rate per kWh: 7.25",
+    "rubric": [
+      {
+        "criterion": "Variable Naming and Syntax",
+        "description": "Uses clean snake_case names (e.g., previous_reading, rate_per_kwh) and does not shadow built-in function names like int, float, or input.",
+        "points": 2
+      },
+      {
+        "criterion": "Input and Type Conversion",
+        "description": "Correctly prompts for all four values and explicitly converts readings using int() and the rate using float().",
+        "points": 3
+      },
+      {
+        "criterion": "Calculation Accuracy",
+        "description": "Accurately computes units consumed, base charge, 9% surcharge, and total payable amount with correct operator usage.",
+        "points": 3
+      },
+      {
+        "criterion": "Output Demonstration",
+        "description": "Includes sample terminal output demonstrating the run with the provided test numbers (yielding 245 units, base charge ₹1776.25, surcharge ₹159.8625, total ₹1936.1125).",
+        "points": 2
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "question": "A script prompts a user for their monthly mobile bill with `bill = input(\"Enter bill amount: \")`. The user enters `799`. What is the type and value of `bill`?",
+        "options": [
+          "int with value 799",
+          "float with value 799.0",
+          "str with value \"799\"",
+          "A TypeError occurs because no type was specified"
+        ],
+        "answerIndex": 2,
+        "explanation": "input() always returns a string (str), regardless of what the user types. To get the number 799, the programmer must cast it with int() or float().",
+        "topic": "type-conversion"
+      },
+      {
+        "question": "Which of the following variable names follows standard Python naming conventions (PEP 8)?",
+        "options": [
+          "2nd_tax_bracket",
+          "monthly_gst_rate",
+          "MonthlyGSTRate",
+          "monthly-gst-rate"
+        ],
+        "answerIndex": 1,
+        "explanation": "Standard Python variable naming uses snake_case: all lowercase letters separated by underscores. '2nd_tax_bracket' is invalid because names cannot start with a digit; 'MonthlyGSTRate' is PascalCase (used for classes); and 'monthly-gst-rate' is invalid syntax because '-' represents subtraction.",
+        "topic": "variables"
+      },
+      {
+        "question": "What is the output of the expression `15 / 3` in Python 3?",
+        "options": [
+          "5",
+          "5.0",
+          "5.00",
+          "3"
+        ],
+        "answerIndex": 1,
+        "explanation": "In Python 3, the standard division operator (/) always returns a float, even if the division divides evenly without a remainder. If you need an integer result, use floor division (//).",
+        "topic": "data-types"
+      },
+      {
+        "question": "What happens when you run `int(\"49.99\")` in Python?",
+        "options": [
+          "It returns 49 by dropping the decimal part.",
+          "It rounds up and returns 50.",
+          "It returns 49.99 as a float.",
+          "It raises a ValueError."
+        ],
+        "answerIndex": 3,
+        "explanation": "int() cannot directly convert a string containing a decimal point. It raises a ValueError: invalid literal for int() with base 10: '49.99'. You must convert it using float(\"49.99\") first.",
+        "topic": "type-conversion"
+      },
+      {
+        "question": "You execute the following two lines in the terminal:\n```python\nquantity = \"5\"\nprice = 120\nprint(quantity * price)\n```\nWhat is the result?",
+        "options": [
+          "600",
+          "A string repeating the character '5' 120 times",
+          "TypeError: can't multiply sequence by non-int of type 'int'",
+          "600.0"
+        ],
+        "answerIndex": 1,
+        "explanation": "In Python, multiplying a string by an integer repeats that string. Because 'quantity' is the string \"5\" and not the integer 5, \"5\" * 120 generates a string with 120 fives. To get 600, you must cast quantity using int(quantity).",
+        "topic": "data-types"
+      }
+    ]
+  }
+}

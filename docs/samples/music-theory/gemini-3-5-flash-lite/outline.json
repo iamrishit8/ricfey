@@ -1,0 +1,277 @@
+{
+  "title": "Practical Music Theory for Everyday Musicians",
+  "summary": "A 4-week practical guide to music theory designed for independent learners, focusing on rhythm, scales, chords, and song structure.",
+  "skill": "Music theory",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Foundations of Sound, Pitch, and Rhythm",
+      "days": [
+        {
+          "day": 1,
+          "title": "The Musical Alphabet and Piano Keyboard Layout",
+          "objectives": [
+            "Identify natural and accidental notes on a piano keyboard",
+            "Locate any given note name across two octaves"
+          ],
+          "topics": [
+            "musical-alphabet",
+            "piano-layout"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Whole Steps, Half Steps, and Accidentals",
+          "objectives": [
+            "Calculate half steps and whole steps between any two adjacent keys",
+            "Explain the difference between sharps and flats using enharmonic equivalents"
+          ],
+          "topics": [
+            "half-steps",
+            "accidentals",
+            "enharmonics"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Beats, Tempos, and Time Signatures",
+          "objectives": [
+            "Count steady beats at a specified tempo in beats per minute",
+            "Interpret 4/4 and 3/4 time signatures in terms of beats per measure"
+          ],
+          "topics": [
+            "tempo",
+            "time-signatures"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Note Durations and Basic Rhythms",
+          "objectives": [
+            "Calculate the total duration of combined whole, half, quarter, and eighth notes",
+            "Tap out a simple syncopated rhythm using quarter and eighth notes"
+          ],
+          "topics": [
+            "note-durations",
+            "rhythm"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Measures, Barlines, and Rest Values",
+          "objectives": [
+            "Organize a sequence of notes and rests into correct measures for 4/4 time",
+            "Count and clap a rhythm containing rests accurately"
+          ],
+          "topics": [
+            "measures",
+            "rests",
+            "rhythm"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Scales and Key Signatures",
+      "days": [
+        {
+          "day": 6,
+          "title": "The Major Scale Formula",
+          "objectives": [
+            "Apply the whole-step and half-step formula to construct any major scale",
+            "Sing or play the C major scale from root to root"
+          ],
+          "topics": [
+            "major-scale",
+            "scale-formulas"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Key Signatures and the Circle of Fifths",
+          "objectives": [
+            "Identify the number of sharps or flats in common major keys",
+            "Use the circle of fifths to determine the relative keys for major scales"
+          ],
+          "topics": [
+            "key-signatures",
+            "circle-of-fifths"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Natural Minor Scales",
+          "objectives": [
+            "Apply the natural minor scale formula using whole and half steps",
+            "Derive the relative minor scale from any given major scale"
+          ],
+          "topics": [
+            "natural-minor",
+            "scale-formulas"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Harmonic and Melodic Minor Scales",
+          "objectives": [
+            "Modify a natural minor scale to create the harmonic minor scale",
+            "Explain why the melodic minor scale differs when ascending versus descending"
+          ],
+          "topics": [
+            "harmonic-minor",
+            "melodic-minor"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Pentatonic Scales and Blues Scale Basics",
+          "objectives": [
+            "Construct major and minor pentatonic scales from root notes",
+            "Add the blues note to create a basic blues scale"
+          ],
+          "topics": [
+            "pentatonic-scale",
+            "blues-scale"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Intervals and Chord Construction",
+      "days": [
+        {
+          "day": 11,
+          "title": "Measuring Intervals by Quality and Number",
+          "objectives": [
+            "Calculate numeric intervals and qualities like major, minor, and perfect",
+            "Identify intervals up to an octave by sight and sound"
+          ],
+          "topics": [
+            "intervals",
+            "interval-quality"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Building Major and Minor Triads",
+          "objectives": [
+            "Stack intervals to build major and minor triads from any root note",
+            "Differentiate between major and minor chord sounds"
+          ],
+          "topics": [
+            "triads",
+            "major-scale",
+            "intervals"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Diminished and Augmented Triads",
+          "objectives": [
+            "Construct diminished and augmented triads using stack intervals",
+            "Explain the psychological tension created by diminished and augmented chords"
+          ],
+          "topics": [
+            "diminished-triads",
+            "augmented-triads",
+            "triads"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Seventh Chords: Major 7, Dominant 7, and Minor 7",
+          "objectives": [
+            "Construct dominant 7th, major 7th, and minor 7th chords from root notes",
+            "Identify the specific interval formulas that define each seventh chord type"
+          ],
+          "topics": [
+            "seventh-chords",
+            "triads"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Chord Inversions",
+          "objectives": [
+            "Rearrange root-position triads into first and second inversions",
+            "Determine the bass note of an inverted chord from chord symbols"
+          ],
+          "topics": [
+            "chord-inversions",
+            "triads"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Harmonization and Song Structure",
+      "days": [
+        {
+          "day": 16,
+          "title": "Harmonizing the Major Scale",
+          "objectives": [
+            "Derive the diatonic chords of a major scale key",
+            "Classify each diatonic chord as major, minor, or diminished"
+          ],
+          "topics": [
+            "diatonic-chords",
+            "major-scale"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Common Chord Progressions",
+          "objectives": [
+            "Roman numeral analysis of the I-IV-V-I and ii-V-I progressions",
+            "Transpose a standard chord progression into a new key"
+          ],
+          "topics": [
+            "chord-progressions",
+            "roman-numerals"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Cadences and Musical Phrasing",
+          "objectives": [
+            "Identify authentic and plagal cadences at the end of musical phrases",
+            "Explain how cadences create punctuation in a song structure"
+          ],
+          "topics": [
+            "cadences",
+            "chord-progressions"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Song Form and Arrangement Basics",
+          "objectives": [
+            "Map out standard song forms like verse-chorus-bridge",
+            "Analyze how dynamic changes affect the emotional arc of an arrangement"
+          ],
+          "topics": [
+            "song-form",
+            "arrangement"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "Putting It All Together: Analyzing a Complete Song",
+          "objectives": [
+            "Analyze the key, time signature, and chord progression of a provided lead sheet",
+            "Explain how theory concepts learned in the course apply to practical performance"
+          ],
+          "topics": [
+            "song-analysis",
+            "key-signatures",
+            "chord-progressions"
+          ]
+        }
+      ]
+    }
+  ]
+}

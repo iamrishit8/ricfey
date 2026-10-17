@@ -1,0 +1,272 @@
+{
+  "title": "Practical Python for Everyday Tasks",
+  "summary": "A 4-week practical guide to mastering Python for automation, data handling, and problem solving, tailored for self-paced study.",
+  "skill": "Python",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Core Syntax and Data Types",
+      "days": [
+        {
+          "day": 1,
+          "title": "Setting Up and Printing",
+          "objectives": [
+            "Run basic Python commands in an interactive shell",
+            "Print formatted output to the console"
+          ],
+          "topics": [
+            "python-setup",
+            "print-statement"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Variables and Basic Math",
+          "objectives": [
+            "Store values in variables using descriptive names",
+            "Perform arithmetic operations on numbers"
+          ],
+          "topics": [
+            "variables",
+            "basic-math"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Working with Strings",
+          "objectives": [
+            "Manipulate text using string methods",
+            "Format strings using f-strings"
+          ],
+          "topics": [
+            "strings",
+            "f-strings"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "User Input and Type Conversion",
+          "objectives": [
+            "Capture input from the user",
+            "Convert data types between strings and numbers"
+          ],
+          "topics": [
+            "user-input",
+            "type-conversion"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Booleans and Comparisons",
+          "objectives": [
+            "Evaluate comparison and logical operators",
+            "Store boolean states in variables"
+          ],
+          "topics": [
+            "booleans",
+            "comparisons"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Control Flow and Collections",
+      "days": [
+        {
+          "day": 6,
+          "title": "Conditional Statements",
+          "objectives": [
+            "Write if-elif-else branches to control execution flow",
+            "Evaluate complex conditions securely"
+          ],
+          "topics": [
+            "conditionals",
+            "control-flow"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Introduction to Lists",
+          "objectives": [
+            "Create and modify lists with items",
+            "Access list elements using positive and negative indexing"
+          ],
+          "topics": [
+            "lists",
+            "indexing"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "For Loops",
+          "objectives": [
+            "Iterate over items in a list using for loops",
+            "Generate sequences of numbers using the range function"
+          ],
+          "topics": [
+            "for-loops",
+            "range-function"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "While Loops",
+          "objectives": [
+            "Write while loops for condition-based repetition",
+            "Prevent infinite loops using break statements"
+          ],
+          "topics": [
+            "while-loops",
+            "control-flow"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Dictionaries for Key-Value Data",
+          "objectives": [
+            "Store structured data using dictionaries",
+            "Access and update dictionary values"
+          ],
+          "topics": [
+            "dictionaries",
+            "key-value-pairs"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Functions and Data Processing",
+      "days": [
+        {
+          "day": 11,
+          "title": "Defining Functions",
+          "objectives": [
+            "Write reusable code blocks using custom functions",
+            "Pass arguments and return values from functions"
+          ],
+          "topics": [
+            "functions",
+            "parameters"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Scope and Default Arguments",
+          "objectives": [
+            "Distinguish between local and global variable scope",
+            "Define functions with default argument values"
+          ],
+          "topics": [
+            "variable-scope",
+            "functions"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "List Comprehensions",
+          "objectives": [
+            "Write concise list transformations using list comprehensions",
+            "Filter lists efficiently in a single line of code"
+          ],
+          "topics": [
+            "list-comprehensions",
+            "lists"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Error and Exception Handling",
+          "objectives": [
+            "Catch runtime errors using try-except blocks",
+            "Handle multiple specific exceptions gracefully"
+          ],
+          "topics": [
+            "exception-handling",
+            "debugging"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Reading and Writing Text Files",
+          "objectives": [
+            "Open, read, and write text files using context managers",
+            "Process file contents line by line"
+          ],
+          "topics": [
+            "file-io",
+            "context-managers"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Modules, Automation, and Capstone",
+      "days": [
+        {
+          "day": 16,
+          "title": "Using Built-in Modules",
+          "objectives": [
+            "Import and use standard library modules like math and random",
+            "Work with dates and times using the datetime module"
+          ],
+          "topics": [
+            "modules",
+            "standard-library"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Working with CSV Data",
+          "objectives": [
+            "Parse and analyze tabular data from CSV files",
+            "Write processed data back into a CSV format"
+          ],
+          "topics": [
+            "csv-parsing",
+            "file-io"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Building Command Line Arguments",
+          "objectives": [
+            "Accept command line inputs using sys.argv",
+            "Build a small script that takes parameters from the terminal"
+          ],
+          "topics": [
+            "command-line-args",
+            "sys-module"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Writing Clean Code and Tests",
+          "objectives": [
+            "Format code using PEP 8 style guidelines",
+            "Write simple assertion tests to verify function correctness"
+          ],
+          "topics": [
+            "code-style",
+            "testing"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "Automation Capstone Project",
+          "objectives": [
+            "Combine loops, files, and functions into a complete utility script",
+            "Automate a repetitive text-processing task from scratch"
+          ],
+          "topics": [
+            "capstone-project",
+            "automation"
+          ]
+        }
+      ]
+    }
+  ]
+}

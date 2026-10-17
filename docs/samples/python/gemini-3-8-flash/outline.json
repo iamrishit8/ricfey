@@ -1,0 +1,308 @@
+{
+  "title": "Working Python: Practical Automation and Scripting in 20 Days",
+  "summary": "A focused, hands-on curriculum designed to bring an independent learner to working fluency in Python. Emphasizes everyday utilities, text and data processing, file automation, and defensive programming in 30-minute daily increments.",
+  "skill": "Python",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Core Syntax and Control Flow",
+      "days": [
+        {
+          "day": 1,
+          "title": "Variables, Numeric Types, and Input",
+          "objectives": [
+            "Assign variables using standard Python naming conventions",
+            "Calculate totals with integer and float arithmetic using rupee and tax examples",
+            "Collect and convert user input from the terminal using int() and float()"
+          ],
+          "topics": [
+            "variables",
+            "data-types",
+            "type-conversion"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "String Formatting and Cleaning",
+          "objectives": [
+            "Format output dynamically using Python f-strings",
+            "Clean user-entered text using strip(), lower(), and replace()",
+            "Extract substrings using basic string slicing"
+          ],
+          "topics": [
+            "strings",
+            "f-strings",
+            "string-methods"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Conditional Logic and Decisions",
+          "objectives": [
+            "Write multi-branch decisions using if, elif, and else",
+            "Evaluate conditions with comparison and boolean operators (and, or, not)",
+            "Compute bracketed pricing such as tiered electricity or GST rates"
+          ],
+          "topics": [
+            "conditionals",
+            "booleans",
+            "control-flow"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Repetition with While and For Loops",
+          "objectives": [
+            "Iterate over numeric sequences using for loops and range()",
+            "Construct while loops with terminating conditions and counter updates",
+            "Control loop execution flow using break and continue statements"
+          ],
+          "topics": [
+            "loops",
+            "range",
+            "control-flow"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Interactive CLI Utility",
+          "objectives": [
+            "Combine loops, conditionals, and input to build an interactive command-line bill splitter",
+            "Validate terminal input against expected choices",
+            "Debug common syntax and indentation mistakes systematically"
+          ],
+          "topics": [
+            "cli",
+            "loops",
+            "conditionals"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Data Collections and Transformations",
+      "days": [
+        {
+          "day": 6,
+          "title": "Lists and Sequence Operations",
+          "objectives": [
+            "Create and modify lists using append(), insert(), and pop()",
+            "Extract subsets of data using list slicing syntax",
+            "Sort and reverse lists in place and using sorted()"
+          ],
+          "topics": [
+            "lists",
+            "indexing-slicing",
+            "data-structures"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Key-Value Mapping with Dictionaries",
+          "objectives": [
+            "Store and retrieve structured data using dictionary keys",
+            "Update dictionary values and add new key-value pairs safely using get()",
+            "Iterate over dictionary keys, values, and items"
+          ],
+          "topics": [
+            "dictionaries",
+            "data-structures"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Sets, Tuples, and Deduplication",
+          "objectives": [
+            "Create immutable records using tuples",
+            "Eliminate duplicate items from a list by casting to a set",
+            "Perform set operations including union, intersection, and difference"
+          ],
+          "topics": [
+            "tuples",
+            "sets",
+            "data-structures"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Navigating Nested Data Structures",
+          "objectives": [
+            "Index and update values inside lists of dictionaries",
+            "Flatten simple two-dimensional data collections",
+            "Filter a list of record dictionaries based on specific field criteria"
+          ],
+          "topics": [
+            "nested-data",
+            "dictionaries",
+            "lists"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "List and Dictionary Comprehensions",
+          "objectives": [
+            "Transform sequences concisely using list comprehensions",
+            "Filter data inline using conditional comprehensions",
+            "Construct lookup tables using dictionary comprehensions"
+          ],
+          "topics": [
+            "comprehensions",
+            "lists",
+            "dictionaries"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Functions, Error Handling, and Built-ins",
+      "days": [
+        {
+          "day": 11,
+          "title": "Writing Modular Functions",
+          "objectives": [
+            "Define reusable functions with def, parameters, and explicit return values",
+            "Trace variable scope between local function bodies and global scripts",
+            "Document function contracts with concise docstrings"
+          ],
+          "topics": [
+            "functions",
+            "scope",
+            "clean-code"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Function Arguments and Return Patterns",
+          "objectives": [
+            "Set sensible parameter defaults for optional configuration",
+            "Pass arguments using explicit keyword syntax",
+            "Return multiple values from a single function using tuple unpacking"
+          ],
+          "topics": [
+            "functions",
+            "clean-code"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Defensive Programming and Error Handling",
+          "objectives": [
+            "Intercept runtime crashes using try, except, and finally blocks",
+            "Catch specific errors such as ValueError, KeyError, and FileNotFoundError",
+            "Raise custom exceptions to halt execution on invalid business logic"
+          ],
+          "topics": [
+            "error-handling",
+            "debugging"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Standard Library: Math, Random, and Datetime",
+          "objectives": [
+            "Calculate dates, past deltas, and deadlines using the datetime module",
+            "Format timestamps into readable regional strings with strftime()",
+            "Generate random samples and selections using the random module"
+          ],
+          "topics": [
+            "standard-library",
+            "datetime"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Text File Input and Output",
+          "objectives": [
+            "Read raw text files safely using the with open() context manager",
+            "Write and append processed log lines to text files",
+            "Iterate through files line by line to keep memory footprint minimal"
+          ],
+          "topics": [
+            "file-io",
+            "context-managers"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Practical Automation and Projects",
+      "days": [
+        {
+          "day": 16,
+          "title": "Working with CSV Files",
+          "objectives": [
+            "Parse tabular records using the built-in csv.reader and csv.DictReader",
+            "Write structured records to a spreadsheet-compatible CSV file using csv.DictWriter",
+            "Compute column summaries such as total spend across monthly expenses"
+          ],
+          "topics": [
+            "csv",
+            "file-io",
+            "data-processing"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Parsing and Generating JSON Data",
+          "objectives": [
+            "Serialize Python dictionaries and lists into valid JSON strings and files",
+            "Deserialize raw JSON payloads from text files into Python data structures",
+            "Extract nested fields from standard JSON responses"
+          ],
+          "topics": [
+            "json",
+            "data-processing",
+            "nested-data"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Pattern Matching with Regular Expressions",
+          "objectives": [
+            "Validate text formats such as 6-digit Indian PIN codes and phone numbers using re.search()",
+            "Extract repeated structured entities from unstructured text using re.findall()",
+            "Sanitize inconsistent text fields using re.sub()"
+          ],
+          "topics": [
+            "regex",
+            "strings",
+            "validation"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Scripts, Arguments, and Virtual Environments",
+          "objectives": [
+            "Isolate project dependencies using venv and pip",
+            "Parse script command-line arguments using sys.argv",
+            "Format and freeze project dependencies into a requirements.txt file"
+          ],
+          "topics": [
+            "virtual-environments",
+            "packaging",
+            "cli"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "Capstone: Automated Expense Audit Tool",
+          "objectives": [
+            "Write an end-to-end Python script that ingests a CSV log of daily transactions",
+            "Audit the dataset for anomalies and compute category-wise totals",
+            "Export a formatted summary text report and structured JSON output to disk"
+          ],
+          "topics": [
+            "csv",
+            "json",
+            "functions",
+            "file-io"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -149,3 +149,57 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 
 - **Why:** placeholder text next to real samples is easy to mistake for real output.
   `cost:report` skips fake samples unless `--include-fake` (only for testing the script).
+
+### 2026-10-18 · Autonomous mode adopted
+
+- **Why:** you asked for the rest of Phase 1 and all of Phase 2 without check-ins. Rules are in
+  CLAUDE.md "Autonomous mode"; anything needing you goes to NEEDS-FROM-ME.md.
+- **Cost:** decisions you would have pushed back on get made without you. Every one is logged
+  here so you can reverse it.
+
+### 2026-10-18 · `LLM_DAILY_CALL_CAP` default lowered from 100 to 40
+
+- **Why:** free-tier requests/day are only visible in AI Studio, which I can't read. 40 is a
+  guess that is very likely under the real limit and enough for 6 samples with retries.
+- **Revisit:** once you read your RPD (NEEDS-FROM-ME.md); set it just below the smaller one.
+
+### 2026-10-18 · No item-count bounds on arrays of objects in the Gemini schema
+
+- **Found:** the outline request failed with `400 INVALID_ARGUMENT`. Bisected with real calls:
+  a single week (days 1..7) passes; weeks 1..12 of nested days fails; flat days 1..84 fails;
+  the same arrays without bounds pass. Likely a schema-size limit in constrained decoding.
+  [Inference: the error message gives no reason.]
+- **Decision:** `toGeminiJsonSchema` drops `minItems`/`maxItems` on arrays whose items are
+  objects. Zod still enforces the counts; the prompt states them; a miss triggers the retry.
+- **Revisit:** if Gemini publishes schema limits, or retries for wrong counts become common.
+
+### 2026-10-18 · Transient provider errors get a backoff retry (5 s, then 20 s)
+
+- **Why:** `gemini-3.8-flash` returned `503 "high demand"` several times on the free tier,
+  and the first call per process sometimes took ~2 minutes. These are not our fault and
+  usually pass. 429/500/503 are retried twice, separately from the one schema-fix retry.
+  Every try is cap-checked and logged as its own `llmCalls` row.
+- **Rejected:** retrying forever (could burn the daily cap); no retry (samples fail randomly).
+- **Revisit:** before real traffic: a user should not wait 25 s. Generation should move to a
+  background job (Phase 2 unlock is async-friendly).
+
+### 2026-10-18 · Thinking tokens dominate output
+
+- **Found:** on trivial prompts `gemini-3.8-flash` reported ~95% of output tokens as thinking
+  (e.g. 186 of 192). Thinking is billed as output, so it drives cost. The cost report shows the
+  share per sample. A thinking budget/level is a possible cost lever, not applied yet.
+- **Revisit:** after the cost report, if cost per course-day is too high.
+
+### 2026-10-18 · Free-tier RPD for gemini-3.8-flash is 20; cap default 16; daily 429s not retried
+
+- **Found:** a 429 named `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, limit 20, retry in
+  ~4.5 h. Bisection probes plus samples used it up. Flash-Lite's limit is still unknown.
+- **Decision:** `LLM_DAILY_CALL_CAP` default 16 (global, so it also stays under each model's 20).
+  A 429 whose message names a per-day quota is not backoff-retried.
+- **Implication:** on the free tier, 3.8 Flash can produce about 10 course-days a day for the
+  whole app. The free tier can't serve real users; Phase 2 runs on Flash-Lite or the fake.
+- **Revisit:** when billing is enabled (Phase 4/5), or if Flash-Lite's RPD is also tiny.
+
+### 2026-10-18 · Generated cost report is excluded from Prettier
+
+- **Why:** it is rewritten by `cost:report`; hand-formatting would be overwritten.

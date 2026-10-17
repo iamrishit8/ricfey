@@ -23,6 +23,21 @@ describe('toGeminiJsonSchema', () => {
       expect(used.has(k)).toBe(false);
   });
 
+  test('drops item-count bounds on arrays of objects only', () => {
+    const quiz = (schema.properties as Record<string, Record<string, Record<string, unknown>>>)
+      .quiz!;
+    const questions = (quiz.properties as Record<string, Record<string, unknown>>).questions!;
+    expect(questions.minItems).toBeUndefined();
+    expect(questions.maxItems).toBeUndefined();
+    const options = (
+      (questions.items as Record<string, unknown>).properties as Record<
+        string,
+        Record<string, unknown>
+      >
+    ).options!;
+    expect(options).toMatchObject({ minItems: 3, maxItems: 5 });
+  });
+
   test('keeps structure, required fields, array bounds and descriptions', () => {
     const props = schema.properties as Record<string, Record<string, unknown>>;
     expect(Object.keys(props).sort()).toEqual(['day', 'lesson', 'quiz', 'task', 'title']);

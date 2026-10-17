@@ -11,6 +11,12 @@ import { FUTURE_PRICE_DATE, PRICING_READ_ON, PRICING_SOURCE } from '../src/llm/p
 const REPO_ROOT = resolve(import.meta.dir, '../../..');
 const RATE_LIMITS_SOURCE = 'https://ai.google.dev/gemini-api/docs/rate-limits';
 
+// Limits learned from the API itself. A 429 names the quota and its limit.
+const KNOWN_RPD: Record<string, string> = {
+  'gemini-3.8-flash':
+    '20 (from a 429 on 2026-10-18: `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, limit 20)',
+};
+
 const { values } = parseArgs({
   options: {
     samples: { type: 'string', default: join(REPO_ROOT, 'docs/samples') },
@@ -28,10 +34,13 @@ if (usdInr !== null && (!Number.isFinite(usdInr) || !values['usd-inr-source'])) 
 }
 
 const samples: SampleUsage[] = [];
+const incomplete: string[] = [];
 for await (const path of new Bun.Glob('*/*/usage.json').scan(values.samples)) {
   const u = (await Bun.file(join(values.samples, path)).json()) as SampleUsage;
   if (u.provider === 'fake' && !values['include-fake']) continue;
-  samples.push(u);
+  const ok = (purpose: string) => u.calls.some((c) => c.purpose === purpose && c.status === 'ok');
+  if (ok('course_outline') && ok('day_content')) samples.push(u);
+  else incomplete.push(`${u.skill} / \`${u.model}\``);
 }
 if (samples.length === 0) {
   console.error(`No usable samples under ${values.samples}. Run gen:sample first.`);
@@ -110,11 +119,19 @@ Fill in from AI Studio → rate limits, for this account:
 
 | Model | RPM | TPM (input) | RPD | Course-days/day on free tier ≈ RPD ÷ calls per day |
 | --- | --- | --- | --- | --- |
-${models.map((m) => `| \`${m}\` | _fill in_ | _fill in_ | _fill in_ | _fill in_ |`).join('\n')}
+${models
+  .map((m) => {
+    const rpd = KNOWN_RPD[m];
+    const perDay = rpd
+      ? `≈ ${Math.floor(Number.parseInt(rpd, 10) / 2)} (1 outline + 1 day each)`
+      : '_fill in_';
+    return `| \`${m}\` | _fill in_ | _fill in_ | ${rpd ?? '_fill in_'} | ${perDay} |`;
+  })
+  .join('\n')}
 
 Free-tier content is "used to improve our products"; paid-tier content is not (${PRICING_SOURCE}).
 
-## Caveats
+${incomplete.length ? `## Incomplete samples (left out of every figure above)\n\n${incomplete.map((i) => `- ${i}`).join('\n')}\n\nA call failed (usually the free-tier daily quota) before both the outline and day 1 succeeded. Re-run \`gen:sample\` for these and then \`cost:report\`.\n\n` : ''}## Caveats
 
 - One sample per skill and model: token counts vary run to run.
 - Day 1 may be shorter or longer than later days.

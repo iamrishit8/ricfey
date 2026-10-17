@@ -10,7 +10,7 @@ const optionalString = z.preprocess(
 export const LlmEnvSchema = z.object({
   GEMINI_API_KEY: optionalString,
   GEMINI_MODEL: z.string().min(1).default('gemini-3.8-flash'),
-  LLM_DAILY_CALL_CAP: z.coerce.number().int().min(1).default(100),
+  LLM_DAILY_CALL_CAP: z.coerce.number().int().min(1).default(16),
   LLM_DAILY_TOKEN_CAP: z.coerce.number().int().min(1).default(1_000_000),
 });
 

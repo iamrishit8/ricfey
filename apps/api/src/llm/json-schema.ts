@@ -26,12 +26,23 @@ const ALLOWED = new Set([
   'propertyOrdering',
 ]);
 
+function isObjectArray(node: Record<string, unknown>): boolean {
+  const items = node.items as Record<string, unknown> | undefined;
+  return node.type === 'array' && items?.type === 'object';
+}
+
 function strip(node: unknown): unknown {
   if (Array.isArray(node)) return node.map(strip);
   if (node === null || typeof node !== 'object') return node;
+  const obj = node as Record<string, unknown>;
+  // Gemini returns 400 INVALID_ARGUMENT when arrays of objects carry item-count bounds that
+  // multiply into a large schema (found by bisection on 2026-10-18; see DECISIONS.md).
+  // Drop them there; Zod enforces the counts on the response and the prompt states them.
+  const dropBounds = isObjectArray(obj);
   const out: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(node)) {
+  for (const [key, value] of Object.entries(obj)) {
     if (!ALLOWED.has(key)) continue;
+    if (dropBounds && (key === 'minItems' || key === 'maxItems')) continue;
     // Under these keys, child keys are names (property names / defs), not keywords.
     if ((key === 'properties' || key === '$defs') && value && typeof value === 'object') {
       out[key] = Object.fromEntries(Object.entries(value).map(([k, v]) => [k, strip(v)]));

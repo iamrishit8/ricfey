@@ -58,7 +58,7 @@ Every variable lives in `.env.example`. Never commit `.env`.
 | `MONGODB_URI_TEST`    | no                 |                    | Throwaway replica set for DB tests; skipped if empty. Tests drop this DB |
 | `GEMINI_API_KEY`      | for real LLM calls |                    | From https://aistudio.google.com/apikey. Secret                          |
 | `GEMINI_MODEL`        | no                 | `gemini-3.8-flash` | Model ID; `gen:sample --model` overrides it                              |
-| `LLM_DAILY_CALL_CAP`  | no                 | `100`              | Max LLM calls per UTC day, retries included                              |
+| `LLM_DAILY_CALL_CAP`  | no                 | `16`               | Max LLM calls per UTC day, retries included                              |
 | `LLM_DAILY_TOKEN_CAP` | no                 | `1000000`          | Max tokens (in + out) per UTC day                                        |
 
 More variables (Google OAuth, Resend, session secret) are added at the checkpoint that

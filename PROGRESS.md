@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** C3 built on the fake provider; stopped for the Gemini key.
-- **Next:** run 6 samples (3 skills × 2 models), cost report, you read the lessons.
-- **Blocked:** `GEMINI_API_KEY` and your AI Studio free-tier limits.
+- **Now:** C3 done except 2 `gemini-3.8-flash` samples (free-tier daily quota). C4 auth next.
+- **Next:** at each checkpoint start, if the quota has reset, run the 2 missing samples and `bun run cost:report`.
+- **Blocked:** nothing hard. See NEEDS-FROM-ME.md.
 
 ---
 
@@ -30,17 +30,17 @@
 
 ### C3. LLM layer and cost test (the gate)
 
-- [x] Look up current Gemini models and free-tier limits (cite URLs). Limits are only in AI Studio.
+- [x] Look up current Gemini models and free-tier limits (cite URLs). Limits only in AI Studio; 3.8 Flash RPD = 20 learned from a 429
 - [x] Shared Zod schemas: `CourseOutline`, `DayContent` (lesson, task + rubric, quiz)
-- [x] `LlmProvider` interface, `FakeProvider`
-- [ ] `GeminiProvider` run against the live API (code written, [UNVERIFIED])
-- [x] Retry once on invalid JSON with the validation error, then `AppError`
-- [x] Single daily cap on calls and tokens
-- [x] `llmCalls` collection: purpose, model, tokens in/out/thinking, latency, estimated cost
+- [x] `LlmProvider` interface, `FakeProvider`, `GeminiProvider` (verified live on both models)
+- [x] Retry once on invalid JSON with the validation error, then `AppError`; backoff retry for 503/transient 429
+- [x] Single daily cap on calls and tokens (default 16/day, below the 20/day free-tier RPD)
+- [x] `llmCalls` collection: purpose, model, tokens in/out/thinking, latency, estimated cost (verified in Atlas)
 - [x] Cost estimator by model and date (3.8 Flash vs 3.5 Flash-Lite; 2027 prices primary)
-- [x] `bun run gen:sample` writes outline + day 1 (verified with `--provider fake`)
-- [ ] Samples: Python, personal finance, music theory × 2 models (needs key)
-- [ ] docs/phase-1-cost-report.md (`bun run cost:report` built; needs real samples + AI Studio limits)
+- [x] `bun run gen:sample` writes outline + day 1
+- [~] Samples: 4 of 6 done. Missing: personal finance and music theory on `gemini-3.8-flash` (daily quota hit). Re-run after the quota resets (midnight Pacific).
+- [x] docs/phase-1-cost-report.md generated from the 4 complete samples
+- [ ] You read the samples (gate)
 
 ### C4. Auth
 

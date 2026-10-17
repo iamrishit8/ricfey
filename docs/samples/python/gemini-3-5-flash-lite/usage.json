@@ -1,0 +1,29 @@
+{
+  "skill": "Python",
+  "depth": "working",
+  "weeks": 4,
+  "daysPerWeek": 5,
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "generatedAt": "2026-10-17T19:31:41.347Z",
+  "calls": [
+    {
+      "purpose": "course_outline",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 276,
+      "tokensOut": 1815,
+      "tokensThinking": 0,
+      "latencyMs": 5377
+    },
+    {
+      "purpose": "day_content",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 876,
+      "tokensOut": 1742,
+      "tokensThinking": 0,
+      "latencyMs": 7142
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "day": 1,
+  "title": "Mapping Your Net Worth",
+  "lesson": {
+    "markdown": "# Mapping Your Net Worth\n\nKnowing your net worth is the absolute foundation of personal finance. Without it, you are driving blind, unsure if your financial health is actually improving or just feeling like it.\n\n## What is Net Worth?\n\nNet worth is a simple mathematical equation: **Assets minus Liabilities**. \n- **Assets** are things you own that hold value or put money in your pocket.\n- **Liabilities** are debts and things you owe that take money out of your pocket.\n\nMany people confuse a high income with wealth. A person earning 3 lakhs a month who spends 3.5 lakhs and has mounting credit card debt has a negative net worth. Conversely, someone earning 70,000 rupees a month who consistently saves and invests can have a rapidly growing positive net worth. Today, we will calculate your exact financial starting line.\n\n## Step 1: Listing Your Assets\n\nAssets are valued at their *current market value*, not what you paid for them. If you bought a laptop for 80,000 rupees two years ago, its resale value today is what matters.\n\nLet us look at common asset categories:\n- **Liquid Cash:** Savings bank accounts, sweep-in FDs, and digital wallets.\n- **Investments:** Mutual funds, stocks, Employee Provident Fund (EPF), Public Provident Fund (PPF), and Gold.\n- **Physical Assets:** Real estate or vehicles (use current resale value, not purchase price).\n\n## Step 2: Listing Your Liabilities\n\nLiabilities include every single rupee you currently owe to someone else. \n\nCommon liabilities include:\n- Credit card outstanding balances (the full statement amount, not just the minimum due).\n- Personal loans or consumer durable loans.\n- Education loans.\n- Home loans or vehicle loans.\n\n## A Worked Example\n\nLet us calculate the net worth of Aarav, a 28-year-old software professional living in Bengaluru.\n\n**Aarav's Assets:**\n| Asset Type | Description | Current Value (INR) |\n| :--- | :--- | :--- |\n| Bank Balance | Salary & Emergency Savings | 1,50,000 |\n| Investments | Mutual Funds & EPF | 3,50,000 |\n| Physical | 2-Wheeler (Current Resale) | 60,000 |\n| **Total Assets** | | **5,60,000** |\n\n**Aarav's Liabilities:**\n| Liability Type | Description | Outstanding Amount (INR) |\n| :--- | :--- | :--- |\n| Credit Card | Unpaid monthly bill | 25,000 |\n| Personal Loan | Consumer loan for furniture | 75,000 |\n| **Total Liabilities** | | **1,00,000** |\n\n**Net Worth Calculation:**\n$$\\text{Net Worth} = \\text{Total Assets} - \\text{Total Liabilities}$$\n$$\\text{Net Worth} = 5,60,000 - 1,00,000 = 4,60,000 \\text{ INR}$$\n\nAarav's net worth is positive 4.6 lakh rupees.\n\n## Common Mistakes to Avoid\n\n1. **Including original purchase price instead of resale value:** Your old smartphone or car is not worth what you bought it for. Be realistic and conservative with valuations.\n2. **Ignoring small liabilities:** Unpaid credit card bills or money borrowed from friends may seem small, but they drag down your net worth and often carry high interest.\n\n## Recap\n\n- Net worth is your true financial scoreboard, calculated as total assets minus total liabilities.\n- Always use current market or resale values for your assets, not what you originally paid.\n- Tracking this number monthly helps you see the real impact of your savings and debt-payoff habits over time.",
+    "estimatedMinutes": 25
+  },
+  "task": {
+    "prompt": "Calculate your personal net worth in Indian Rupees (INR). Create two clear lists: one for your total assets (liquid cash, investments, physical assets at current resale value) and one for your total liabilities (loans, credit card dues). Subtract liabilities from assets and state your final net worth number. If you are uncomfortable using real numbers, you may use realistic dummy figures, but ensure the math and categories are accurate.",
+    "rubric": [
+      {
+        "criterion": "Asset Identification & Valuation",
+        "description": "Lists at least 3 distinct asset categories and values them using realistic current market or resale prices rather than original purchase cost.",
+        "points": 4
+      },
+      {
+        "criterion": "Liability Identification",
+        "description": "Lists all current debts, loans, and credit card outstanding balances accurately.",
+        "points": 3
+      },
+      {
+        "criterion": "Mathematical Accuracy",
+        "description": "Correctly subtracts total liabilities from total assets to arrive at the final net worth figure.",
+        "points": 3
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "question": "When calculating your net worth, what value should you use for a physical asset like a car you bought two years ago?",
+        "options": [
+          "The original purchase price you paid at the showroom",
+          "The current estimated market resale value today",
+          "Zero, because physical assets do not count towards net worth",
+          "The replacement cost of buying a brand new model today"
+        ],
+        "answerIndex": 1,
+        "explanation": "Assets must be recorded at their current fair market value or resale value, not what you historically paid for them, because their value depreciates over time.",
+        "topic": "assets-liabilities"
+      },
+      {
+        "question": "If your total assets equal 10,00,000 rupees and your total liabilities equal 12,00,000 rupees, what is your net worth?",
+        "options": [
+          "Positive 2,00,000 rupees",
+          "Zero rupees",
+          "Negative 2,00,000 rupees",
+          "12,00,000 rupees"
+        ],
+        "answerIndex": 2,
+        "explanation": "Net worth is Assets minus Liabilities (10,00,000 - 12,00,000). When liabilities exceed assets, your net worth is negative.",
+        "topic": "net-worth"
+      },
+      {
+        "question": "Which of the following is considered a liability when calculating net worth?",
+        "options": [
+          "The balance in your EPF (Employee Provident Fund) account",
+          "An outstanding credit card bill balance from this month",
+          "Money invested in diversified equity mutual funds",
+          "Cash kept in your primary savings bank account"
+        ],
+        "answerIndex": 1,
+        "explanation": "An outstanding credit card bill is money you owe, making it a liability. EPF, mutual funds, and bank balances are assets.",
+        "topic": "assets-liabilities"
+      },
+      {
+        "question": "Why is tracking your net worth regularly more useful than just looking at your monthly salary?",
+        "options": [
+          "Salary only shows income inflow, whereas net worth captures your overall financial accumulation after accounting for debts and spending.",
+          "Net worth is legally required by banks every month for tax filings.",
+          "Salary amounts fluctuate daily, whereas net worth remains fixed.",
+          "Net worth calculation ignores your debts, giving you a stress-free picture of wealth."
+        ],
+        "answerIndex": 0,
+        "explanation": "High income does not equal high wealth if expenses and debts are higher. Net worth tracks the true net accumulation of wealth over time.",
+        "topic": "net-worth"
+      },
+      {
+        "question": "You have a home valued at 50,00,000 rupees with an active home loan of 35,00,000 rupees remaining. How should this be handled in your net worth statement?",
+        "options": [
+          "Ignore the house completely until the loan is fully paid off",
+          "List 50,00,000 as an asset and 35,00,000 as a liability",
+          "List only the difference of 15,00,000 as an asset and nothing as a liability",
+          "List 35,00,000 as an asset and 50,00,000 as a liability"
+        ],
+        "answerIndex": 1,
+        "explanation": "To be accurate, you list the full market value of the asset (50L) and the corresponding debt against it as a liability (35L). Net worth captures both sides independently.",
+        "topic": "assets-liabilities"
+      }
+    ]
+  }
+}
