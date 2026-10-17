@@ -59,3 +59,61 @@ TypeScript 7 it refused to run. That is why TypeScript is pinned to 6.0.x (see D
 **Q:** Why would typescript-eslint want to use _your_ TypeScript instead of bundling its own?
 
 My answer:
+
+---
+
+## C2. API skeleton and MongoDB
+
+### 1. One error shape, one place
+
+If every route formats its own errors, the client gets ten slightly different shapes and
+someone eventually returns a stack trace. Instead, routes `throw new AppError(code, message)`
+and one handler converts any error into `{ success: false, error }`. Unknown errors become 500.
+
+**Q:** Why does the handler send "Something went wrong" for unknown errors instead of
+`err.message`? Give a concrete example of what could leak.
+
+My answer:
+
+### 2. Validate at the boundary, trust inside
+
+TypeScript types vanish at runtime, so a request body typed `{ age: number }` can still hold
+`"old"`. Zod checks the real value once, where it enters (env at startup, body at the route),
+and hands back data that really matches the type. Code past that point can trust it.
+
+**Q:** Why fail at _startup_ when `MONGODB_URI` is missing, rather than when the first
+request tries to use the database?
+
+My answer:
+
+### 3. Indexes and uniqueness
+
+An index is a sorted lookup structure, so queries don't scan every document. A _unique_
+index also makes the database refuse duplicates, even when two requests race. Checking
+"does this email exist?" in code first can't do that, because both requests see "no".
+
+**Q:** Our email index is unique, and Mongoose lowercases emails before saving. What bug
+would you get if we dropped `lowercase: true` but kept the unique index?
+
+My answer:
+
+### 4. Replica sets and transactions
+
+A replica set is several MongoDB servers holding copies of the same data, one primary
+taking writes. Multi-document transactions rely on the oplog (the replication log), which
+only replica sets have. Atlas is always a replica set; a plain local `mongod` is not.
+
+**Q:** Buying credits means "add ₹ to the ledger AND increase the balance". What goes wrong
+without a transaction if the server crashes between the two writes?
+
+My answer:
+
+### 5. Liveness vs readiness
+
+Liveness asks "is this process alive, or should it be restarted?" Readiness asks "can it
+serve traffic right now?" Our `/health` is liveness: it stays 200 while Mongo is down and
+reports `db` as data, so a host won't restart a healthy process during a DB blip.
+
+**Q:** In what situation would you _want_ a health check to fail because the DB is down?
+
+My answer:

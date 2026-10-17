@@ -64,3 +64,41 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 - **Why:** `eslint-config-prettier` turns off style rules, so the two never fight.
 - **Rejected:** Biome (one tool, faster, but not in the locked stack).
 - **Revisit:** if lint time becomes a problem.
+
+### 2026-10-17 · Mongoose on Bun: verified
+
+- **Why:** Bun's guide says Mongoose works with no extra configuration
+  (https://bun.com/guides/ecosystem/mongoose). Checked locally too: Mongoose 9.11.2 on Bun
+  1.4.2 against a MongoDB 7.0 single-node replica set connected, committed a transaction, and
+  rolled back an aborted one.
+- **Rejected:** switching to the raw `mongodb` driver (no need).
+- **Revisit:** if a Mongoose or Bun upgrade breaks the DB tests.
+
+### 2026-10-17 · DB tests run against a real replica set via `MONGODB_URI_TEST`, else skip
+
+- **Why:** model tests (unique indexes, validation) only mean something against real MongoDB.
+  No new dependency: point it at a local `mongod --replSet` or a throwaway Atlas database.
+- **Rejected:** `mongodb-memory-server` (new dependency, downloads a mongod binary, Bun support
+  unchecked); mocking Mongoose (would test the mock, not the indexes).
+- **Cost:** skipped tests are easy to miss. `bun test` prints a warning when they skip.
+- **Revisit:** at C4, when auth tests need a DB; CI will need a Mongo service container.
+
+### 2026-10-17 · `/health` is liveness only
+
+- **Why:** it returns 200 whenever the process is up and reports `db` state as data. A
+  readiness check that fails when Mongo is down can be added when we have a deploy target.
+- **Rejected:** returning 503 when the DB is down (a host would restart a healthy process
+  during a brief Atlas blip).
+- **Revisit:** Phase 5, when choosing a host and its health-check semantics.
+
+### 2026-10-17 · Course depth is `intro | working | deep`, weeks 1 to 12
+
+- **Why:** the brief uses `--depth working`; the other two values and the 12-week ceiling are
+  my picks, kept in `packages/shared` so web and API agree.
+- **Revisit:** at C3, after seeing how the outline prompt uses depth. Change before real data exists.
+
+### 2026-10-17 · Error codes are a closed list in `packages/shared`
+
+- **Why:** the web app can switch on `error.code` with type safety. `AppError` maps each code
+  to one HTTP status, so routes can't invent mismatched pairs.
+- **Revisit:** add codes as features need them, in the same PR as the feature.

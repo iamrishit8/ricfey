@@ -1,0 +1,38 @@
+import { describe, expect, test } from 'bun:test';
+import { loadEnv } from './env';
+
+const valid = { MONGODB_URI: 'mongodb+srv://user:s3cret@cluster.example.net/ricfey' };
+
+describe('loadEnv', () => {
+  test('applies defaults and coerces PORT', () => {
+    const env = loadEnv({ ...valid, PORT: '5000' });
+    expect(env.PORT).toBe(5000);
+    expect(env.NODE_ENV).toBe('development');
+    expect(env.HOST).toBe('127.0.0.1');
+  });
+
+  test('missing MONGODB_URI fails with the variable name', () => {
+    expect(() => loadEnv({})).toThrow(/MONGODB_URI: is required/);
+  });
+
+  test('lists every problem at once and never echoes values', () => {
+    let message = '';
+    try {
+      loadEnv({ MONGODB_URI: 'postgres://user:s3cret@x', PORT: 'abc', NODE_ENV: 'staging' });
+    } catch (err) {
+      message = (err as Error).message;
+    }
+    expect(message).toContain('MONGODB_URI');
+    expect(message).toContain('PORT');
+    expect(message).toContain('NODE_ENV');
+    expect(message).not.toContain('s3cret');
+  });
+});
+
+describe('redactCredentials', () => {
+  test('removes user:password from connection strings', async () => {
+    const { redactCredentials } = await import('../db/connect');
+    const out = redactCredentials('failed mongodb+srv://ricfey:s3cret@c0.mongodb.net/x');
+    expect(out).toBe('failed mongodb+srv://<redacted>@c0.mongodb.net/x');
+  });
+});

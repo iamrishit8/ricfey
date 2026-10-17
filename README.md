@@ -17,7 +17,14 @@ cp .env.example .env   # then fill in values (see table)
 bun run check          # typecheck + lint + format check + tests
 ```
 
-There is no server or web app yet. Those arrive at checkpoints C2 and C5.
+Start the API (needs `MONGODB_URI` in `.env`):
+
+```sh
+bun run dev:api                     # http://127.0.0.1:4000
+curl http://127.0.0.1:4000/health   # {"success":true,"data":{"status":"ok",...}}
+```
+
+The web app arrives at C5.
 
 ## Repo layout
 
@@ -32,12 +39,17 @@ There is no server or web app yet. Those arrive at checkpoints C2 and C5.
 
 Every variable lives in `.env.example`. Never commit `.env`.
 
-| Variable   | Required | Used by | Purpose                               |
-| ---------- | -------- | ------- | ------------------------------------- |
-| `NODE_ENV` | yes      | all     | `development`, `test` or `production` |
+| Variable           | Required | Default       | Purpose                                                                  |
+| ------------------ | -------- | ------------- | ------------------------------------------------------------------------ |
+| `NODE_ENV`         | no       | `development` | `development`, `test` or `production`                                    |
+| `HOST`             | no       | `127.0.0.1`   | API bind address (`0.0.0.0` in containers)                               |
+| `PORT`             | no       | `4000`        | API port                                                                 |
+| `LOG_LEVEL`        | no       | `info`        | `fatal` … `trace`                                                        |
+| `MONGODB_URI`      | yes      |               | Atlas connection string. Secret. Must be a replica set (Atlas always is) |
+| `MONGODB_URI_TEST` | no       |               | Throwaway replica set for DB tests; skipped if empty. Tests drop this DB |
 
-More variables (MongoDB, Gemini, Google OAuth, Resend, session secret) are added at the
-checkpoint that needs them.
+More variables (Gemini, Google OAuth, Resend, session secret) are added at the checkpoint
+that needs them.
 
 ## Docs
 

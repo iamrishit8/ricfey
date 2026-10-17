@@ -14,6 +14,7 @@ Ricfey turns "learn X, to depth Y, in Z weeks" into a day-by-day course (lesson,
 
 ```sh
 bun install            # install all workspaces
+bun run dev:api        # API on :4000 with watch (reads root .env)
 bun run typecheck      # tsc in every workspace
 bun run lint           # eslint, whole repo
 bun run format         # prettier --write
@@ -24,7 +25,7 @@ bun run check          # all of the above; must be green before a PR
 ## Layout
 
 ```
-apps/api/        Fastify server (C2+)
+apps/api/        Fastify server: src/{app,server}.ts, config/, lib/, plugins/, routes/, db/, models/
 apps/web/        Vite React app (C5)
 packages/shared/ Zod schemas + types shared by api and web
 docs/phases/     scope and gate per phase
@@ -51,6 +52,7 @@ TESTING.md (how to verify), LEARNING.md (concepts).
 
 - Never print, log or commit secrets. Never commit `.env*` (except `.env.example`).
 - Never add an env var without adding it to `.env.example` and README.md in the same commit.
+- Never return a raw error to the client: throw `AppError` (safe message) and let the one error handler shape it.
 - Never call an LLM SDK outside the `LlmProvider` implementations.
 - Never bypass the LLM daily cap or skip writing the `llmCalls` record.
 - Never log or return one user's email or data to another user.

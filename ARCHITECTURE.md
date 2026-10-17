@@ -27,11 +27,11 @@ Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that 
 | Part                                                                            | Status            | Notes                                                |
 | ------------------------------------------------------------------------------- | ----------------- | ---------------------------------------------------- |
 | Monorepo, Bun workspaces, shared tsconfig, ESLint, Prettier                     | **BUILT** (C1)    |                                                      |
-| Fastify app, `GET /health`                                                      | PLANNED (C2)      |                                                      |
-| Response envelope `{ success, data }` / `{ success, error: { code, message } }` | PLANNED (C2)      | single `AppError` class, one error handler           |
-| Zod request-validation helper                                                   | PLANNED (C2)      |                                                      |
-| Env config validated with Zod at startup                                        | PLANNED (C2)      | fail fast with clear message                         |
-| Mongoose connection, `User` and `Course` models                                 | PLANNED (C2)      |                                                      |
+| Fastify app, `GET /health`                                                      | **BUILT** (C2)    |                                                      |
+| Response envelope `{ success, data }` / `{ success, error: { code, message } }` | **BUILT** (C2)    | single `AppError` class, one error handler           |
+| Zod request-validation helper                                                   | **BUILT** (C2)    |                                                      |
+| Env config validated with Zod at startup                                        | **BUILT** (C2)    | fail fast with clear message                         |
+| Mongoose connection, `User` and `Course` models                                 | **BUILT** (C2)    |                                                      |
 | Shared schemas `CourseOutline`, `DayContent`                                    | PLANNED (C3)      |                                                      |
 | `LlmProvider` interface, `GeminiProvider`, `FakeProvider`                       | PLANNED (C3)      | retry once on invalid JSON with error fed back       |
 | LLM daily cap + `llmCalls` collection                                           | PLANNED (C3)      | one enforcement point                                |

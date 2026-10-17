@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** C1 done, awaiting review (draft PR).
-- **Next:** C2, API skeleton and MongoDB.
-- **Blocked:** C2 needs a MongoDB Atlas free cluster (instructions at the end of C2).
+- **Now:** C2 done, awaiting review (draft PR, stacked on C1).
+- **Next:** C3, LLM layer and cost test.
+- **Blocked:** Atlas cluster (you, for C2 sign-off); Gemini API key (C3 can start on FakeProvider).
 
 ---
 
@@ -19,14 +19,14 @@
 
 ### C2. API skeleton and MongoDB
 
-- [ ] Fastify app with `GET /health`
-- [ ] Response envelope, single `AppError`, one error handler
-- [ ] Zod request-validation helper
-- [ ] Env config validated with Zod at startup, fail fast
-- [ ] Verify Mongoose runs on Bun
-- [ ] Mongoose connection to Atlas
-- [ ] `User` and `Course` models with indexes
-- [ ] `bun test` for `/health` and the error shape
+- [x] Fastify app with `GET /health`
+- [x] Response envelope, single `AppError`, one error handler
+- [x] Zod request-validation helper
+- [x] Env config validated with Zod at startup, fail fast
+- [x] Verify Mongoose runs on Bun
+- [x] Mongoose connection (verified on a local replica set; Atlas itself [UNVERIFIED] until you create it)
+- [x] `User` and `Course` models with indexes
+- [x] `bun test` for `/health` and the error shape
 
 ### C3. LLM layer and cost test (the gate)
 

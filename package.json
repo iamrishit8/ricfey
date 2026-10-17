@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "dev:api": "bun run --filter @ricfey/api dev",
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
