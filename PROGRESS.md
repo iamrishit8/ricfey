@@ -4,7 +4,7 @@
 
 - **Now:** C2 done, awaiting review (draft PR, stacked on C1).
 - **Next:** C3, LLM layer and cost test.
-- **Blocked:** Atlas cluster (you, for C2 sign-off); Gemini API key (C3 can start on FakeProvider).
+- **Blocked:** Gemini API key (C3 can start on FakeProvider).
 
 ---
 
@@ -24,7 +24,7 @@
 - [x] Zod request-validation helper
 - [x] Env config validated with Zod at startup, fail fast
 - [x] Verify Mongoose runs on Bun
-- [x] Mongoose connection (verified on a local replica set; Atlas itself [UNVERIFIED] until you create it)
+- [x] Mongoose connection (verified on a local replica set and on Atlas: `/health` reports `db: connected`, DB tests pass on `ricfey_test`)
 - [x] `User` and `Course` models with indexes
 - [x] `bun test` for `/health` and the error shape
 
