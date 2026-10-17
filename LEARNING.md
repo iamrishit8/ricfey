@@ -183,3 +183,58 @@ content is not.
 before real users type their own goals and answers into Ricfey?
 
 My answer:
+
+---
+
+## C4. Auth
+
+### 1. Why store only a hash of the token?
+
+The cookie holds a random token; the database holds its SHA-256. On each request we hash the
+cookie and look the hash up. Hashing is one-way, so someone who reads the database can't
+turn a stored hash back into a working cookie.
+
+**Q:** Passwords need slow hashes (bcrypt, argon2) but our tokens use fast SHA-256. Why is
+fast fine here and dangerous for passwords?
+
+My answer:
+
+### 2. Single use without a race
+
+"Find the token; if unused, mark it used" in two steps lets two simultaneous requests both
+see "unused". We do it in one atomic `findOneAndUpdate` whose filter includes `usedAt: null`,
+so the database lets exactly one request win. A test fires 5 at once and expects one 200.
+
+**Q:** Where else in Ricfey will "check then act" races matter? Name one from Phase 2 or 4.
+
+My answer:
+
+### 3. httpOnly, Secure, SameSite=Lax
+
+httpOnly hides the cookie from JavaScript (an XSS bug can't read it). Secure sends it only
+over HTTPS. SameSite=Lax withholds it from cross-site POSTs and embedded requests but sends
+it when the user follows a link to us, which is what makes OAuth redirects work.
+
+**Q:** Why would SameSite=Strict break "Sign in with Google", but Lax doesn't?
+
+My answer:
+
+### 4. The OAuth `state` parameter
+
+Before redirecting to Google we store a random `state` in a cookie and send it along; Google
+sends it back. If the two don't match, someone else started this login. Without it, an
+attacker could make your browser finish _their_ Google login and you'd be signed in as them.
+
+**Q:** Describe what an attacker gains by logging _you_ into _their_ account (login CSRF).
+
+My answer:
+
+### 5. Not revealing who has an account
+
+`/auth/magic/request` answers "sent" for every valid email, whether or not an account exists.
+Different answers would let anyone test which emails are Ricfey users.
+
+**Q:** Our rate limiter returns 429 after 5 requests for one email. Does that leak whether
+the account exists? Why or why not?
+
+My answer:

@@ -36,3 +36,36 @@ describe('redactCredentials', () => {
     expect(out).toBe('failed mongodb+srv://<redacted>@c0.mongodb.net/x');
   });
 });
+
+describe('auth env rules', () => {
+  const base = { MONGODB_URI: 'mongodb://localhost/x' };
+
+  test('Google settings are all-or-nothing', () => {
+    expect(() => loadEnv({ ...base, GOOGLE_CLIENT_ID: 'id' })).toThrow(
+      /GOOGLE_CLIENT_ID: set all of/,
+    );
+  });
+
+  test('production requires Resend, a sender and secure cookies', () => {
+    let msg = '';
+    try {
+      loadEnv({ ...base, NODE_ENV: 'production', COOKIE_SECURE: 'false' });
+    } catch (e) {
+      msg = (e as Error).message;
+    }
+    expect(msg).toContain('RESEND_API_KEY: is required in production');
+    expect(msg).toContain('EMAIL_FROM: is required in production');
+    expect(msg).toContain('COOKIE_SECURE: must be true in production');
+  });
+
+  test('empty optional values count as unset', () => {
+    const env = loadEnv({
+      ...base,
+      GOOGLE_CLIENT_ID: '',
+      GOOGLE_CLIENT_SECRET: '',
+      GOOGLE_REDIRECT_URI: '',
+    });
+    expect(env.GOOGLE_CLIENT_ID).toBeUndefined();
+    expect(env.COOKIE_SECURE).toBe(true);
+  });
+});

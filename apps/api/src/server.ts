@@ -1,4 +1,6 @@
 import { buildApp } from './app';
+import { HttpGoogleOAuthClient } from './auth/google';
+import { ResendMailer } from './auth/mailer';
 import { loadEnv } from './config/env';
 import { connectDb, disconnectDb, redactCredentials } from './db/connect';
 
@@ -15,6 +17,34 @@ const app = buildApp({
     level: env.LOG_LEVEL,
     // Never log credentials, even by accident.
     redact: ['req.headers.authorization', 'req.headers.cookie', 'res.headers["set-cookie"]'],
+    // Log paths without query strings: the OAuth callback carries a code and state.
+    serializers: {
+      req: (req: { method: string; url: string }) => ({
+        method: req.method,
+        url: req.url.split('?')[0],
+      }),
+    },
+  },
+  config: {
+    webUrl: env.WEB_URL,
+    cookieSecure: env.COOKIE_SECURE,
+    trustProxy: env.TRUST_PROXY,
+    sessionTtlDays: env.SESSION_TTL_DAYS,
+  },
+  deps: {
+    // No Resend key: magic links are printed to the console (env rules forbid that in production).
+    mailer:
+      env.RESEND_API_KEY && env.EMAIL_FROM
+        ? new ResendMailer(env.RESEND_API_KEY, env.EMAIL_FROM)
+        : undefined,
+    google:
+      env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_REDIRECT_URI
+        ? new HttpGoogleOAuthClient({
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+            redirectUri: env.GOOGLE_REDIRECT_URI,
+          })
+        : null,
   },
 });
 

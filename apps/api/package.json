@@ -11,6 +11,7 @@
     "cost:report": "bun scripts/cost-report.ts"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.1.3",
     "@google/genai": "^2.30.0",
     "@ricfey/shared": "workspace:*",
     "fastify": "^5.12.7",

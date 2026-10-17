@@ -26,24 +26,24 @@ Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that 
 
 ## Parts
 
-| Part                                                                            | Status                               | Notes                                                |
-| ------------------------------------------------------------------------------- | ------------------------------------ | ---------------------------------------------------- |
-| Monorepo, Bun workspaces, shared tsconfig, ESLint, Prettier                     | **BUILT** (C1)                       |                                                      |
-| Fastify app, `GET /health`                                                      | **BUILT** (C2)                       |                                                      |
-| Response envelope `{ success, data }` / `{ success, error: { code, message } }` | **BUILT** (C2)                       | single `AppError` class, one error handler           |
-| Zod request-validation helper                                                   | **BUILT** (C2)                       |                                                      |
-| Env config validated with Zod at startup                                        | **BUILT** (C2)                       | fail fast with clear message                         |
-| Mongoose connection, `User` and `Course` models                                 | **BUILT** (C2)                       |                                                      |
-| Shared schemas `CourseOutline`, `DayContent`                                    | **BUILT** (C3)                       |                                                      |
-| `LlmProvider` interface, `GeminiProvider`, `FakeProvider`                       | **BUILT** (C3); Gemini verified live | retry once on invalid JSON with error fed back       |
-| LLM daily cap + `llmCalls` collection                                           | **BUILT** (C3)                       | one enforcement point                                |
-| `gen:sample` script + cost report                                               | **BUILT** (C3); 4 of 6 real samples  |                                                      |
-| Google OAuth, magic link, sessions                                              | PLANNED (C4)                         | hashed single-use tokens, 15 min expiry, rate limits |
-| Web shell, router, Tailwind, shadcn/ui, tokens, `/styleguide`, login            | PLANNED (C5)                         |                                                      |
-| Course creation + daily loop                                                    | PLANNED (Phase 2)                    |                                                      |
-| Adaptive re-planning from quiz scores                                           | PLANNED (Phase 3)                    |                                                      |
-| Credits ledger + Razorpay                                                       | PLANNED (Phase 4)                    | needs Mongo transactions                             |
-| Deploy, observability, launch                                                   | PLANNED (Phase 5)                    |                                                      |
+| Part                                                                            | Status                                       | Notes                                                |
+| ------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------- |
+| Monorepo, Bun workspaces, shared tsconfig, ESLint, Prettier                     | **BUILT** (C1)                               |                                                      |
+| Fastify app, `GET /health`                                                      | **BUILT** (C2)                               |                                                      |
+| Response envelope `{ success, data }` / `{ success, error: { code, message } }` | **BUILT** (C2)                               | single `AppError` class, one error handler           |
+| Zod request-validation helper                                                   | **BUILT** (C2)                               |                                                      |
+| Env config validated with Zod at startup                                        | **BUILT** (C2)                               | fail fast with clear message                         |
+| Mongoose connection, `User` and `Course` models                                 | **BUILT** (C2)                               |                                                      |
+| Shared schemas `CourseOutline`, `DayContent`                                    | **BUILT** (C3)                               |                                                      |
+| `LlmProvider` interface, `GeminiProvider`, `FakeProvider`                       | **BUILT** (C3); Gemini verified live         | retry once on invalid JSON with error fed back       |
+| LLM daily cap + `llmCalls` collection                                           | **BUILT** (C3)                               | one enforcement point                                |
+| `gen:sample` script + cost report                                               | **BUILT** (C3); 4 of 6 real samples          |                                                      |
+| Google OAuth, magic link, sessions                                              | **BUILT** (C4); Google + Resend [UNVERIFIED] | hashed single-use tokens, 15 min expiry, rate limits |
+| Web shell, router, Tailwind, shadcn/ui, tokens, `/styleguide`, login            | PLANNED (C5)                                 |                                                      |
+| Course creation + daily loop                                                    | PLANNED (Phase 2)                            |                                                      |
+| Adaptive re-planning from quiz scores                                           | PLANNED (Phase 3)                            |                                                      |
+| Credits ledger + Razorpay                                                       | PLANNED (Phase 4)                            | needs Mongo transactions                             |
+| Deploy, observability, launch                                                   | PLANNED (Phase 5)                            |                                                      |
 
 ## Key principles
 

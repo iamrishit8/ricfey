@@ -19,11 +19,57 @@ const EnvSchema = LlmEnvSchema.extend({
   HOST: z.string().default('127.0.0.1'),
   PORT: z.coerce.number().int().min(1).max(65535).default(4000),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+  WEB_URL: z.url().default('http://localhost:5173'),
+  // Chrome and Firefox accept Secure cookies on http://localhost; Safari does not.
+  COOKIE_SECURE: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
+  TRUST_PROXY: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  SESSION_TTL_DAYS: z.coerce.number().int().min(1).max(90).default(30),
+  GOOGLE_CLIENT_ID: optionalString,
+  GOOGLE_CLIENT_SECRET: optionalString,
+  GOOGLE_REDIRECT_URI: z.preprocess((v) => (v === '' ? undefined : v), z.url().optional()),
+  RESEND_API_KEY: optionalString,
+  EMAIL_FROM: optionalString,
   MONGODB_URI: z
     .string({ error: 'is required' })
     .refine((v) => v.startsWith('mongodb://') || v.startsWith('mongodb+srv://'), {
       message: 'must start with mongodb:// or mongodb+srv://',
     }),
+});
+
+const EnvWithRules = EnvSchema.superRefine((env, ctx) => {
+  const google = [env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET, env.GOOGLE_REDIRECT_URI];
+  if (google.some(Boolean) && !google.every(Boolean)) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['GOOGLE_CLIENT_ID'],
+      message: 'set all of GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, or none',
+    });
+  }
+  if (env.NODE_ENV === 'production') {
+    if (!env.RESEND_API_KEY) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['RESEND_API_KEY'],
+        message: 'is required in production',
+      });
+    }
+    if (!env.EMAIL_FROM) {
+      ctx.addIssue({ code: 'custom', path: ['EMAIL_FROM'], message: 'is required in production' });
+    }
+    if (!env.COOKIE_SECURE) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['COOKIE_SECURE'],
+        message: 'must be true in production',
+      });
+    }
+  }
 });
 
 export type Env = z.infer<typeof EnvSchema>;
@@ -34,7 +80,7 @@ export type LlmEnv = z.infer<typeof LlmEnvSchema>;
  * Messages name the variable, never its value, so secrets cannot leak into logs.
  */
 export function loadEnv(source: Record<string, string | undefined> = process.env): Env {
-  return parseOrThrow(EnvSchema, source);
+  return parseOrThrow(EnvWithRules, source);
 }
 
 export function loadLlmEnv(source: Record<string, string | undefined> = process.env): LlmEnv {

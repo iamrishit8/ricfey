@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** C3 done except 2 `gemini-3.8-flash` samples (free-tier daily quota). C4 auth next.
-- **Next:** at each checkpoint start, if the quota has reset, run the 2 missing samples and `bun run cost:report`.
-- **Blocked:** nothing hard. See NEEDS-FROM-ME.md.
+- **Now:** C4 done (PR open). C5 web shell next.
+- **Next:** at each checkpoint start, if the Gemini quota has reset, run the 2 missing 3.8 Flash samples and `bun run cost:report`.
+- **Blocked:** nothing hard. Google OAuth and Resend run in dev mode until NEEDS-FROM-ME.md items are done.
 
 ---
 
@@ -44,12 +44,13 @@
 
 ### C4. Auth
 
-- [ ] Google OAuth server-side flow
-- [ ] Magic link: single-use, hashed, 15 min expiry, rate limited per email and IP
-- [ ] httpOnly, secure, sameSite=lax session cookie
-- [ ] Routes: /auth/google, /auth/google/callback, /auth/magic/request, /auth/magic/verify, /auth/me, /auth/logout
-- [ ] Dev fallback: print magic link to console when no Resend key
-- [ ] Tests: token reuse rejected, expired token rejected, /auth/me without cookie is 401
+- [x] Google OAuth server-side flow with `state` check (tested with a fake Google client; real Google [UNVERIFIED], needs a client)
+- [x] Magic link: single-use (atomic), hashed, 15 min expiry, rate limited per email (5/15 min) and IP (20/15 min)
+- [x] httpOnly, secure, sameSite=lax session cookie; sessions stored hashed in Mongo with TTL
+- [x] Routes: /auth/google, /auth/google/callback, /auth/magic/request, /auth/magic/verify, /auth/me, /auth/logout
+- [x] Dev fallback: magic link printed to console (email masked) when no Resend key; verified manually
+- [x] Tests: token reuse rejected (also concurrently), expired token rejected, /auth/me without cookie is 401, plus 18 more
+- [ ] Resend email delivery [UNVERIFIED]: needs a key and a verified domain
 
 ### C5. Web shell and style sheet
 

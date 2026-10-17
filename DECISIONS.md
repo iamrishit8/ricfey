@@ -203,3 +203,45 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 ### 2026-10-18 · Generated cost report is excluded from Prettier
 
 - **Why:** it is rewritten by `cost:report`; hand-formatting would be overwritten.
+
+### 2026-10-18 · Sessions: opaque random token in a cookie, SHA-256 hash in Mongo
+
+- **Why:** revocable (logout deletes the row), nothing secret at rest, no signing key to manage.
+  Plain SHA-256 suffices because tokens are 256-bit random, not passwords. No `SESSION_SECRET`
+  is needed after all (it was listed as a future var in C1).
+- **Rejected:** JWTs in cookies (can't be revoked before expiry without a denylist, i.e. a DB anyway).
+- **Revisit:** if session lookups become a hot path (add a cache).
+
+### 2026-10-18 · Magic link opens a web page that POSTs the token
+
+- **Why:** email security scanners often GET every link in an email; a GET-verify would burn
+  the single-use token before the person clicks. `/auth/magic/verify` is POST only; the email
+  link points at `${WEB_URL}/auth/magic?token=…` (page built in C5).
+- **Rejected:** GET verify with redirect (simpler, breaks for Outlook/corporate users).
+
+### 2026-10-18 · Rate limits in MongoDB, fixed 15-minute windows: 5/email, 20/IP
+
+- **Why:** atomic upsert + `$inc`, shared across processes, testable with an injected clock; no
+  new dependency. Email keys are SHA-256 hashed so the collection holds no addresses.
+- **Rejected:** `@fastify/rate-limit` (in-memory by default, per route not per email).
+- **Known gap:** fixed windows allow a burst of up to 2× at a window boundary. Fine for login.
+- **Revisit:** behind a proxy, set `TRUST_PROXY=true` or every user shares one IP bucket.
+
+### 2026-10-18 · Google: state cookie, no PKCE; profile from the userinfo endpoint
+
+- **Why:** Google's web-server flow page documents `state` but not PKCE (the discovery doc does
+  list S256). Adding an undocumented parameter to an unverifiable flow risks breaking it. The
+  profile comes from the userinfo endpoint over HTTPS with the access token, so no ID-token
+  signature check (and no JWT library) is needed.
+- **Account linking:** a Google login whose verified email matches an existing magic-link user
+  links to that user (you didn't answer the C1 question; this is the default I proposed).
+- **Revisit:** add PKCE once the real client is verified.
+
+### 2026-10-18 · `COOKIE_SECURE` defaults to true, may be false only outside production
+
+- **Why:** the brief says secure. Chrome and Firefox keep Secure cookies on http://localhost;
+  Safari doesn't, so `COOKIE_SECURE=false` exists for Safari dev. Env rules reject it in production.
+
+### 2026-10-18 · Request logs omit query strings
+
+- **Why:** the Google callback URL carries `code` and `state`. Logging paths only keeps them out.

@@ -76,3 +76,24 @@ Manual:
 | Bad args                 | `bun run gen:sample -- --skill X --depth guru --weeks 40`                | lists both problems, exit 2                                                                      |
 | **Real run (needs key)** | `bun run gen:sample -- --skill "Python" --depth working --weeks 4`       | outline + day 1 in `docs/samples/python/gemini-3-8-flash/`; one `llmCalls` doc per call in Atlas |
 | **Cap (needs key)**      | `LLM_DAILY_CALL_CAP=1 bun run gen:sample -- --skill "Python"`            | outline succeeds, day 1 fails "Daily AI usage limit reached"                                     |
+
+## C4. Auth
+
+Automated: `apps/api/src/routes/auth.test.ts` (the DB parts need `MONGODB_URI_TEST`) and the
+auth env rules in `apps/api/src/config/env.test.ts`. Covers: `/auth/me` without a cookie → 401;
+magic link request → verify → cookie flags (HttpOnly, Secure, SameSite=Lax) → `/auth/me`;
+**token reuse rejected**, also with 5 concurrent verifies; **expired token (15 min + 1 ms)
+rejected**, 14:59 accepted; tokens and sessions stored hashed only; per-email (6th → 429) and
+per-IP (21st → 429) limits, window reset; bad email → 400; each user sees only themselves;
+forged and expired sessions → 401; logout; Google state match, mismatch, missing cookie,
+unverified email, account linking, failed exchange.
+
+Manual (dev mode, no Resend key):
+
+| What                            | Steps                                                                                                               | Expected                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Magic link end to end           | run the three `curl` lines in README "Sign in without a browser"                                                    | console prints `[dev] Magic link for y***@…`; verify returns your user; `/auth/me` returns it |
+| Single use                      | repeat the verify `curl` with the same token                                                                        | 401 "This sign-in link is invalid or has expired."                                            |
+| Logout                          | `curl -b jar -c jar -X POST localhost:4000/auth/logout -H 'content-type: application/json' -d '{}'` then `/auth/me` | 401                                                                                           |
+| **Google (needs client)**       | open `http://localhost:4000/auth/google` in a browser                                                               | Google account chooser → back to `WEB_URL/` with a session                                    |
+| **Resend (needs key + domain)** | set `RESEND_API_KEY`, `EMAIL_FROM`, request a link to your inbox                                                    | email arrives with the link                                                                   |

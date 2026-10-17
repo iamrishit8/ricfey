@@ -1,4 +1,5 @@
-import { Schema, model, type InferSchemaType } from 'mongoose';
+import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
+import type { PublicUser } from '@ricfey/shared';
 
 const userSchema = new Schema(
   {
@@ -22,3 +23,14 @@ userSchema.index(
 
 export type User = InferSchemaType<typeof userSchema>;
 export const UserModel = model('User', userSchema);
+export type UserDoc = HydratedDocument<User>;
+
+/** The only shape a user is ever returned in. Never include other users. */
+export function toPublicUser(u: UserDoc): PublicUser {
+  return {
+    id: u.id as string,
+    email: u.email,
+    name: u.name ?? null,
+    avatarUrl: u.avatarUrl ?? null,
+  };
+}
