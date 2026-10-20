@@ -439,3 +439,34 @@ the injected clock with Mongo's real `createdAt`. All time logic should use one 
 **Q:** Why not just use `Date.now()` everywhere and run tests at the right time of day?
 
 My answer:
+
+---
+
+## P2-C5. Web screens
+
+### 1. Polling with an exit
+
+The browser asks "is it ready?" every 1.5 s while something generates. Every loop needs exits:
+done, the component unmounts, or a time limit. Without them a forgotten tab polls forever.
+
+**Q:** What would replace polling if generation became much more common? Name one technique and its cost.
+
+My answer:
+
+### 2. Model output is untrusted input
+
+A lesson is text from a model that read learner-influenced prompts. Rendering it as HTML
+would let it inject markup or scripts. We render Markdown to React elements with HTML off.
+
+**Q:** Where else does model output reach a screen or a database, and what guards each place?
+
+My answer:
+
+### 3. End-to-end tests find what unit tests can't
+
+The browser script caught things no unit test would: `innerText` follows CSS uppercase, the
+fake provider hitting the real cap, a selector reading the wrong score.
+
+**Q:** Why keep both 137 fast unit/route tests and one slow browser test, instead of only one kind?
+
+My answer:

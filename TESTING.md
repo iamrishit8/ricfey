@@ -166,3 +166,13 @@ Manual (dev mode): on an open, generated day:
 `curl -b jar -X POST localhost:4000/courses/<id>/days/1/quiz -H 'content-type: application/json' -d '{"answers":[0,1,2,3,0]}'`
 → score and revealed answers. `curl -b jar -X POST …/days/1/task -d '{"answer":"…at least 20 chars…"}'`
 → 202; then `GET …/days/1` shows `progress.latestTask` graded. `GET /courses/<id>/progress`.
+
+## P2-C5. Web screens
+
+| What                     | Steps                                                                                                                                                                   | Expected                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Whole journey (scripted) | `bun run dev:api > api.log 2>&1 &`, `bun run dev:web &`, then `bun run e2e:learner -- api.log shots/`                                                                   | 10 ✓ lines; screenshots in `shots/` at desktop and 390px; fails on any horizontal overflow |
+| Whole journey (by hand)  | sign in → Start a new course (Working) → answer placement → rename/move a day, Save, Approve → Start → read, submit task, check quiz → Flag a mistake → Scores by topic | each step as named; flagged reports in the `reports` collection                            |
+| Locked day               | open `/courses/<id>/days/2` before finishing day 1                                                                                                                      | "Not open yet" with the date                                                               |
+| Real LLM path            | `bun run smoke:real` (uses quota)                                                                                                                                       | every step prints a status; output in `docs/samples/smoke/`                                |
+| Report API               | `apps/api/src/routes/grading.test.ts` → "flag a mistake"                                                                                                                | stored, validated, other learners 404                                                      |

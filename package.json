@@ -18,7 +18,9 @@
     "gen:sample": "bun --env-file=.env apps/api/scripts/gen-sample.ts",
     "cost:report": "bun apps/api/scripts/cost-report.ts",
     "shot": "bun tools/browser/shot.ts",
-    "e2e:login": "bun tools/browser/login-e2e.ts"
+    "e2e:login": "bun tools/browser/login-e2e.ts",
+    "e2e:learner": "bun tools/browser/learner-e2e.ts",
+    "smoke:real": "bun --env-file=.env apps/api/scripts/smoke-real.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

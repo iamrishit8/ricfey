@@ -8,7 +8,8 @@
     "start": "bun --env-file=../../.env src/server.ts",
     "typecheck": "tsc -p tsconfig.json",
     "gen:sample": "bun --env-file=../../.env scripts/gen-sample.ts",
-    "cost:report": "bun scripts/cost-report.ts"
+    "cost:report": "bun scripts/cost-report.ts",
+    "smoke:real": "bun --env-file=../../.env scripts/smoke-real.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.1.3",

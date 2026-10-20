@@ -383,3 +383,23 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 - **Why:** retaking a quiz after reviewing should update the picture. A streak day is any India
   calendar day on which a course day was finished; the current streak survives until the end of
   the next day (it counts back from yesterday if nothing is done yet today).
+
+### 2026-10-20 · Lessons rendered with react-markdown, raw HTML off
+
+- **Why:** lessons are model output. react-markdown builds React elements and ignores raw HTML
+  unless a plugin enables it; we enable only `remark-gfm` (tables, strikethrough). No
+  `dangerouslySetInnerHTML` anywhere.
+- **Cost:** the bundle is ~500 kB (Vite warns). **Revisit:** lazy-load the day page.
+
+### 2026-10-20 · Fake provider is not held to the daily cap on the server
+
+- **Why:** fake calls cost nothing, but they were counted toward the 16/day cap and blocked a
+  browser test after a few runs. In `LLM_PROVIDER=fake` mode the providers get an effectively
+  unlimited cap; calls are still logged. In `gemini` mode the real cap applies as before.
+
+### 2026-10-20 · `bun run smoke:real` instead of real calls in tests
+
+- **Why:** tests must not spend quota or depend on the network. One script drives a course
+  through placement bank → outline → day + self-check → grading with real Gemini (~6 calls)
+  and writes the result to docs/samples/smoke/. First run passed every step. Latencies on the
+  free tier: bank ~3.5 min, outline ~3 min, day ~50 s, grading ~50 s.

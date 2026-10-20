@@ -1,0 +1,472 @@
+{
+  "placement": {
+    "result": {
+      "level": "intermediate",
+      "ability": 2.5,
+      "strongTopics": [],
+      "weakTopics": [
+        "debt-management",
+        "investing-basics",
+        "retirement-planning",
+        "tax-optimization"
+      ]
+    },
+    "bank": [
+      {
+        "qid": "q1",
+        "question": "What is the primary purpose of an emergency fund?",
+        "options": [
+          "To generate high returns through aggressive equity investments",
+          "To cover essential living expenses in the event of an unexpected financial disruption",
+          "To pay down long-term low-interest debt ahead of schedule",
+          "To build up a down payment for an investment property"
+        ],
+        "answerIndex": 1,
+        "difficulty": 1,
+        "topic": "budgeting-and-cash-flow"
+      },
+      {
+        "qid": "q2",
+        "question": "Which statement correctly describes the difference between gross income and net income?",
+        "options": [
+          "Net income is your total earnings before any deductions, while gross income is your take-home pay",
+          "Gross income includes only investment dividends, while net income includes salary",
+          "Gross income is total earnings before taxes and deductions, while net income is the amount received after deductions",
+          "Gross income is taxable income, while net income represents non-taxable government benefits"
+        ],
+        "answerIndex": 2,
+        "difficulty": 1,
+        "topic": "budgeting-and-cash-flow"
+      },
+      {
+        "qid": "q3",
+        "question": "When borrowing money, what does the Annual Percentage Rate (APR) represent?",
+        "options": [
+          "The annualized cost of credit, including interest and certain fees, expressed as a percentage",
+          "The flat monthly transaction fee charged by a bank for holding an account",
+          "The percentage of principal that is automatically forgiven each year",
+          "The total dollar value of interest paid over the complete life of the loan"
+        ],
+        "answerIndex": 0,
+        "difficulty": 1,
+        "topic": "debt-management"
+      },
+      {
+        "qid": "q4",
+        "question": "In health and auto insurance policies, what is a deductible?",
+        "options": [
+          "The maximum cash payout the insurer will provide per calendar year",
+          "The recurring monthly or annual cost required to keep the insurance policy active",
+          "The discount granted by the insurer for maintaining a claims-free record",
+          "The amount of out-of-pocket expenses the policyholder must pay before insurance coverage applies"
+        ],
+        "answerIndex": 3,
+        "difficulty": 2,
+        "topic": "insurance-and-risk"
+      },
+      {
+        "qid": "q5",
+        "question": "What is the primary advantage of investing in a broad-market index fund compared to a single company stock?",
+        "options": [
+          "Index funds guarantee a fixed annual return regardless of market downturns",
+          "Index funds provide instant diversification across hundreds of companies, reducing company-specific risk",
+          "Index funds are exempt from federal capital gains taxes upon sale",
+          "Index funds allow the investor to directly vote on corporate executive boards"
+        ],
+        "answerIndex": 1,
+        "difficulty": 2,
+        "topic": "investing-basics"
+      },
+      {
+        "qid": "q6",
+        "question": "Which factor generally exerts the largest influence on an individual's standard FICO credit score?",
+        "options": [
+          "Payment history on existing credit lines",
+          "The number of recent hard credit inquiries",
+          "The mix of installment loans and revolving accounts",
+          "The age of the oldest open credit account"
+        ],
+        "answerIndex": 0,
+        "difficulty": 2,
+        "topic": "debt-management"
+      },
+      {
+        "qid": "q7",
+        "question": "How does a traditional retirement account differ fundamentally from a Roth retirement account for eligible individuals?",
+        "options": [
+          "Traditional contributions are made with pre-tax dollars and taxed upon withdrawal; Roth contributions are post-tax and qualified withdrawals are tax-free",
+          "Traditional accounts allow unlimited tax-free withdrawals at any age; Roth accounts penalize withdrawals until age 70.5",
+          "Traditional accounts are funded with after-tax earnings, whereas Roth contributions can be deducted directly from gross income",
+          "Traditional accounts are sponsored exclusively by employers, while Roth accounts can only be held by independent contractors"
+        ],
+        "answerIndex": 0,
+        "difficulty": 3,
+        "topic": "retirement-planning"
+      },
+      {
+        "qid": "q8",
+        "question": "When eliminating multiple debts, how does the debt avalanche method differ from the debt snowball method?",
+        "options": [
+          "The avalanche method prioritizes debts with the largest total balance to reduce total obligations quickly",
+          "The avalanche method consolidates all loans into a single fixed-rate personal loan through a lender",
+          "The avalanche method targets the highest interest rate debt first to mathematically minimize total interest paid",
+          "The avalanche method requires paying off revolving debt before addressing any installment loans"
+        ],
+        "answerIndex": 2,
+        "difficulty": 3,
+        "topic": "debt-management"
+      },
+      {
+        "qid": "q9",
+        "question": "What is the primary goal of rebalancing an investment portfolio back to its target asset allocation?",
+        "options": [
+          "Maximizing short-term capital gains distributions before the end of the fiscal year",
+          "Controlling portfolio risk drift by selling outperforming assets and buying underperforming ones",
+          "Timing the market to identify the exact trough of a major economic correction",
+          "Eliminating all transaction fees by keeping the portfolio in cash equivalent assets"
+        ],
+        "answerIndex": 1,
+        "difficulty": 3,
+        "topic": "investing-basics"
+      },
+      {
+        "qid": "q10",
+        "question": "Under IRS rules, what does the 'wash-sale' rule prohibit when claiming an investment loss for tax deduction purposes?",
+        "options": [
+          "Deducting losses from stocks that were purchased more than five calendar years prior",
+          "Offsetting ordinary income with more than $10,000 of net capital losses in a single filing year",
+          "Purchasing a substantially identical security within 30 days before or after selling at a loss",
+          "Selling securities at a loss inside a tax-deferred employer-sponsored retirement plan"
+        ],
+        "answerIndex": 2,
+        "difficulty": 4,
+        "topic": "tax-optimization"
+      },
+      {
+        "qid": "q11",
+        "question": "Why is a Health Savings Account (HSA) often described as having a 'triple-tax advantage'?",
+        "options": [
+          "Contributions are tax-deductible, growth is tax-free, and distributions for qualified medical expenses are tax-free",
+          "It eliminates federal payroll taxes, provides state tax credits, and matches capital gains tax rates",
+          "Contributions are matched by the federal government, earnings are untaxed, and estates inherit it tax-free",
+          "Funds can be withdrawn tax-free for medical, educational, and first-time homebuyer expenses simultaneously"
+        ],
+        "answerIndex": 0,
+        "difficulty": 4,
+        "topic": "insurance-and-risk"
+      },
+      {
+        "qid": "q12",
+        "question": "When prioritizing savings vehicles, why is it standard practice to contribute enough to a 401(k) to secure the full employer match before funding an IRA?",
+        "options": [
+          "Employer 401(k) matches bypass all IRS annual contribution limits",
+          "The employer match represents an immediate, guaranteed return on investment before market exposure",
+          "IRAs carry mandatory administrative custodial fees that erase compound interest",
+          "Funds in an employer 401(k) can be withdrawn penalty-free at any time without income tax liability"
+        ],
+        "answerIndex": 1,
+        "difficulty": 4,
+        "topic": "retirement-planning"
+      },
+      {
+        "qid": "q13",
+        "question": "Which obstacle complicates a Backdoor Roth IRA conversion when an investor holds significant pre-tax assets across existing traditional, SEP, or SIMPLE IRAs?",
+        "options": [
+          "The IRS Pro-Rata Rule, which forces the taxable proportion of the conversion to be calculated across all aggregate IRA balances",
+          "The Step-Transaction Doctrine, which permanently converts all traditional IRAs into taxable brokerage accounts",
+          "The Excess Contribution Excise Tax, which assesses an automatic 10% annual penalty on the converted amount",
+          "The Alternative Minimum Tax (AMT) threshold, which treats converted funds as non-exempt corporate dividend income"
+        ],
+        "answerIndex": 0,
+        "difficulty": 5,
+        "topic": "tax-optimization"
+      },
+      {
+        "qid": "q14",
+        "question": "How does a 'Mega-Backdoor Roth' strategy differ mechanically from a standard Backdoor Roth IRA conversion?",
+        "options": [
+          "It utilizes non-deductible contributions to a traditional IRA converted into a Roth 401(k)",
+          "It relies on after-tax non-Roth contributions to an employer 401(k) rolled over into a Roth IRA or Roth 401(k)",
+          "It converts unrealized long-term capital gains inside a taxable account into Roth assets without triggering income tax",
+          "It transfers assets directly from an inherited Roth IRA into a primary Roth IRA across generational lines"
+        ],
+        "answerIndex": 1,
+        "difficulty": 5,
+        "topic": "retirement-planning"
+      },
+      {
+        "qid": "q15",
+        "question": "According to asset location theory, which of the following allocations is generally most tax-efficient across accounts?",
+        "options": [
+          "Placing municipal bonds in a Roth IRA and high-growth equities in a standard taxable brokerage account",
+          "Placing high-turnover active funds in taxable accounts and passive low-dividend index funds in traditional 401(k)s",
+          "Placing tax-inefficient assets like taxable bonds or REITs in tax-deferred accounts, and broad-market equity index funds in taxable accounts",
+          "Placing high-dividend value stocks in taxable brokerage accounts and cash equivalents exclusively in Roth IRAs"
+        ],
+        "answerIndex": 2,
+        "difficulty": 5,
+        "topic": "investing-basics"
+      }
+    ]
+  },
+  "outline": {
+    "title": "Applied Personal Finance and Wealth Strategy",
+    "summary": "A 2-week practical curriculum for working adults in India designed to master debt reduction, goal-based investing, retirement planning, and tax optimization through daily 20-minute action-oriented lessons.",
+    "skill": "Personal finance",
+    "depth": "working",
+    "weeks": [
+      {
+        "week": 1,
+        "theme": "Debt Elimination, Core Investing, and Tax Efficiency",
+        "days": [
+          {
+            "day": 1,
+            "title": "High-Cost Debt Elimination Strategy",
+            "objectives": [
+              "Calculate the total cost of carry across credit card debt and personal loans",
+              "Construct an accelerated payoff schedule choosing between avalanche and snowball methods"
+            ],
+            "topics": [
+              "debt-management",
+              "interest-calculations"
+            ]
+          },
+          {
+            "day": 2,
+            "title": "Asset Classes and Risk-Return Foundations",
+            "objectives": [
+              "Compare expected real returns and risk profiles of equity, fixed income, and gold in India",
+              "Select suitable liquid instruments for emergency reserves to prevent taking on new debt"
+            ],
+            "topics": [
+              "investing-basics",
+              "asset-allocation"
+            ]
+          },
+          {
+            "day": 3,
+            "title": "Mutual Funds and Passive Investing Mechanics",
+            "objectives": [
+              "Compare direct versus regular mutual fund expense ratios to project long-term drag",
+              "Select a broad-market index fund portfolio aligned with a multi-year horizon"
+            ],
+            "topics": [
+              "investing-basics",
+              "portfolio-construction"
+            ]
+          },
+          {
+            "day": 4,
+            "title": "Income Tax Framework and Regime Selection",
+            "objectives": [
+              "Calculate net tax liability under the Old and New tax regimes for a given income profile",
+              "Identify eligible deductions under Sections 80C, 80D, and 80CCD to optimize take-home pay"
+            ],
+            "topics": [
+              "tax-optimization"
+            ]
+          },
+          {
+            "day": 5,
+            "title": "Capital Gains and Tax-Efficient Wealth Accumulation",
+            "objectives": [
+              "Compute long-term and short-term capital gains tax on equity and fixed-income assets",
+              "Evaluate ELSS versus PPF for lock-in periods, expected yields, and Section 80C tax relief"
+            ],
+            "topics": [
+              "tax-optimization",
+              "investing-basics"
+            ]
+          }
+        ]
+      },
+      {
+        "week": 2,
+        "theme": "Retirement Planning, Portfolio Architecture, and Holistic Execution",
+        "days": [
+          {
+            "day": 6,
+            "title": "Retirement Corpus Estimation and Gap Analysis",
+            "objectives": [
+              "Calculate required retirement corpus factoring in post-retirement life expectancy and 6-7% inflation",
+              "Determine the exact monthly SIP required to bridge the projected retirement shortfall"
+            ],
+            "topics": [
+              "retirement-planning",
+              "investing-basics"
+            ]
+          },
+          {
+            "day": 7,
+            "title": "Retirement Vehicles: EPF, PPF, and NPS",
+            "objectives": [
+              "Evaluate NPS asset allocation options (E, C, G) and additional Section 80CCD(1B) tax benefits",
+              "Design a coordinated contribution plan across EPF, PPF, and NPS for retirement security"
+            ],
+            "topics": [
+              "retirement-planning",
+              "tax-optimization"
+            ]
+          },
+          {
+            "day": 8,
+            "title": "Low-Cost Debt Strategy: Prepayment vs. Investing",
+            "objectives": [
+              "Calculate effective post-tax borrowing costs on home loans under Section 24b and Section 80EEA",
+              "Formulate a mathematical decision rule on whether to prepay a mortgage or invest surplus cash into equity"
+            ],
+            "topics": [
+              "debt-management",
+              "investing-basics"
+            ]
+          },
+          {
+            "day": 9,
+            "title": "Goal-Based Portfolio Rebalancing and Glide Paths",
+            "objectives": [
+              "Establish target asset allocation bands across short, medium, and retirement goals",
+              "Execute a yearly portfolio rebalancing strategy while minimizing capital gains taxes"
+            ],
+            "topics": [
+              "investing-basics",
+              "retirement-planning",
+              "tax-optimization"
+            ]
+          },
+          {
+            "day": 10,
+            "title": "The Integrated Personal Financial Blueprint",
+            "objectives": [
+              "Draft an integrated monthly cash-flow allocation covering debt payoff, emergency buffer, and retirement SIPs",
+              "Audit an existing personal balance sheet against common financial risks and under-insurance traps"
+            ],
+            "topics": [
+              "debt-management",
+              "investing-basics",
+              "retirement-planning",
+              "tax-optimization"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "day1": {
+    "content": {
+      "day": 1,
+      "title": "High-Cost Debt Elimination Strategy",
+      "lesson": {
+        "markdown": "# High-Cost Debt Elimination Strategy\n\nNo investment reliably outperforms the guaranteed negative return of high-cost consumer debt. Eliminating unsecured loans is the single highest-yield financial move you can make.\n\n---\n\n## 1. The True Cost of Carry\n\nLenders often present rates in misleading formats: monthly finance charges on credit cards or flat interest rates on personal loans. To prioritize debt, you must compare them using the **Annual Percentage Rate (APR)**.\n\nConsider an outstanding balance of ₹1,00,000 across two common credit instruments:\n\n| Instrument | Stated Rate | Annual Cost of Carry (Approx.) | Hidden Friction |\n| :--- | :--- | :--- | :--- |\n| **Credit Card Revolving Debt** | 3.5% per month | ~42% to ~51% APR (compounded) | 18% GST on interest charges; loss of interest-free grace period |\n| **Unsecured Personal Loan** | 14.0% per annum | ~14% APR (reducing balance) | Processing fees (1–2.5%), prepayment penalty (2–4%) |\n\n### The Minimum Payment Trap\nPaying the \"Minimum Amount Due\" (typically 5% of the balance) merely covers interest and a tiny fraction of the principal. On a ₹1,00,000 credit card balance at 42% APR with 5% minimum payments, it takes over **14 years** to clear the debt, and you will pay over **₹1,60,000** in interest alone.\n\n---\n\n## 2. Avalanche vs. Snowball: Structuring the Payoff\n\nAssume you have ₹35,000 per month available for debt service across three liabilities:\n\n* **Debt A (Credit Card 1):** ₹50,000 at 42% APR (Minimum: ₹2,500)\n* **Debt B (Credit Card 2):** ₹1,20,000 at 36% APR (Minimum: ₹6,000)\n* **Debt C (Personal Loan):** ₹2,00,000 at 14% APR (EMI: ₹9,600)\n* **Total Mandatory Minimums:** ₹18,100\n* **Discretionary Accelerator:** ₹16,900 (₹35,000 - ₹18,100)\n\n### Method 1: The Debt Avalanche (Mathematically Optimal)\nPay minimums on all debts, and throw 100% of the surplus (₹16,900) toward the **highest APR** (Debt A at 42%). Once Debt A hits zero, redirect the entire ₹19,400 (₹2,500 + ₹16,900) to Debt B (36%). You minimize total rupees paid in interest.\n\n### Method 2: The Debt Snowball (Behavioral Focus)\nPay minimums on all debts, and throw the surplus toward the **smallest balance** (here, also Debt A at ₹50,000, but if Debt C had a ₹20,000 balance, Debt C would come first). This provides quick psychological wins at the expense of paying slightly more interest over time.\n\n*Rule of thumb:* When any balance has an APR above 25% (such as credit cards), always use the **Avalanche method**. The interest drag is too severe for behavioral trade-offs.\n\n---\n\n## Two Common Mistakes\n\n1. **Treating Flat Rates as Reducing Rates:** A flat rate of 8% on a 3-year personal loan translates to an effective reducing rate of roughly 14.5% to 15%. Always calculate the effective APR before deciding debt priority.\n2. **Continuing to Use Cards While Carrying a Balance:** When you carry a balance, new purchases incur interest from day one without an interest-free period, plus 18% GST on all finance charges.\n\n---\n\n## Recap\n* High-cost debt (credit cards at 36–45% APR) guarantees massive financial erosion; paying it off yields an immediate, risk-free return equal to the APR.\n* Paying only the minimum amount due converts short-term spending into decade-long liabilities with compounding finance charges and GST.\n* Use the Debt Avalanche strategy whenever dealing with interest rates above 20% to minimize total interest paid.",
+        "estimatedMinutes": 20
+      },
+      "task": {
+        "prompt": "Evaluate the following debt profile for an individual with ₹40,000 total monthly capacity allocated to debt repayment:\n\n- Debt 1: Store Card Balance: ₹30,000 at 40% APR (Minimum payment: ₹1,500/month)\n- Debt 2: Personal Loan Balance: ₹2,50,000 at 13% reducing APR (Monthly EMI: ₹8,500/month)\n- Debt 3: Bank Credit Card Balance: ₹90,000 at 36% APR (Minimum payment: ₹4,500/month)\n\nWrite a response in text that:\n1. Calculates the total monthly mandatory payments and the remaining monthly surplus available for accelerated payoff.\n2. Ranks the order in which each debt should be attacked under the Debt Avalanche method versus the Debt Snowball method.\n3. Recommends which method (Avalanche or Snowball) this individual should choose, providing a clear mathematical and behavioral justification.\n4. Details the exact rupee allocation for Month 1 across all three debts under your recommended plan.",
+        "rubric": [
+          {
+            "criterion": "Cash Flow Calculation",
+            "description": "Correctly calculates mandatory minimum payments (₹14,500) and the remaining accelerator surplus (₹25,500).",
+            "points": 2
+          },
+          {
+            "criterion": "Method Sequencing",
+            "description": "Accurately orders debts for both Avalanche (Debt 1 @ 40%, Debt 3 @ 36%, Debt 2 @ 13%) and Snowball (Debt 1 @ ₹30k, Debt 3 @ ₹90k, Debt 2 @ ₹250k), noting where they align or diverge.",
+            "points": 3
+          },
+          {
+            "criterion": "Strategy Selection & Justification",
+            "description": "Selects Avalanche (or justifies why Avalanche matches Snowball for the first two steps) and emphasizes avoiding severe interest accumulation and GST drag on 36-40% APR accounts.",
+            "points": 3
+          },
+          {
+            "criterion": "Month 1 Action Plan",
+            "description": "Specifies exact amounts for Month 1: Debt 1 gets ₹27,000 (₹1,500 + ₹25,500 surplus), Debt 2 gets ₹8,500, Debt 3 gets ₹4,500 (totaling ₹40,000).",
+            "points": 2
+          }
+        ]
+      },
+      "quiz": {
+        "questions": [
+          {
+            "question": "A borrower has a ₹50,000 credit card balance at a monthly finance charge of 3.5%. The statement shows a Minimum Amount Due of ₹2,500. What happens if the borrower pays only the minimum amount due?",
+            "options": [
+              "The outstanding principal decreases by ₹2,500, and interest is waived for 30 days.",
+              "Most of the payment covers interest and taxes, leaving the principal balance nearly unchanged.",
+              "The interest rate drops to zero because the borrower complied with the payment deadline.",
+              "The bank converts the remaining balance to a low-interest personal loan automatically."
+            ],
+            "answerIndex": 1,
+            "explanation": "At 3.5% per month, interest on ₹50,000 is ₹1,750 plus 18% GST (₹315), totaling ₹2,065 in fees and interest. A ₹2,500 minimum payment reduces the principal by only ₹435, prolonging debt repayment significantly.",
+            "topic": "interest-calculations"
+          },
+          {
+            "question": "Which of the following describes the Debt Avalanche repayment strategy?",
+            "options": [
+              "Allocating discretionary surplus to the debt with the smallest nominal balance first.",
+              "Dividing the discretionary surplus equally across all active loans regardless of interest rate.",
+              "Paying only minimum amounts on all loans and moving surplus cash into a fixed deposit.",
+              "Allocating discretionary surplus to the debt with the highest APR while paying minimums on others."
+            ],
+            "answerIndex": 3,
+            "explanation": "The Debt Avalanche targets the debt carrying the highest interest rate (APR) first to minimize total interest paid over time. Targeting the smallest balance first is the Debt Snowball.",
+            "topic": "debt-management"
+          },
+          {
+            "question": "An individual holds two debts: Debt X (₹80,000 at 38% APR) and Debt Y (₹40,000 at 12% APR). They have ₹15,000 surplus above minimum payments. Why is using the Debt Avalanche mathematically superior to the Debt Snowball here?",
+            "options": [
+              "Debt X costs roughly ₹30,400 per year in interest, whereas Debt Y costs ₹4,800 per year, making Debt X far more destructive to wealth.",
+              "Debt Y has a higher principal-to-interest ratio, which triggers bank penalties if repaid quickly.",
+              "The Debt Snowball requires paying prepayment penalties on all loans simultaneously.",
+              "Credit card interest qualifies for Section 80C deductions, whereas personal loans do not."
+            ],
+            "answerIndex": 0,
+            "explanation": "Every rupee directed toward Debt X saves 38 paise in annual interest cost, compared to only 12 paise on Debt Y. Snowball would target Debt Y first due to its smaller balance, allowing Debt X to compound heavily at 38%.",
+            "topic": "debt-management"
+          },
+          {
+            "question": "A lender offers a 3-year personal loan of ₹2,00,000 at an '8% flat interest rate'. What is the critical reality of a flat-rate loan compared to a reducing-balance rate?",
+            "options": [
+              "The effective APR on a flat-rate loan is approximately 14% to 15% because interest is charged on the initial principal throughout the tenure.",
+              "Flat-rate loans are cheaper than reducing-balance loans because the rate does not fluctuate with RBI repo rates.",
+              "The borrower pays exactly 8% per annum on the remaining balance at the end of each year.",
+              "The flat interest rate is exempt from GST, lowering the overall cost of carry."
+            ],
+            "answerIndex": 0,
+            "explanation": "In a flat-rate loan, interest is calculated on the full initial loan amount throughout the entire term, even as you pay down principal. This roughly doubles the effective reducing APR relative to the stated flat rate.",
+            "topic": "interest-calculations"
+          },
+          {
+            "question": "Why does making new purchases on a credit card while revolving an unpaid balance amplify the cost of carry?",
+            "options": [
+              "New purchases forfeit the standard 20–50 day interest-free grace period and accrue interest from the transaction date.",
+              "The card issuer doubles the APR on all prior balances immediately upon any new transaction.",
+              "New transactions incur a mandatory 10% penalty fee mandated by the Reserve Bank of India.",
+              "The card issuer applies all future payments exclusively to new purchases, freezing the old debt."
+            ],
+            "answerIndex": 0,
+            "explanation": "The interest-free grace period only applies if the total statement balance is paid in full each month. Once a balance is carried over, all subsequent purchases incur daily interest immediately from the purchase date, plus GST.",
+            "topic": "debt-management"
+          }
+        ]
+      }
+    },
+    "selfCheck": {
+      "verdict": "pass",
+      "coversObjectives": true,
+      "quizConsistent": true,
+      "issues": [],
+      "attempts": 1
+    }
+  },
+  "task": {
+    "answer": "I would list my fixed costs first (rent, EMIs), then track variable spending for a month in a notebook, and move ₹2,000 to savings on payday before spending anything else.",
+    "score": 0,
+    "maxScore": 10,
+    "feedback": "You demonstrate good awareness of general budgeting habits, such as tracking expenses and prioritizing savings. However, this submission does not address the prompt's specific debt repayment scenario or any of the required calculations. To improve, re-read the prompt carefully and calculate the mandatory payments (₹14,500) and surplus (₹25,500) for the three debts provided. As a concrete next step, rank the three debts using both the Debt Avalanche and Debt Snowball methods and outline a Month 1 repayment plan using the full ₹40,000 budget.",
+    "missedCriteria": [
+      "Cash Flow Calculation",
+      "Method Sequencing",
+      "Strategy Selection & Justification",
+      "Month 1 Action Plan"
+    ]
+  }
+}

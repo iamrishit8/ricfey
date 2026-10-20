@@ -16,9 +16,14 @@ export function SiteHeader() {
         </Button>
         <ThemeToggle />
         {user ? (
-          <Button variant="outline" size="sm" onClick={() => void logout()}>
-            Sign out
-          </Button>
+          <>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/">My courses</Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => void logout()}>
+              Sign out
+            </Button>
+          </>
         ) : (
           <Button size="sm" asChild>
             <Link to="/login">Sign in</Link>

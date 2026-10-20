@@ -5,6 +5,7 @@ export class ApiError extends Error {
     readonly status: number,
     readonly code: ApiFailure['error']['code'],
     message: string,
+    readonly details?: unknown,
   ) {
     super(message);
   }
@@ -26,7 +27,8 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   } catch {
     throw new ApiError(res.status, 'INTERNAL_ERROR', 'The server sent an unexpected response.');
   }
-  if (!body.success) throw new ApiError(res.status, body.error.code, body.error.message);
+  if (!body.success)
+    throw new ApiError(res.status, body.error.code, body.error.message, body.error.details);
   return body.data;
 }
 

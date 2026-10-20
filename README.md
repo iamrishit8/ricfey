@@ -5,7 +5,7 @@ day-by-day course: each day is a short lesson, a practice task and a quiz. Your 
 re-shape the rest of the plan. Any subject that can be taught and tested through text.
 Pay-as-you-go credits in rupees.
 
-Status: Phase 1 (foundations). See [PROGRESS.md](PROGRESS.md).
+Status: Phases 1 and 2 built (draft PRs). Start with [HANDOFF.md](HANDOFF.md).
 
 ## Run it
 
@@ -56,6 +56,8 @@ Browser checks (need Google Chrome; run against the dev servers):
 ```sh
 bun run shot -- http://localhost:5173/styleguide out.png 390   # screenshot at 390px, flags overflow
 bun run dev:api > api.log 2>&1 &  ;  bun run e2e:login -- api.log   # full login flow in a real browser
+bun run e2e:learner -- api.log shots/   # whole learner journey (needs LLM_PROVIDER=fake)
+bun run smoke:real                      # every Phase 2 LLM step on real Gemini (~6 calls of quota)
 ```
 
 ## Repo layout

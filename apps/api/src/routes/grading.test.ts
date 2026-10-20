@@ -9,6 +9,7 @@ import { InMemoryLlmUsageStore } from '../llm/usage-store';
 import { CourseModel } from '../models/course';
 import { CourseDayModel } from '../models/course-day';
 import { QuizAttemptModel } from '../models/quiz-attempt';
+import { ReportModel } from '../models/report';
 import { TaskAttemptModel } from '../models/task-attempt';
 import { signedInUser, TEST_DB_URI, useTestDb } from '../test/helpers';
 
@@ -265,5 +266,33 @@ describe.skipIf(!TEST_DB_URI)('grading and progress (needs MONGODB_URI_TEST)', (
     ).toBe(404);
     expect(await QuizAttemptModel.countDocuments()).toBe(0);
     expect(await TaskAttemptModel.countDocuments()).toBe(0);
+  });
+
+  test('flag a mistake stores a report; validated; other learners get 404', async () => {
+    const asha = await signedInUser('asha@example.com');
+    const ben = await signedInUser('ben@example.com');
+    const id = await readyCourse(asha.cookies);
+    const send = (cookies: Record<string, string>, payload: object, n = 1) =>
+      app().inject({ method: 'POST', url: `/courses/${id}/days/${n}/report`, cookies, payload });
+    const ok = await send(asha.cookies, {
+      kind: 'wrong_quiz_answer',
+      message: 'Question 2 marks B but C is right',
+      excerpt: 'Q2',
+    });
+    expect(ok.statusCode).toBe(201);
+    expect(await ReportModel.findOne().lean()).toMatchObject({
+      day: 1,
+      kind: 'wrong_quiz_answer',
+      status: 'open',
+      excerpt: 'Q2',
+    });
+    expect((await send(asha.cookies, { kind: 'nonsense', message: 'x' })).statusCode).toBe(400);
+    expect((await send(asha.cookies, { kind: 'other', message: 'Day 99?' }, 99)).statusCode).toBe(
+      404,
+    );
+    expect((await send(ben.cookies, { kind: 'other', message: 'Not my course' })).statusCode).toBe(
+      404,
+    );
+    expect(await ReportModel.countDocuments()).toBe(1);
   });
 });

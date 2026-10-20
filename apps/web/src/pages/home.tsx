@@ -1,9 +1,11 @@
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth';
+import { DashboardPage } from './dashboard';
 
 export function HomePage() {
   const { user, loading } = useAuth();
+  if (user) return <DashboardPage />;
   return (
     <main className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-8 sm:pt-20">
       <p className="text-small font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -17,12 +19,7 @@ export function HomePage() {
         short lesson, a practice task and a quiz, and the plan adjusts to how you do.
       </p>
       <div className="mt-10 flex flex-wrap items-center gap-4">
-        {loading ? null : user ? (
-          <p className="text-lead">
-            Signed in as <strong className="font-semibold">{user.email}</strong>. Your courses
-            arrive in Phase 2.
-          </p>
-        ) : (
+        {loading ? null : (
           <>
             <Button size="lg" asChild>
               <Link to="/login">Start learning</Link>

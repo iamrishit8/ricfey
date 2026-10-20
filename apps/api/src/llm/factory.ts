@@ -27,11 +27,12 @@ export function createLlmProviders(
   env: LlmEnv & { LLM_PROVIDER: 'fake' | 'gemini' },
   usage: LlmUsageStore,
 ) {
-  const caps = { maxCallsPerDay: env.LLM_DAILY_CALL_CAP, maxTokensPerDay: env.LLM_DAILY_TOKEN_CAP };
   if (env.LLM_PROVIDER === 'fake') {
+    // Fake calls cost no quota: still logged, but not held to the real daily cap.
+    const unlimited = { maxCallsPerDay: 1e9, maxTokensPerDay: 1e12 };
     return {
-      main: new FakeProvider({ usage, caps }, [], devFakeResponder),
-      check: new FakeProvider({ usage, caps }, [], devFakeResponder),
+      main: new FakeProvider({ usage, caps: unlimited }, [], devFakeResponder),
+      check: new FakeProvider({ usage, caps: unlimited }, [], devFakeResponder),
     };
   }
   return {

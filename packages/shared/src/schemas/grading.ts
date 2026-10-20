@@ -67,3 +67,12 @@ export type ProgressView = {
   topicScores: Array<{ topic: string; correct: number; total: number; percent: number }>;
   streak: { current: number; longest: number };
 };
+
+export const REPORT_KINDS = ['factual_error', 'wrong_quiz_answer', 'unclear', 'other'] as const;
+export const ReportSchema = z.object({
+  kind: z.enum(REPORT_KINDS),
+  message: z.string().trim().min(5, 'Tell us what is wrong').max(2000),
+  /** Optional: the passage or question the learner is pointing at. */
+  excerpt: z.string().trim().max(1000).optional(),
+});
+export const REPORTS_PER_DAY = 20;

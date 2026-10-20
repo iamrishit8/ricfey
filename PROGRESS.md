@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** P2-C4 done (PR open). P2-C5 web screens next.
-- **Next:** P2-C2 → P2-C5, then HANDOFF.md.
-- **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests use a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
+- **Now:** Phase 1 and Phase 2 built; 10 draft PRs stacked #1 → #10. See HANDOFF.md.
+- **Next:** you: the gates (read samples, 7 days of a real course). Then Phase 3 (re-planning from scores).
+- **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Everything runs on a local replica set meanwhile.
 
 ---
 
@@ -85,7 +85,7 @@ courses (tested); learner text is delimited data in prompts.
 - [x] Stores starting level (foundation/intermediate/advanced), ability, strong and weak topics on the course
 - [x] Questions sent without answers; double submits record once (409); another learner gets 404 on every route
 - [x] `LLM_PROVIDER=fake` runs everything offline; prompts carry an escaped `<request>` block and a data rule
-- [ ] Real Gemini placement bank [UNVERIFIED]: not run, to save quota (schema shape mirrors the verified day schema)
+- [x] Real Gemini placement bank verified by `bun run smoke:real` (2026-10-20): 15 questions, ~3.5 min
 
 ### P2-C2. Outline
 
@@ -103,7 +103,7 @@ courses (tested); learner text is delimited data in prompts.
 - [x] Lazy: generated on first open; idempotent: 5 concurrent opens → one generation (tested, and the test fails without the claim)
 - [x] Self-check with the cheaper model against the outline entry; fail → regenerate once with the issues → still failing → flagged (content kept)
 - [x] Quiz answers and explanations never sent before the quiz; another learner gets 404 and can't trigger generation
-- [ ] Real Gemini self-check [UNVERIFIED]: not run (quota)
+- [x] Real Gemini day + self-check verified by `bun run smoke:real` (passed first time)
 
 ### P2-C4. Grading
 
@@ -117,7 +117,15 @@ courses (tested); learner text is delimited data in prompts.
 
 ### P2-C5. Web screens
 
-- [ ] Intake, placement, outline approval, Today, task, quiz, progress (days, topic scores, streak), flag a mistake
+- [x] Intake, placement, outline approval (rename/remove/reorder/save/approve), course home with Today, day screen (lesson, task, quiz), progress (days, topic scores, streak), flag a mistake (`POST …/report`, stored)
+- [x] Model Markdown rendered without raw HTML; polling stops when done, on unmount, or after ~5 min
+- [x] `bun run e2e:learner`: the whole journey in real Chrome, every screen checked at 390px (no overflow)
+- [x] `bun run smoke:real`: every Phase 2 LLM step against real Gemini (placement bank, outline, day + self-check, task grading)
+
+### Phase 2 gate (yours)
+
+- [ ] Take 7 days of a real course (`LLM_PROVIDER=gemini`) and log every factual error with "Flag a mistake"
+- [ ] Read the C3 samples and the smoke course (docs/samples/)
 
 ## Phase 3: Adaptive re-planning (proposed)
 

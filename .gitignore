@@ -15,3 +15,4 @@ coverage/
 !.vscode/extensions.json
 .idea/
 e2e-login-fail.png
+e2e-shots/

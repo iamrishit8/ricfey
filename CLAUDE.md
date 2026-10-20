@@ -17,6 +17,8 @@ bun run dev:api        # API on :4000 with watch (reads root .env)
 bun run dev:web        # web on :5173, proxies /api → :4000
 bun run shot -- <url> <out.png> [width]    # headless Chrome screenshot, flags horizontal overflow
 bun run e2e:login -- <api-log>             # login flow in real Chrome (API in dev mode)
+bun run e2e:learner -- <api-log> [dir]     # whole learner journey in Chrome (LLM_PROVIDER=fake)
+bun run smoke:real                         # Phase 2 LLM steps on real Gemini (~6 calls)
 bun run gen:sample -- --skill X --depth working --weeks 4 [--model M] [--provider fake]
 bun run cost:report    # docs/phase-1-cost-report.md from docs/samples/*/*/usage.json
 bun run check          # typecheck + lint + format:check + test; must be green before a PR
