@@ -11,6 +11,7 @@ import { registerErrorHandler } from './plugins/error-handler';
 import { authRoutes } from './routes/auth';
 import { courseRoutes } from './routes/courses';
 import { dayRoutes } from './routes/days';
+import { gradingRoutes } from './routes/grading';
 import { healthRoutes } from './routes/health';
 
 export type AppConfig = {
@@ -69,6 +70,7 @@ export function buildApp(
   app.register(authRoutes, { ...config, ...deps });
   app.register(courseRoutes, deps);
   app.register(dayRoutes, deps);
+  app.register(gradingRoutes, deps);
 
   return app;
 }

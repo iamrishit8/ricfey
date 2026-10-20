@@ -2,7 +2,7 @@
 
 ## Now / Next / Blocked
 
-- **Now:** P2-C3 done (PR open). P2-C4 grading next.
+- **Now:** P2-C4 done (PR open). P2-C5 web screens next.
 - **Next:** P2-C2 → P2-C5, then HANDOFF.md.
 - **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests use a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
 
@@ -107,7 +107,13 @@ courses (tested); learner text is delimited data in prompts.
 
 ### P2-C4. Grading
 
-- [ ] Auto-graded quizzes; model-graded tasks (score, feedback, missed rubric lines); every attempt stored
+- [x] Quizzes graded on the server; answers and explanations revealed only in the result and after an attempt
+- [x] Tasks graded by the model against the rubric in the background (score, feedback, missed rubric lines); score range and criterion names checked by Zod
+- [x] Learner answer delimited as data, closing tags neutralised, grader told embedded commands earn nothing (prompt tested; model behaviour [UNVERIFIED])
+- [x] Every quiz and task attempt stored; 3 task attempts per day, one in flight (stale after 5 min)
+- [x] Quiz + task submitted = day finished (opens the next day early); all days finished = course completed
+- [x] `GET /courses/:id/progress`: days done, score per topic (latest attempt per day), streak (India days)
+- [x] Another learner gets 404 on quiz, task and progress
 
 ### P2-C5. Web screens
 

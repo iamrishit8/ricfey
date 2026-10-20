@@ -151,3 +151,18 @@ learner → 404 and no generation**).
 Manual (dev mode): approve an outline, then `curl -b jar localhost:4000/courses/<id>/days` and
 `curl -b jar localhost:4000/courses/<id>/days/1` twice (first `generating`, then `ready` with a
 `[FAKE]` lesson and a quiz without answers). Day 2 → 403 until tomorrow in India.
+
+## P2-C4. Grading and progress
+
+Automated: `apps/api/src/progress/streak.test.ts` (streak rules, India midnight boundary) and
+`apps/api/src/routes/grading.test.ts` (quiz graded server-side, answers revealed only after
+submitting; wrong count/option → 400, ungenerated day → 409, locked → 403; task 202 → graded with
+rubric names; **answer delimited, injected closing tag neutralised**; impossible score twice →
+failed; one in flight until stale, max 3; quiz+task finish the day and open the next; finishing
+all days completes the course; progress days/topics/streak; retake updates topic scores;
+**another learner → 404**).
+
+Manual (dev mode): on an open, generated day:
+`curl -b jar -X POST localhost:4000/courses/<id>/days/1/quiz -H 'content-type: application/json' -d '{"answers":[0,1,2,3,0]}'`
+→ score and revealed answers. `curl -b jar -X POST …/days/1/task -d '{"answer":"…at least 20 chars…"}'`
+→ 202; then `GET …/days/1` shows `progress.latestTask` graded. `GET /courses/<id>/progress`.

@@ -363,3 +363,23 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
   (shown to the learner with a warning), store the issues. If the reviewer itself errors, the day
   is flagged without regenerating.
 - **Cost:** 2 calls per day normally, 4 at worst.
+
+### 2026-10-20 · Day finished = quiz submitted and task submitted (not passed)
+
+- **Why:** "finished" gates the next day. Requiring a pass would trap learners on a hard day;
+  their scores already feed the per-topic view (and Phase 3 re-planning). A task whose grading
+  fails still counts as submitted.
+- **Revisit:** Phase 3, if weak scores should trigger review days instead of moving on.
+
+### 2026-10-20 · 3 task attempts per course-day, one grading at a time
+
+- **Why:** each grade is an LLM call against a 20/day free-tier quota shared by everyone.
+  A grading attempt older than 5 minutes no longer blocks (crash recovery). Staleness uses the
+  attempt's own `gradingStartedAt` (from the app clock), not Mongo's `createdAt`.
+- **Revisit:** on the paid tier; credits may pay for extra attempts (Phase 4).
+
+### 2026-10-20 · Topic scores use the latest quiz attempt per day; streak counts India days
+
+- **Why:** retaking a quiz after reviewing should update the picture. A streak day is any India
+  calendar day on which a course day was finished; the current streak survives until the end of
+  the next day (it counts back from yesterday if nothing is done yet today).

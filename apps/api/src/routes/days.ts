@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { requireUser } from '../auth/session';
 import { loadOwnCourse } from '../courses/ownership';
-import { listDays, openDay, type DayDeps } from '../days/service';
+import { listDays, loadDay, openDay, type DayDeps } from '../days/service';
+import { dayProgress } from '../grading/service';
 import { AppError } from '../lib/errors';
 import { ok } from '../lib/response';
 
@@ -26,6 +27,7 @@ export async function dayRoutes(app: FastifyInstance, opts: DayDeps): Promise<vo
     const user = await requireUser(req, opts.now());
     const { id, n } = parseDayParams(req.params);
     const course = await loadOwnCourse(user._id, id);
-    return ok({ day: await openDay(course, n, opts) });
+    const day = await openDay(course, n, opts);
+    return ok({ day, progress: await dayProgress(course, await loadDay(course, n)) });
   });
 }

@@ -399,3 +399,43 @@ daylight saving), so the arithmetic is a fixed offset.
 **Q:** What breaks if a learner in London uses Ricfey with this rule?
 
 My answer:
+
+---
+
+## P2-C4. Grading
+
+### 1. Grade where the answer key lives
+
+The browser never has the answers, so it can't grade. It sends choices; the server compares
+them with the key and returns the result with explanations.
+
+**Q:** If we had sent the key and graded in the browser, what could a learner do, and would it matter for a learning app?
+
+My answer:
+
+### 2. LLM grading needs guard rails
+
+A model can return 9/5 or invent a rubric line. Zod refinements reject both and trigger the
+retry; if it still fails, the attempt is marked failed rather than stored with a wrong score.
+
+**Q:** Zod can check the score is in range but not that it's _fair_. How could you measure grading fairness over time?
+
+My answer:
+
+### 3. Rate limits as a cost control
+
+Each task grade is an LLM call. Capping attempts per day protects the shared quota and,
+later, the money each call costs.
+
+**Q:** Where else does a learner action trigger an LLM call, and is it capped?
+
+My answer:
+
+### 4. Injected clocks
+
+Tests set "now" to fixed dates to check unlocks and streaks. A bug hid where staleness mixed
+the injected clock with Mongo's real `createdAt`. All time logic should use one clock.
+
+**Q:** Why not just use `Date.now()` everywhere and run tests at the right time of day?
+
+My answer:

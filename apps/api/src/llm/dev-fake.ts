@@ -59,10 +59,11 @@ export function devFakeResponder(prompt: string, purpose: LlmPurpose): string {
       });
     case 'task_grading': {
       const max = Number(req.maxScore ?? 5);
+      const criteria = (req.rubric as Array<{ criterion: string }> | undefined) ?? [];
       return JSON.stringify({
         score: Math.max(0, max - 1),
         feedback: '[FAKE] Placeholder feedback: solid attempt; see the missed criterion.',
-        missedCriteria: ['[FAKE] One placeholder criterion'],
+        missedCriteria: criteria.length ? [criteria[criteria.length - 1]!.criterion] : [],
       });
     }
   }

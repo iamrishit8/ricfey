@@ -43,7 +43,8 @@ Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that 
 | Intake + adaptive placement (P2-C1)                                             | **BUILT**                                    | one bank call, staircase 8–12 Qs                     |
 | Versioned outline, edit/approve, credit quote (P2-C2)                           | **BUILT**                                    |                                                      |
 | Lazy idempotent day generation, unlock rules, self-check + flag (P2-C3)         | **BUILT**                                    |                                                      |
-| Grading, screens (P2-C4..C5)                                                    | PLANNED (Phase 2)                            |                                                      |
+| Quiz auto-grading, model task grading, progress + streak (P2-C4)                | **BUILT**                                    |                                                      |
+| Web screens (P2-C5)                                                             | PLANNED (Phase 2)                            |                                                      |
 | Adaptive re-planning from quiz scores                                           | PLANNED (Phase 3)                            |                                                      |
 | Credits ledger + Razorpay                                                       | PLANNED (Phase 4)                            | needs Mongo transactions                             |
 | Deploy, observability, launch                                                   | PLANNED (Phase 5)                            |                                                      |
