@@ -1,6 +1,8 @@
 import { buildApp } from './app';
 import { HttpGoogleOAuthClient } from './auth/google';
 import { ResendMailer } from './auth/mailer';
+import { createLlmProviders } from './llm/factory';
+import { MongoLlmUsageStore } from './llm/usage-store';
 import { loadEnv } from './config/env';
 import { connectDb, disconnectDb, redactCredentials } from './db/connect';
 
@@ -37,6 +39,8 @@ const app = buildApp({
       env.RESEND_API_KEY && env.EMAIL_FROM
         ? new ResendMailer(env.RESEND_API_KEY, env.EMAIL_FROM)
         : undefined,
+    // Every LLM call is capped and logged to llmCalls in MongoDB.
+    llm: createLlmProviders(env, new MongoLlmUsageStore()),
     google:
       env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_REDIRECT_URI
         ? new HttpGoogleOAuthClient({

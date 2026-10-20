@@ -2,8 +2,28 @@
 export const COURSE_DEPTHS = ['intro', 'working', 'deep'] as const;
 export type CourseDepth = (typeof COURSE_DEPTHS)[number];
 
-export const COURSE_STATUSES = ['draft', 'active', 'completed', 'archived'] as const;
+// placement → outline → active → completed. Intro-depth courses start at outline.
+export const COURSE_STATUSES = ['placement', 'outline', 'active', 'completed', 'archived'] as const;
 export type CourseStatus = (typeof COURSE_STATUSES)[number];
 
 export const MIN_WEEKS = 1;
 export const MAX_WEEKS = 12;
+
+export type PublicCourse = {
+  id: string;
+  skill: string;
+  depth: CourseDepth;
+  weeks: number;
+  minutesPerDay: number;
+  daysPerWeek: number;
+  status: CourseStatus;
+  title: string | null;
+  placement: {
+    level: 'foundation' | 'intermediate' | 'advanced';
+    ability: number;
+    strongTopics: string[];
+    weakTopics: string[];
+  } | null;
+  startedAt: string | null;
+  createdAt: string;
+};

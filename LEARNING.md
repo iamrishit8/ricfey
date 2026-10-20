@@ -281,3 +281,46 @@ read an httpOnly cookie, but the browser still attaches it to requests.
 they can't read the cookie?
 
 My answer:
+
+---
+
+## P2-C1. Intake and placement
+
+### 1. Adaptive testing as a staircase
+
+Ask at medium difficulty; go up after a right answer and down after a wrong one. The level
+where it bounces back and forth is roughly where the learner gets half right: their ability.
+That's why 8 to 12 questions can place someone that a fixed 30-question test would.
+
+**Q:** Why do we judge ability from the staircase's _target_ rather than the questions actually asked?
+
+My answer:
+
+### 2. Spreading a Mongoose document is a trap
+
+`{ ...doc }` copies Mongoose's internal fields, not your data, so `target` came out undefined
+and ability became NaN. Unit tests on plain objects passed; only the route test that saved to
+MongoDB caught it. Map fields explicitly or use `.toObject()`.
+
+**Q:** What does this bug say about which kind of test to write for code that touches the database?
+
+My answer:
+
+### 3. Don't send the answer to the client
+
+Anything in a response is visible in the browser's dev tools. Placement questions go out
+with id, question and options only; the server keeps the answer and grades it.
+
+**Q:** Where else in Ricfey must answers stay server-side until the learner commits?
+
+My answer:
+
+### 4. Prompt injection
+
+If a learner types "Ignore previous instructions…" as the skill, a naive prompt would obey.
+We put learner text inside tags, escape anything that could close them, and tell the model
+that tagged text is data.
+
+**Q:** This lowers the risk but doesn't remove it. What else limits the damage if a model does follow injected text?
+
+My answer:

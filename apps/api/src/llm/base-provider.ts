@@ -37,7 +37,11 @@ export abstract class BaseLlmProvider implements LlmProvider {
   constructor(private readonly deps: ProviderDeps) {}
 
   /** One raw call to the model. Throw on transport/API errors. */
-  protected abstract callModel(prompt: string, jsonSchema: unknown): Promise<ModelResponse>;
+  protected abstract callModel(
+    prompt: string,
+    jsonSchema: unknown,
+    purpose: LlmPurpose,
+  ): Promise<ModelResponse>;
 
   async generateStructured<S extends z.ZodType>(
     schema: S,
@@ -100,7 +104,7 @@ export abstract class BaseLlmProvider implements LlmProvider {
       if (retry > 0) await this.assertUnderCap();
       const started = performance.now();
       try {
-        return { response: await this.callModel(prompt, jsonSchema), started };
+        return { response: await this.callModel(prompt, jsonSchema, purpose), started };
       } catch (err) {
         await this.log({ purpose, attempt, started, status: 'error', error: safeError(err) });
         const status = (err as { status?: unknown }).status;

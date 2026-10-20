@@ -4,3 +4,5 @@ export * from './course';
 export * from './llm';
 export * from './schemas/course-outline';
 export * from './schemas/day-content';
+export * from './schemas/intake';
+export * from './schemas/placement';

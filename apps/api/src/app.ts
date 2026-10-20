@@ -2,8 +2,14 @@ import cookie from '@fastify/cookie';
 import Fastify, { type FastifyServerOptions } from 'fastify';
 import type { GoogleOAuthClient } from './auth/google';
 import { ConsoleMailer, type Mailer } from './auth/mailer';
+import { InProcessBackground, type Background } from './lib/background';
+import { devFakeResponder } from './llm/dev-fake';
+import { FakeProvider } from './llm/fake-provider';
+import type { LlmProviders } from './llm/providers';
+import { InMemoryLlmUsageStore } from './llm/usage-store';
 import { registerErrorHandler } from './plugins/error-handler';
 import { authRoutes } from './routes/auth';
+import { courseRoutes } from './routes/courses';
 import { healthRoutes } from './routes/health';
 
 export type AppConfig = {
@@ -17,7 +23,19 @@ export type AppDeps = {
   mailer: Mailer;
   google: GoogleOAuthClient | null;
   now: () => Date;
+  llm: LlmProviders;
+  background: Background;
 };
+
+/** Offline default: fake model for every purpose, usage kept in memory. */
+function defaultLlm(): LlmProviders {
+  const usage = new InMemoryLlmUsageStore();
+  const caps = { maxCallsPerDay: 1e6, maxTokensPerDay: 1e12 };
+  return {
+    main: new FakeProvider({ usage, caps }, [], devFakeResponder),
+    check: new FakeProvider({ usage, caps }, [], devFakeResponder),
+  };
+}
 
 const DEFAULT_CONFIG: AppConfig = {
   webUrl: 'http://localhost:5173',
@@ -40,12 +58,15 @@ export function buildApp(
     mailer: opts.deps?.mailer ?? new ConsoleMailer(app.log),
     google: opts.deps?.google ?? null,
     now: opts.deps?.now ?? (() => new Date()),
+    llm: opts.deps?.llm ?? defaultLlm(),
+    background: opts.deps?.background ?? new InProcessBackground(app.log),
   };
 
   registerErrorHandler(app);
   app.register(cookie);
   app.register(healthRoutes);
   app.register(authRoutes, { ...config, ...deps });
+  app.register(courseRoutes, deps);
 
   return app;
 }

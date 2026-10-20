@@ -51,14 +51,20 @@ describe.skipIf(!uri)('models (needs MONGODB_URI_TEST)', () => {
     expect(Object.keys(err!.errors).sort()).toEqual(['depth', 'weeks']);
   });
 
-  test('course defaults to draft', async () => {
+  test('course requires a status and defaults minutes and days per week', async () => {
     const userId = new mongoose.Types.ObjectId();
+    const missing = await new CourseModel({ userId, skill: 'Python', depth: 'working', weeks: 4 })
+      .validate()
+      .then(() => null)
+      .catch((e: mongoose.Error.ValidationError) => e);
+    expect(Object.keys(missing!.errors)).toEqual(['status']);
     const course = await CourseModel.create({
       userId,
       skill: 'Python',
       depth: 'working',
       weeks: 4,
+      status: 'placement',
     });
-    expect(course.status).toBe('draft');
+    expect(course).toMatchObject({ minutesPerDay: 30, daysPerWeek: 5 });
   });
 });

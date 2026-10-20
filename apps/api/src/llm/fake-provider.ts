@@ -1,8 +1,9 @@
+import type { LlmPurpose } from '@ricfey/shared';
 import { BaseLlmProvider, type ProviderDeps } from './base-provider';
 import type { ModelResponse } from './types';
 
 /** Returns a response for a prompt. A string is returned as-is; throw to simulate an API error. */
-export type FakeResponder = (prompt: string) => string;
+export type FakeResponder = (prompt: string, purpose: LlmPurpose) => string;
 
 /**
  * Deterministic provider for tests and offline runs. Replies are consumed in order; once
@@ -12,6 +13,7 @@ export class FakeProvider extends BaseLlmProvider {
   readonly name = 'fake';
   readonly model = 'fake';
   readonly prompts: string[] = [];
+  readonly purposes: LlmPurpose[] = [];
   private readonly replies: Array<string | FakeResponder>;
 
   constructor(
@@ -23,11 +25,21 @@ export class FakeProvider extends BaseLlmProvider {
     this.replies = [...replies];
   }
 
-  protected async callModel(prompt: string): Promise<ModelResponse> {
+  /** Queue more replies (tests). */
+  push(...replies: Array<string | FakeResponder>): void {
+    this.replies.push(...replies);
+  }
+
+  protected async callModel(
+    prompt: string,
+    _schema: unknown,
+    purpose: LlmPurpose,
+  ): Promise<ModelResponse> {
     this.prompts.push(prompt);
+    this.purposes.push(purpose);
     const next = this.replies.shift() ?? this.fallback;
     if (next === undefined) throw new Error('FakeProvider has no reply left');
-    const text = typeof next === 'string' ? next : next(prompt);
+    const text = typeof next === 'string' ? next : next(prompt, purpose);
     return {
       text,
       tokensIn: Math.ceil(prompt.length / 4),

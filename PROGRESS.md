@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** Phase 1 built (C1–C5 PRs open). Starting Phase 2, P2-C1 intake and placement.
-- **Next:** P2-C1 → P2-C5, each stacked on the previous branch.
-- **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests run on a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
+- **Now:** P2-C1 done (PR open). P2-C2 outline next.
+- **Next:** P2-C2 → P2-C5, then HANDOFF.md.
+- **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests use a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
 
 ---
 
@@ -71,11 +71,37 @@
 
 ---
 
-## Phase 2: Course creation and the daily loop (proposed, not yet agreed)
+## Phase 2: Course creation and the daily loop
 
-- [ ] Course intake form → outline → user confirms
-- [ ] Day generation on demand, lesson/task/quiz screens
-- [ ] Quiz submission and scoring, task self-check against rubric
+Rules for every Phase 2 checkpoint: lazy, idempotent day generation; cheaper self-check per
+lesson (regenerate once, then flag); Zod before store/show; learners only reach their own
+courses (tested); learner text is delimited data in prompts.
+
+### P2-C1. Intake and placement
+
+- [x] `POST /courses` (skill, depth intro/working/deep, weeks 1–12, minutes per day 10–120), `GET /courses`, `GET /courses/:id`
+- [x] Intro depth skips placement; others get an adaptive 8–12 question quiz (harder after correct, easier after wrong)
+- [x] One LLM call builds a 15-question bank (3 per difficulty); the staircase picks from it, no per-question calls
+- [x] Stores starting level (foundation/intermediate/advanced), ability, strong and weak topics on the course
+- [x] Questions sent without answers; double submits record once (409); another learner gets 404 on every route
+- [x] `LLM_PROVIDER=fake` runs everything offline; prompts carry an escaped `<request>` block and a data rule
+- [ ] Real Gemini placement bank [UNVERIFIED]: not run, to save quota (schema shape mirrors the verified day schema)
+
+### P2-C2. Outline
+
+- [ ] Generate from intake + placement; edit (rename, remove, reorder) and approve; versioned; credit quote (no charge)
+
+### P2-C3. Daily unlock
+
+- [ ] `courseDays`; lazy idempotent generation on unlock; self-check, regenerate once, flag
+
+### P2-C4. Grading
+
+- [ ] Auto-graded quizzes; model-graded tasks (score, feedback, missed rubric lines); every attempt stored
+
+### P2-C5. Web screens
+
+- [ ] Intake, placement, outline approval, Today, task, quiz, progress (days, topic scores, streak), flag a mistake
 
 ## Phase 3: Adaptive re-planning (proposed)
 

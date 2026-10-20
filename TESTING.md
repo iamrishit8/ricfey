@@ -110,3 +110,17 @@ Manual (dev mode, no Resend key):
 | Login (browser)  | `/login`, enter an email, open the link from the API console                 | lands on `/` with "Signed in as …"                                                                |
 | Login (scripted) | `bun run dev:api > api.log 2>&1 &` then `bun run e2e:login -- api.log`       | 7 ✓ lines: submit, link, signed in, cookie flags, JS can't read cookie, reuse rejected, sign-out  |
 | Change accent    | edit `--brand: var(--accent-2)` in tokens.css                                | whole app switches to Cobalt                                                                      |
+
+## P2-C1. Intake and placement
+
+Automated: `apps/api/src/placement/adaptive.test.ts` (staircase, 8–12 questions, simulated
+learners of skill 0–5 land in the right level, topic spread, strong/weak topics);
+`apps/api/src/routes/courses.test.ts` (intake validation, intro skips placement with no LLM
+call, questions carry no answers, all-correct → advanced and all-wrong → foundation,
+concurrent double submit records once, **another learner gets 404 on every course route**,
+failed bank → retry, skill passed as escaped data); `apps/api/src/llm/request-block.test.ts`.
+
+Manual (dev mode, `LLM_PROVIDER=fake`): sign in with the README curl lines, then
+`curl -b jar -X POST localhost:4000/courses -H 'content-type: application/json' -d '{"skill":"Music theory","depth":"working","weeks":3,"minutesPerDay":25}'`
+then `curl -b jar localhost:4000/courses/<id>/placement`: a `[FAKE]` question with id and
+options, no answer. Answer with `POST /courses/<id>/placement/answer {"questionId":"q7","answerIndex":0}`.

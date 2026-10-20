@@ -10,6 +10,10 @@ const optionalString = z.preprocess(
 export const LlmEnvSchema = z.object({
   GEMINI_API_KEY: optionalString,
   GEMINI_MODEL: z.string().min(1).default('gemini-3.8-flash'),
+  // Cheaper model for the lesson self-check (Phase 2).
+  GEMINI_CHECK_MODEL: z.string().min(1).default('gemini-3.5-flash-lite'),
+  // fake = offline placeholder content for every LLM call; gemini = real calls (uses quota).
+  LLM_PROVIDER: z.enum(['fake', 'gemini']).default('fake'),
   LLM_DAILY_CALL_CAP: z.coerce.number().int().min(1).default(16),
   LLM_DAILY_TOKEN_CAP: z.coerce.number().int().min(1).default(1_000_000),
 });
@@ -51,7 +55,21 @@ const EnvWithRules = EnvSchema.superRefine((env, ctx) => {
       message: 'set all of GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, or none',
     });
   }
+  if (env.LLM_PROVIDER === 'gemini' && !env.GEMINI_API_KEY) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['GEMINI_API_KEY'],
+      message: 'is required when LLM_PROVIDER=gemini',
+    });
+  }
   if (env.NODE_ENV === 'production') {
+    if (env.LLM_PROVIDER !== 'gemini') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['LLM_PROVIDER'],
+        message: 'must be gemini in production',
+      });
+    }
     if (!env.RESEND_API_KEY) {
       ctx.addIssue({
         code: 'custom',

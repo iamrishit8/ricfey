@@ -40,7 +40,8 @@ Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that 
 | `gen:sample` script + cost report                                               | **BUILT** (C3); 4 of 6 real samples          |                                                      |
 | Google OAuth, magic link, sessions                                              | **BUILT** (C4); Google + Resend [UNVERIFIED] | hashed single-use tokens, 15 min expiry, rate limits |
 | Web shell, router, Tailwind, shadcn/ui, tokens, `/styleguide`, login            | **BUILT** (C5)                               |                                                      |
-| Course creation + daily loop                                                    | PLANNED (Phase 2)                            |                                                      |
+| Intake + adaptive placement (P2-C1)                                             | **BUILT**                                    | one bank call, staircase 8–12 Qs                     |
+| Outline, daily loop, grading, screens (P2-C2..C5)                               | PLANNED (Phase 2)                            |                                                      |
 | Adaptive re-planning from quiz scores                                           | PLANNED (Phase 3)                            |                                                      |
 | Credits ledger + Razorpay                                                       | PLANNED (Phase 4)                            | needs Mongo transactions                             |
 | Deploy, observability, launch                                                   | PLANNED (Phase 5)                            |                                                      |

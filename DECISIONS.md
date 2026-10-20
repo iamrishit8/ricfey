@@ -285,3 +285,37 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 - **Why:** autonomous mode says don't wait. A local `mongod --replSet` on port 27199 stands in
   (27099 belongs to another project's mongod). `.env` is unchanged; commands override
   `MONGODB_URI`/`MONGODB_URI_TEST`. The last two C3 samples logged `llmCalls` there.
+
+### 2026-10-20 · Placement: one LLM call per placement, a staircase over a question bank
+
+- **Why:** the free tier allows 20 requests/day per model. One call per question (8–12) would
+  burn a day's quota on one learner. One call generates 15 questions (3 per difficulty 1–5);
+  the server picks each next question from the bank. Start at 3; +1 after correct, −1 after
+  wrong. Stop at 12, or from 8 once the last 4 targets span ≤ 1 step.
+- **Ability** = mean of the next target after each of the last 4 answers (where the staircase
+  settled), not the asked difficulty: with 3 questions per level the bank runs dry and asks
+  neighbouring levels, which mis-placed everyone as intermediate until a test caught it.
+  Levels: < 2.5 foundation, < 3.75 intermediate, else advanced. Strong topic: ≥ 2 answers and
+  ≥ 75% right; weak: ≤ 50% right.
+- **"Beginners skip placement"** is read as depth = intro (the brief has no separate flag).
+- **Revisit:** if placement results feel wrong in use; a bigger bank costs no extra calls.
+
+### 2026-10-20 · Slow LLM work runs in the background; clients poll
+
+- **Why:** real Gemini calls took up to ~2.5 minutes. Holding an HTTP request that long is
+  fragile. Routes save a "generating" state, start the work in-process, and return at once.
+  A stale-lock window (5 min) lets a retry recover work lost to a restart.
+- **Rejected:** a job queue (Redis/BullMQ: new infrastructure) for now.
+- **Revisit:** before running more than one API process, or when restarts lose work in practice.
+
+### 2026-10-20 · `LLM_PROVIDER=fake` by default; prompts carry a `<request>` block
+
+- **Why:** development and tests must not spend the 20/day quota. The dev fake answers every
+  purpose with schema-valid `[FAKE]` content. Each prompt ends with its parameters as JSON in
+  `<request>` tags, which helps the real model too. `<` inside is escaped so learner text can't
+  close the block; every prompt states that tagged text is data, not instructions.
+  Production refuses `fake`.
+
+### 2026-10-20 · Course statuses: placement → outline → active → completed
+
+- **Why:** replaces C2's `draft`. No real courses existed, so no migration.
