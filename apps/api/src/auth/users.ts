@@ -6,7 +6,7 @@ export async function upsertUserByEmail(email: string, now: Date): Promise<UserD
   return UserModel.findOneAndUpdate(
     { email },
     { $setOnInsert: { email, emailVerifiedAt: now }, $set: { lastLoginAt: now } },
-    { upsert: true, new: true },
+    { upsert: true, returnDocument: 'after' },
   ).orFail();
 }
 
@@ -31,6 +31,6 @@ export async function upsertUserFromGoogle(p: GoogleProfile, now: Date): Promise
         avatarUrl: p.picture ?? undefined,
       },
     },
-    { upsert: true, new: true },
+    { upsert: true, returnDocument: 'after' },
   ).orFail();
 }

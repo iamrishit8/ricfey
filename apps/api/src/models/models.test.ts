@@ -42,7 +42,13 @@ describe.skipIf(!uri)('models (needs MONGODB_URI_TEST)', () => {
   test('course rejects an unknown depth and out-of-range weeks', async () => {
     const userId = new mongoose.Types.ObjectId();
     // Typed loosely on purpose: TypeScript would (rightly) reject 'guru' at compile time.
-    const raw: Record<string, unknown> = { userId, skill: 'Python', depth: 'guru', weeks: 99 };
+    const raw: Record<string, unknown> = {
+      userId,
+      skill: 'Python',
+      depth: 'guru',
+      weeks: 99,
+      status: 'placement',
+    };
     const err = await new CourseModel(raw)
       .validate()
       .then(() => null)

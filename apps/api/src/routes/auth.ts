@@ -64,7 +64,7 @@ export async function authRoutes(app: FastifyInstance, opts: AuthRouteOptions): 
     const used = await MagicTokenModel.findOneAndUpdate(
       { tokenHash: sha256(token), usedAt: null, expiresAt: { $gt: now } },
       { $set: { usedAt: now } },
-      { new: true },
+      { returnDocument: 'after' },
     );
     if (!used) throw new AppError('UNAUTHORIZED', 'This sign-in link is invalid or has expired.');
 

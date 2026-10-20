@@ -18,7 +18,7 @@ export async function hitRateLimit(input: {
       $inc: { count: 1 },
       $setOnInsert: { expiresAt: new Date(windowStart.getTime() + input.windowMs) },
     },
-    { upsert: true, new: true },
+    { upsert: true, returnDocument: 'after' },
   );
   if (doc.count > input.limit) {
     throw new AppError(

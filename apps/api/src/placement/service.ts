@@ -79,7 +79,7 @@ export async function retryPlacement(course: CourseDoc, deps: PlacementDeps): Pr
       ],
     },
     { $set: { status: 'generating', generationStartedAt: now } },
-    { new: true },
+    { returnDocument: 'after' },
   );
   if (claimed) deps.background.run('placement_bank', () => generateBank(claimed._id, course, deps));
 }
@@ -166,7 +166,7 @@ export async function answerPlacement(
   const saved = await PlacementModel.findOneAndUpdate(
     { _id: p._id, status: 'ready', currentQid: input.questionId },
     update,
-    { new: true },
+    { returnDocument: 'after' },
   );
   if (!saved)
     throw new AppError('CONFLICT', 'That question was already answered. Reload to continue.');
