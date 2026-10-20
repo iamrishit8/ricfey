@@ -5,7 +5,7 @@ import {
   type DayContent,
 } from '@ricfey/shared';
 import { AppError } from '../lib/errors';
-import { dayPrompt, outlinePrompt, type CourseRequest } from './prompts';
+import { dayPrompt, outlinePrompt, type CourseRequest, type DayPromptOptions } from './prompts';
 import type { LlmProvider, StructuredResult } from './types';
 
 /** Generate a course outline. Checks the day count matches the request, beyond the schema. */
@@ -29,6 +29,7 @@ export function generateDay(
   llm: LlmProvider,
   outline: CourseOutline,
   dayNumber: number,
+  opts: DayPromptOptions = {},
 ): Promise<StructuredResult<DayContent>> {
   const day = outline.weeks.flatMap((w) => w.days).find((d) => d.day === dayNumber);
   if (!day) throw new AppError('NOT_FOUND', `Day ${dayNumber} is not in the outline`);
@@ -41,5 +42,5 @@ export function generateDay(
     message: `every quiz question's topic must be one of: ${day.topics.join(', ')}`,
     path: ['quiz', 'questions'],
   });
-  return llm.generateStructured(schema, dayPrompt(outline, day), 'day_content');
+  return llm.generateStructured(schema, dayPrompt(outline, day, opts), 'day_content');
 }

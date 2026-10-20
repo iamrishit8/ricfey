@@ -10,6 +10,7 @@ import { InMemoryLlmUsageStore } from './llm/usage-store';
 import { registerErrorHandler } from './plugins/error-handler';
 import { authRoutes } from './routes/auth';
 import { courseRoutes } from './routes/courses';
+import { dayRoutes } from './routes/days';
 import { healthRoutes } from './routes/health';
 
 export type AppConfig = {
@@ -67,6 +68,7 @@ export function buildApp(
   app.register(healthRoutes);
   app.register(authRoutes, { ...config, ...deps });
   app.register(courseRoutes, deps);
+  app.register(dayRoutes, deps);
 
   return app;
 }

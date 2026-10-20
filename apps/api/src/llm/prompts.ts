@@ -1,5 +1,5 @@
 import type { CourseDepth, CourseOutline, OutlineDay, PlacementResult } from '@ricfey/shared';
-import { DATA_RULE, requestBlock } from './request-block';
+import { DATA_RULE, delimit, requestBlock } from './request-block';
 
 export type CourseRequest = {
   skill: string;
@@ -75,7 +75,19 @@ export function outlinePrompt(req: CourseRequest): string {
   ].join('\n');
 }
 
-export function dayPrompt(outline: CourseOutline, day: OutlineDay): string {
+export type DayPromptOptions = {
+  minutesPerDay?: number;
+  /** Problems a reviewer found in a previous draft; the regeneration must fix them. */
+  reviewerIssues?: string[];
+};
+
+export function dayPrompt(
+  outline: CourseOutline,
+  day: OutlineDay,
+  opts: DayPromptOptions = {},
+): string {
+  const minutes = opts.minutesPerDay ?? 30;
+  const words = `${Math.round(minutes * 20)} to ${Math.round(minutes * 30)}`;
   const outlineSummary = outline.weeks
     .map(
       (w) =>
@@ -85,20 +97,20 @@ export function dayPrompt(outline: CourseOutline, day: OutlineDay): string {
     .join('\n');
 
   return [
-    `You are an expert teacher writing day ${day.day} of the course "${outline.title}".`,
+    `You are an expert teacher writing day ${day.day} of the course outlined below.`,
+    '',
+    DATA_RULE,
     '',
     `Course depth: ${DEPTH_MEANING[outline.depth]}`,
-    audience(),
+    audience(minutes),
     '',
     'Full course outline (for context; write ONLY today):',
-    outlineSummary,
+    delimit('course_outline', `${outline.title}\n${outlineSummary}`),
     '',
-    `TODAY: Day ${day.day}: ${day.title}`,
-    `Objectives:\n${day.objectives.map((o) => `- ${o}`).join('\n')}`,
-    `Topic tags: ${day.topics.join(', ')}`,
+    `TODAY: Day ${day.day}: its title, objectives and topic tags are in the request block.`,
     '',
     'Write:',
-    '1. lesson.markdown: a lesson of roughly 600 to 900 words in Markdown.',
+    `1. lesson.markdown: a lesson of roughly ${words} words in Markdown.`,
     '   - Open with why today matters in one or two sentences.',
     '   - Teach with concrete worked examples; show, then explain.',
     '   - Call out one or two common mistakes.',
@@ -111,10 +123,25 @@ export function dayPrompt(outline: CourseOutline, day: OutlineDay): string {
     '3. quiz: exactly 5 multiple-choice questions with 4 options each.',
     '   - Test understanding and application, not trivia or wording tricks.',
     '   - Distractors must be plausible mistakes a learner would actually make.',
-    '   - Vary the position of the correct answer. answerIndex is 0-based.',
+    '   - Vary the position of the correct answer across questions. answerIndex is 0-based.',
     `   - Each question's topic must be one of: ${day.topics.join(', ')}.`,
     '   - The explanation says why the answer is right and why the tempting wrong one is wrong.',
-    `4. Set "day" to ${day.day} and "title" to the day's title.`,
+    '4. Copy "day" and "title" from the request.',
+    ...(opts.reviewerIssues?.length
+      ? [
+          '',
+          'A reviewer rejected a previous draft of this day. Fix every one of these problems:',
+          ...opts.reviewerIssues.map((i) => `- ${i}`),
+        ]
+      : []),
+    '',
+    requestBlock({
+      day: day.day,
+      title: day.title,
+      objectives: day.objectives,
+      topics: day.topics,
+      minutesPerDay: minutes,
+    }),
     '',
     'Return only JSON matching the schema.',
   ].join('\n');

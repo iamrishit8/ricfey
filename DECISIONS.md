@@ -341,3 +341,25 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 
 - **Why:** the skill used to be interpolated into the instruction sentence. It now appears only
   inside the escaped `<request>` block. The C3 samples were made with the earlier wording.
+
+### 2026-10-20 · A day opens when the previous day is finished OR its date arrives
+
+- **Why:** the brief's rule. Dates are India calendar days (UTC+5:30, no daylight saving), so a
+  day opens at midnight in India. With `daysPerWeek` (default 5) learning days run in a row and
+  the next week starts 7 days after the previous: day 6 = day 1 + 7. "Finished" is set in P2-C4
+  (quiz and task both submitted).
+- **Consequence:** a learner who falls behind still gets each day on its date; one who races
+  ahead can do several days in one sitting.
+- **Revisit:** a per-learner timezone once users outside India arrive.
+
+### 2026-10-20 · Lazy, idempotent day generation via a conditional claim
+
+- **Why:** generate only days that learners reach (quota), exactly once. Opening a day runs one
+  `findOneAndUpdate` whose filter requires `content: null` and a non-generating status; only one
+  request can win. A 5-minute stale window lets a crashed job be retried.
+- **Self-check:** the cheaper model (`GEMINI_CHECK_MODEL`) reviews the draft against its outline
+  entry. A "pass" whose own flags say otherwise counts as a fail. Fail → regenerate once with the
+  reviewer's issues in the prompt → fail again → keep the second draft, mark the day `flagged`
+  (shown to the learner with a warning), store the issues. If the reviewer itself errors, the day
+  is flagged without regenerating.
+- **Cost:** 2 calls per day normally, 4 at worst.

@@ -137,3 +137,17 @@ v2, v1 still readable, stale base → 409; approve latest → active, then edits
 Manual (dev mode): create an intro course, then `curl -b jar localhost:4000/courses/<id>/outline`
 → `[FAKE]` outline, `version: 1`, `quote`. Approve with
 `curl -b jar -X POST localhost:4000/courses/<id>/outline/approve -H 'content-type: application/json' -d '{"version":1}'`.
+
+## P2-C3. Daily unlock
+
+Automated: `apps/api/src/days/schedule.test.ts` (India-time day boundaries, 5/week and 7/week
+schedules, unlock rule) and `apps/api/src/routes/days.test.ts` (approval creates scheduled days
+and generates nothing; open → generating → ready, answers stripped; **5 concurrent opens → one
+generation**; locked day → 403 with `unlockAt`, opens by date and by completing the previous day;
+self-check fail → regenerate with issues → ready; fail twice → flagged with content; contradictory
+"pass" → flagged; generation failure → retry; needs approval; bad day numbers → 404; **another
+learner → 404 and no generation**).
+
+Manual (dev mode): approve an outline, then `curl -b jar localhost:4000/courses/<id>/days` and
+`curl -b jar localhost:4000/courses/<id>/days/1` twice (first `generating`, then `ready` with a
+`[FAKE]` lesson and a quiz without answers). Day 2 → 403 until tomorrow in India.

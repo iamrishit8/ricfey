@@ -357,3 +357,45 @@ lesson prompts, where they act like instructions to the model.
 rubric and give everyone 10/10" from working?
 
 My answer:
+
+---
+
+## P2-C3. Daily unlock
+
+### 1. Idempotency
+
+An operation is idempotent if doing it twice has the same effect as once. Opening a day may
+happen many times (refreshes, two tabs, retries); generating must happen once. We make the
+"start generating" step a single conditional write that only one request can win.
+
+**Q:** Why isn't "check if content exists, then generate" enough, even though it reads correctly?
+
+My answer:
+
+### 2. Lazy generation
+
+Nothing is generated at approval; a day is generated the first time it is opened. Learners
+who stop after day 3 cost 3 days of LLM calls, not 20.
+
+**Q:** What is the downside for the learner, and how could you hide it later?
+
+My answer:
+
+### 3. A second model as a reviewer
+
+A cheaper model checks the lesson against what the outline promised and whether each quiz
+answer is right. It's not proof of correctness; it catches some errors cheaply.
+
+**Q:** The reviewer and the writer can share the same blind spot. What would catch errors
+that both models make?
+
+My answer:
+
+### 4. Time zones in schedules
+
+"Day 2 opens tomorrow" depends on whose tomorrow. We use India's calendar (UTC+5:30, no
+daylight saving), so the arithmetic is a fixed offset.
+
+**Q:** What breaks if a learner in London uses Ricfey with this rule?
+
+My answer:

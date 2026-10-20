@@ -2,7 +2,7 @@
 
 ## Now / Next / Blocked
 
-- **Now:** P2-C2 done (PR open). P2-C3 daily unlock next.
+- **Now:** P2-C3 done (PR open). P2-C4 grading next.
 - **Next:** P2-C2 → P2-C5, then HANDOFF.md.
 - **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests use a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
 
@@ -98,7 +98,12 @@ courses (tested); learner text is delimited data in prompts.
 
 ### P2-C3. Daily unlock
 
-- [ ] `courseDays`; lazy idempotent generation on unlock; self-check, regenerate once, flag
+- [x] `courseDays` created at approval; schedule in India time (5 days/week by default; day 6 = day 1 + 7)
+- [x] A day opens when the previous day is finished or its date arrives; locked → 403 with `unlockAt`
+- [x] Lazy: generated on first open; idempotent: 5 concurrent opens → one generation (tested, and the test fails without the claim)
+- [x] Self-check with the cheaper model against the outline entry; fail → regenerate once with the issues → still failing → flagged (content kept)
+- [x] Quiz answers and explanations never sent before the quiz; another learner gets 404 and can't trigger generation
+- [ ] Real Gemini self-check [UNVERIFIED]: not run (quota)
 
 ### P2-C4. Grading
 

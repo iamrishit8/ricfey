@@ -13,6 +13,7 @@ import { AppError } from '../lib/errors';
 import { ok } from '../lib/response';
 import { validate } from '../lib/validate';
 import type { LlmProviders } from '../llm/providers';
+import { createDays } from '../days/service';
 import { CourseModel, toPublicCourse } from '../models/course';
 import {
   approveOutline,
@@ -116,7 +117,8 @@ export async function courseRoutes(app: FastifyInstance, opts: CourseRouteOption
     const user = await requireUser(req, opts.now());
     const course = await loadOwnCourse(user._id, idOf(req));
     const { version } = validate(OutlineApproveSchema, req.body);
-    await approveOutline(course, version, opts.now());
+    const outline = await approveOutline(course, version, opts.now());
+    await createDays(course, outline);
     return ok({ course: toPublicCourse(course), outline: await getOutlineView(course) });
   });
 

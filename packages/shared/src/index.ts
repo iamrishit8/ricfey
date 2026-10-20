@@ -7,3 +7,4 @@ export * from './schemas/day-content';
 export * from './schemas/intake';
 export * from './schemas/placement';
 export * from './schemas/outline-edit';
+export * from './schemas/day-view';
