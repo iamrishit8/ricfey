@@ -24,6 +24,8 @@ export type PublicCourse = {
     strongTopics: string[];
     weakTopics: string[];
   } | null;
+  outlineStatus: 'none' | 'generating' | 'ready' | 'failed';
+  approvedOutlineVersion: number | null;
   startedAt: string | null;
   createdAt: string;
 };

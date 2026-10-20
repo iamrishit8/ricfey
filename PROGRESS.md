@@ -2,7 +2,7 @@
 
 ## Now / Next / Blocked
 
-- **Now:** P2-C1 done (PR open). P2-C2 outline next.
+- **Now:** P2-C2 done (PR open). P2-C3 daily unlock next.
 - **Next:** P2-C2 → P2-C5, then HANDOFF.md.
 - **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests use a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
 
@@ -89,7 +89,12 @@ courses (tested); learner text is delimited data in prompts.
 
 ### P2-C2. Outline
 
-- [ ] Generate from intake + placement; edit (rename, remove, reorder) and approve; versioned; credit quote (no charge)
+- [x] Generated in the background from intake + placement (level, strong/weak topics, minutes per day); one job per course (atomic claim)
+- [x] `GET/PUT /courses/:id/outline`, `POST …/approve`, `POST …/retry`; every edit is a new version, old versions readable (`?version=N`)
+- [x] Edits: rename days and week themes, remove, reorder (days referenced by `fromDay`; topics/objectives can't be edited); stale base → 409
+- [x] Approve the latest version → course `active`, `startedAt` set; no edits after approval
+- [x] Credit quote from a fixed formula (⌈minutes ÷ 15⌉ × days); nothing charged
+- [x] Another learner gets 404 on every outline route
 
 ### P2-C3. Daily unlock
 

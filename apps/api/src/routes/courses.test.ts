@@ -89,7 +89,7 @@ describe.skipIf(!TEST_DB_URI)('courses and placement (needs MONGODB_URI_TEST)', 
     expect(paths).toEqual(['depth', 'minutesPerDay', 'skill', 'weeks']);
   });
 
-  test('intro depth skips placement: no LLM call, straight to outline', async () => {
+  test('intro depth skips placement: no bank call, outline generation starts', async () => {
     const { cookies } = await signedInUser('a@example.com');
     const res = await createCourse(cookies, {
       skill: 'Knitting',
@@ -103,7 +103,7 @@ describe.skipIf(!TEST_DB_URI)('courses and placement (needs MONGODB_URI_TEST)', 
       placement: null,
       minutesPerDay: 20,
     });
-    expect(main.purposes).toEqual([]);
+    expect(main.purposes).toEqual(['course_outline']);
     const id = res.json().data.course.id;
     const p = await app().inject({ method: 'GET', url: `/courses/${id}/placement`, cookies });
     expect(p.json().data.placement.status).toBe('skipped');

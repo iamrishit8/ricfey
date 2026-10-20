@@ -1,5 +1,11 @@
 import type { FastifyInstance } from 'fastify';
-import { CreateCourseSchema, PlacementAnswerSchema } from '@ricfey/shared';
+import { z } from 'zod';
+import {
+  CreateCourseSchema,
+  OutlineApproveSchema,
+  OutlineEditSchema,
+  PlacementAnswerSchema,
+} from '@ricfey/shared';
 import { requireUser } from '../auth/session';
 import { loadOwnCourse } from '../courses/ownership';
 import type { Background } from '../lib/background';
@@ -8,6 +14,13 @@ import { ok } from '../lib/response';
 import { validate } from '../lib/validate';
 import type { LlmProviders } from '../llm/providers';
 import { CourseModel, toPublicCourse } from '../models/course';
+import {
+  approveOutline,
+  editOutline,
+  getOutlineView,
+  startOutline,
+  type OutlineDeps,
+} from '../outline/service';
 import {
   answerPlacement,
   getPlacement,
@@ -24,11 +37,13 @@ export type CourseRouteOptions = {
 };
 
 export async function courseRoutes(app: FastifyInstance, opts: CourseRouteOptions): Promise<void> {
+  const outlineDeps: OutlineDeps = { llm: opts.llm, background: opts.background, now: opts.now };
   const placementDeps: PlacementDeps = {
-    llm: opts.llm,
-    background: opts.background,
-    now: opts.now,
+    ...outlineDeps,
+    // Finishing placement moves the course to 'outline'; start generating it right away.
+    onComplete: async (course) => void (await startOutline(course, outlineDeps)),
   };
+  const idOf = (req: { params: unknown }) => (req.params as { id: string }).id;
 
   app.post('/courses', async (req, reply) => {
     const user = await requireUser(req, opts.now());
@@ -40,7 +55,8 @@ export async function courseRoutes(app: FastifyInstance, opts: CourseRouteOption
       userId: user._id,
       status: skipPlacement ? 'outline' : 'placement',
     });
-    if (!skipPlacement) await startPlacement(course, placementDeps);
+    if (skipPlacement) await startOutline(course, outlineDeps);
+    else await startPlacement(course, placementDeps);
     return reply.code(201).send(ok({ course: toPublicCourse(course) }));
   });
 
@@ -77,5 +93,37 @@ export async function courseRoutes(app: FastifyInstance, opts: CourseRouteOption
     const course = await loadOwnCourse(user._id, (req.params as { id: string }).id);
     await retryPlacement(course, placementDeps);
     return ok({ placement: toPlacementView(await getPlacement(course)) });
+  });
+
+  app.get('/courses/:id/outline', async (req) => {
+    const user = await requireUser(req, opts.now());
+    const course = await loadOwnCourse(user._id, idOf(req));
+    const { version } = validate(
+      z.object({ version: z.coerce.number().int().min(1).optional() }),
+      req.query,
+    );
+    return ok({ outline: await getOutlineView(course, version) });
+  });
+
+  app.put('/courses/:id/outline', async (req) => {
+    const user = await requireUser(req, opts.now());
+    const course = await loadOwnCourse(user._id, idOf(req));
+    await editOutline(course, validate(OutlineEditSchema, req.body));
+    return ok({ outline: await getOutlineView(course) });
+  });
+
+  app.post('/courses/:id/outline/approve', async (req) => {
+    const user = await requireUser(req, opts.now());
+    const course = await loadOwnCourse(user._id, idOf(req));
+    const { version } = validate(OutlineApproveSchema, req.body);
+    await approveOutline(course, version, opts.now());
+    return ok({ course: toPublicCourse(course), outline: await getOutlineView(course) });
+  });
+
+  app.post('/courses/:id/outline/retry', async (req) => {
+    const user = await requireUser(req, opts.now());
+    const course = await loadOwnCourse(user._id, idOf(req));
+    await startOutline(course, outlineDeps);
+    return ok({ outline: await getOutlineView(course) });
   });
 }

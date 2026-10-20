@@ -19,6 +19,14 @@ const courseSchema = new Schema(
     status: { type: String, enum: COURSE_STATUSES, required: true },
     title: { type: String, trim: true },
     startedAt: { type: Date },
+    outlineStatus: {
+      type: String,
+      enum: ['none', 'generating', 'ready', 'failed'],
+      default: 'none',
+    },
+    outlineGenerationStartedAt: { type: Date },
+    currentOutlineVersion: { type: Number, default: null },
+    approvedOutlineVersion: { type: Number, default: null },
     placement: {
       type: new Schema(
         {
@@ -61,6 +69,8 @@ export function toPublicCourse(c: CourseDoc): PublicCourse {
           weakTopics: [...c.placement.weakTopics],
         }
       : null,
+    outlineStatus: c.outlineStatus,
+    approvedOutlineVersion: c.approvedOutlineVersion ?? null,
     startedAt: c.startedAt?.toISOString() ?? null,
     createdAt: (c.get('createdAt') as Date).toISOString(),
   };

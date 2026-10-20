@@ -124,3 +124,16 @@ Manual (dev mode, `LLM_PROVIDER=fake`): sign in with the README curl lines, then
 `curl -b jar -X POST localhost:4000/courses -H 'content-type: application/json' -d '{"skill":"Music theory","depth":"working","weeks":3,"minutesPerDay":25}'`
 then `curl -b jar localhost:4000/courses/<id>/placement`: a `[FAKE]` question with id and
 options, no answer. Answer with `POST /courses/<id>/placement/answer {"questionId":"q7","answerIndex":0}`.
+
+## P2-C2. Outline
+
+Automated: `apps/api/src/outline/service.test.ts` (rename/remove/reorder and renumbering,
+emptied week dropped, unknown/duplicate days refused, credit formula) and
+`apps/api/src/routes/outline.test.ts` (generated once as v1 with quote; a retry while
+generating starts no second job; placement level/weak topics/minutes reach the prompt; edit →
+v2, v1 still readable, stale base → 409; approve latest → active, then edits refused;
+**another learner gets 404 on every outline route**; failure → retry → ready).
+
+Manual (dev mode): create an intro course, then `curl -b jar localhost:4000/courses/<id>/outline`
+→ `[FAKE]` outline, `version: 1`, `quote`. Approve with
+`curl -b jar -X POST localhost:4000/courses/<id>/outline/approve -H 'content-type: application/json' -d '{"version":1}'`.

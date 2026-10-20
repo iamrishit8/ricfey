@@ -6,3 +6,4 @@ export * from './schemas/course-outline';
 export * from './schemas/day-content';
 export * from './schemas/intake';
 export * from './schemas/placement';
+export * from './schemas/outline-edit';

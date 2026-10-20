@@ -319,3 +319,25 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 ### 2026-10-20 · Course statuses: placement → outline → active → completed
 
 - **Why:** replaces C2's `draft`. No real courses existed, so no migration.
+
+### 2026-10-20 · Outline edits reference days; only titles and themes are free text
+
+- **Why:** an edit sends weeks of `{ fromDay, title }` plus week themes. Remove = omit, reorder
+  = position, rename = title. Topics and objectives are copied from the stored outline, so a
+  learner can't write new objectives that later flow into lesson prompts as instructions.
+  Titles still reach prompts, inside the data-tagged block.
+- **Concurrency:** edits name `baseVersion`; the course's version bump is conditional on it,
+  backed by a unique (courseId, version) index. A stale page gets 409.
+- **Not supported:** adding new days. **Revisit:** if learners ask; it would need a generation step.
+
+### 2026-10-20 · Credit quote: ⌈minutes per day ÷ 15⌉ × days
+
+- **Why:** you asked for a fixed formula, shown and not charged. Cost scales with lesson
+  length, so minutes per day is the lever. At C3's measured Flash-Lite cost (~$0.005 per
+  course-day) a 30-minute day = 2 credits, which leaves room to price credits later.
+- **Revisit:** Phase 4, when credits get a rupee price and real costs from `llmCalls`.
+
+### 2026-10-20 · Outline prompt keeps learner text out of the prose
+
+- **Why:** the skill used to be interpolated into the instruction sentence. It now appears only
+  inside the escaped `<request>` block. The C3 samples were made with the earlier wording.

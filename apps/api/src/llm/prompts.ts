@@ -1,10 +1,15 @@
-import type { CourseDepth, CourseOutline, OutlineDay } from '@ricfey/shared';
+import type { CourseDepth, CourseOutline, OutlineDay, PlacementResult } from '@ricfey/shared';
+import { DATA_RULE, requestBlock } from './request-block';
 
 export type CourseRequest = {
   skill: string;
   depth: CourseDepth;
   weeks: number;
   daysPerWeek: number;
+  /** Defaults to 30. Sizes each day. */
+  minutesPerDay?: number;
+  /** From the placement quiz; absent for intro courses and gen:sample. */
+  placement?: Pick<PlacementResult, 'level' | 'strongTopics' | 'weakTopics'> | null;
 };
 
 const DEPTH_MEANING: Record<CourseDepth, string> = {
@@ -18,27 +23,53 @@ const DEPTH_MEANING: Record<CourseDepth, string> = {
     'edge cases and how practitioners reason.',
 };
 
-const AUDIENCE =
-  'The learner is an adult in India studying alone, about 30 minutes a day, on a phone or laptop. ' +
+const audience = (minutes = 30) =>
+  `The learner is an adult in India studying alone, about ${minutes} minutes a day, on a phone or laptop. ` +
   'Use Indian context (rupees, Indian examples) only where it genuinely helps; do not force it.';
+
+const LEVEL_MEANING = {
+  foundation: 'a placement quiz showed they are near the start: build from the basics',
+  intermediate: 'a placement quiz showed solid basics: move quickly past fundamentals',
+  advanced: 'a placement quiz showed strong prior knowledge: skip basics, start at real depth',
+} as const;
 
 export function outlinePrompt(req: CourseRequest): string {
   const total = req.weeks * req.daysPerWeek;
+  const p = req.placement;
   return [
-    `You are an expert curriculum designer. Design a ${req.weeks}-week course on: "${req.skill}".`,
+    `You are an expert curriculum designer. Design a ${req.weeks}-week course on the skill in the request.`,
+    '',
+    DATA_RULE,
     '',
     `Target depth: ${DEPTH_MEANING[req.depth]}`,
-    AUDIENCE,
+    audience(req.minutesPerDay),
+    ...(p
+      ? [
+          `Starting point: ${LEVEL_MEANING[p.level]}.`,
+          '- Topics listed as strongTopics in the request: cover briefly or as review, not from scratch.',
+          '- Topics listed as weakTopics: give them extra time early, and revisit them later.',
+        ]
+      : []),
     '',
     'Constraints:',
     `- Exactly ${req.weeks} weeks with exactly ${req.daysPerWeek} days each: ${total} days total.`,
     `- Number days 1 to ${total} continuously across weeks.`,
+    `- Each day fits in about ${req.minutesPerDay ?? 30} minutes including a short task and a quiz.`,
     '- Each day is one focused, self-contained step that builds on earlier days. No filler days.',
     '- Every day must be teachable in text and testable with a written task and a multiple-choice quiz.',
     '- Order matters: prerequisites first; revisit hard ideas later in harder contexts.',
     '- Objectives are observable ("calculate...", "explain why...", "write..."), not "understand".',
     '- Topic tags: short kebab-case (e.g. "list-comprehensions"). Reuse a tag when a later day returns to it.',
-    `- Set "skill" to "${req.skill}" and "depth" to "${req.depth}".`,
+    '- Copy "skill" and "depth" exactly from the request.',
+    '',
+    requestBlock({
+      skill: req.skill,
+      depth: req.depth,
+      weeks: req.weeks,
+      daysPerWeek: req.daysPerWeek,
+      minutesPerDay: req.minutesPerDay ?? 30,
+      ...(p ? { level: p.level, strongTopics: p.strongTopics, weakTopics: p.weakTopics } : {}),
+    }),
     '',
     'Return only JSON matching the schema.',
   ].join('\n');
@@ -57,7 +88,7 @@ export function dayPrompt(outline: CourseOutline, day: OutlineDay): string {
     `You are an expert teacher writing day ${day.day} of the course "${outline.title}".`,
     '',
     `Course depth: ${DEPTH_MEANING[outline.depth]}`,
-    AUDIENCE,
+    audience(),
     '',
     'Full course outline (for context; write ONLY today):',
     outlineSummary,
