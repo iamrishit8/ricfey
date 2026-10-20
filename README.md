@@ -42,7 +42,21 @@ curl -c jar -X POST localhost:4000/auth/magic/verify -H 'content-type: applicati
 curl -b jar localhost:4000/auth/me
 ```
 
-The web app arrives at C5.
+Run the web app (in a second terminal, with the API running):
+
+```sh
+bun run dev:web        # http://localhost:5173  (/api/* is proxied to the API on :4000)
+```
+
+Open http://localhost:5173/login, enter any email, and click the link printed in the API console.
+`/styleguide` shows the design tokens, type scale, accent options, lesson card and quiz card.
+
+Browser checks (need Google Chrome; run against the dev servers):
+
+```sh
+bun run shot -- http://localhost:5173/styleguide out.png 390   # screenshot at 390px, flags overflow
+bun run dev:api > api.log 2>&1 &  ;  bun run e2e:login -- api.log   # full login flow in a real browser
+```
 
 ## Repo layout
 

@@ -2,9 +2,9 @@
 
 ## Now / Next / Blocked
 
-- **Now:** C4 done (PR open). C5 web shell next.
-- **Next:** at each checkpoint start, if the Gemini quota has reset, run the 2 missing 3.8 Flash samples and `bun run cost:report`.
-- **Blocked:** nothing hard. Google OAuth and Resend run in dev mode until NEEDS-FROM-ME.md items are done.
+- **Now:** Phase 1 built (C1–C5 PRs open). Starting Phase 2, P2-C1 intake and placement.
+- **Next:** P2-C1 → P2-C5, each stacked on the previous branch.
+- **Blocked:** Atlas rejects this machine's IP (NEEDS-FROM-ME). Dev and tests run on a local replica set: `MONGODB_URI=mongodb://127.0.0.1:27199/ricfey?replicaSet=rs0`.
 
 ---
 
@@ -54,18 +54,20 @@
 
 ### C5. Web shell and style sheet
 
-- [ ] Vite React app, router, Tailwind, shadcn/ui, CSS-variable tokens (light + dark)
-- [ ] /styleguide: type scale, colours, buttons, lesson card, quiz card
-- [ ] Three accent colour options, user picks one
-- [ ] Login page working against the API
+- [x] Vite + React 19 + TypeScript, React Router 8, Tailwind v4, shadcn/ui-style components, CSS-variable tokens (light + dark)
+- [x] /styleguide: type scale, colours, accent options, buttons/inputs, lesson card, interactive quiz card
+- [x] Three accent options shown; option 1 (Vermilion) chosen, one token to change (`--brand` in tokens.css)
+- [x] Login page (magic link + Google button) and `/auth/magic` landing page that POSTs the token
+- [x] Verified in real headless Chrome: styleguide light/dark, 390px phone width (no overflow), full login flow (`bun run e2e:login`)
+- [ ] Safari [UNVERIFIED]: Secure cookie on http://localhost is not kept by Safari; use Chrome/Firefox or `COOKIE_SECURE=false` in dev
 
 ### Phase 1 gate
 
-- [ ] Three generated courses the user is happy to learn from
-- [ ] Measured cost per course-day
-- [ ] Login works locally
-- [ ] /styleguide renders
-- [ ] typecheck, lint, tests green
+- [ ] Three generated courses the user is happy to learn from (6 samples ready for you to read)
+- [x] Measured cost per course-day (docs/phase-1-cost-report.md)
+- [x] Login works locally (magic link, dev mode; Google needs a client)
+- [x] /styleguide renders
+- [x] typecheck, lint, tests green (DB tests need a reachable replica set; see NEEDS-FROM-ME)
 
 ---
 

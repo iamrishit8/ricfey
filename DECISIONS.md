@@ -245,3 +245,43 @@ Newest at the bottom. Each entry: date, decision, why, alternatives rejected, re
 ### 2026-10-18 · Request logs omit query strings
 
 - **Why:** the Google callback URL carries `code` and `state`. Logging paths only keeps them out.
+
+### 2026-10-20 · Accent: option 1 (Vermilion) chosen, switchable with one token
+
+- **Why:** you asked me to pick option 1. `--brand` in `apps/web/src/styles/tokens.css` points at
+  `--accent-1`; change it to `--accent-2` (Cobalt) or `--accent-3` (Forest). Each option has a
+  dark-mode variant and a contrasting foreground.
+
+### 2026-10-20 · Fonts: Fraunces (display) + Inter (reading), from Google Fonts
+
+- **Why:** Fraunces is a variable serif with "soft" and "wonky" axes: expressive and editorial,
+  which suits the playful btay.ca brief. Inter is plain and highly readable for long lessons.
+- **Rejected:** self-hosting via @fontsource packages (two more dependencies for no gain yet).
+- **Revisit:** before launch: self-host to avoid a third-party request and for privacy.
+
+### 2026-10-20 · shadcn/ui components copied by hand, not via the CLI
+
+- **Why:** the CLI is interactive; shadcn's model is "copy the code into your repo" anyway.
+  `components.json` is present so the CLI can add more components later. Deps that shadcn
+  components need: `class-variance-authority`, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`.
+
+### 2026-10-20 · Same-origin dev setup: Vite proxies /api → API
+
+- **Why:** the browser only talks to :5173, so the session cookie needs no CORS or
+  cross-site settings. Production will need the same shape (one domain, path-routed).
+- **Revisit:** at deploy (Phase 5).
+
+### 2026-10-20 · Browser checks via a small Chrome DevTools-protocol script, not Playwright
+
+- **Why:** no new dependency; Chrome is installed. `bun run shot` and `bun run e2e:login` give
+  screenshots at exact widths and a real-browser login test. Headless Chrome's minimum window
+  width is 500px, so plain `--screenshot` at 390 crops a 500px layout (it looked like a bug).
+  The script sets the viewport through the protocol instead.
+- **Rejected:** Playwright (large dependency + browser downloads) for now.
+- **Revisit:** when browser tests should run in CI.
+
+### 2026-10-20 · Local replica set while Atlas rejects this machine
+
+- **Why:** autonomous mode says don't wait. A local `mongod --replSet` on port 27199 stands in
+  (27099 belongs to another project's mongod). `.env` is unchanged; commands override
+  `MONGODB_URI`/`MONGODB_URI_TEST`. The last two C3 samples logged `llmCalls` there.

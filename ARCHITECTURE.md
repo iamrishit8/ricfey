@@ -5,8 +5,8 @@ Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that 
 ## Overview
 
 ```
- Browser (apps/web: React + Vite)
-     │  HTTPS, JSON, httpOnly session cookie
+ Browser (apps/web: React + Vite, React Router, Tailwind v4, shadcn/ui-style components)
+     │  same origin: Vite proxies /api/* → API (dev); JSON + httpOnly session cookie
      ▼
  API (apps/api: Bun + Fastify)
      ├── auth      Google OAuth, magic link, sessions
@@ -39,7 +39,7 @@ Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that 
 | LLM daily cap + `llmCalls` collection                                           | **BUILT** (C3)                               | one enforcement point                                |
 | `gen:sample` script + cost report                                               | **BUILT** (C3); 4 of 6 real samples          |                                                      |
 | Google OAuth, magic link, sessions                                              | **BUILT** (C4); Google + Resend [UNVERIFIED] | hashed single-use tokens, 15 min expiry, rate limits |
-| Web shell, router, Tailwind, shadcn/ui, tokens, `/styleguide`, login            | PLANNED (C5)                                 |                                                      |
+| Web shell, router, Tailwind, shadcn/ui, tokens, `/styleguide`, login            | **BUILT** (C5)                               |                                                      |
 | Course creation + daily loop                                                    | PLANNED (Phase 2)                            |                                                      |
 | Adaptive re-planning from quiz scores                                           | PLANNED (Phase 3)                            |                                                      |
 | Credits ledger + Razorpay                                                       | PLANNED (Phase 4)                            | needs Mongo transactions                             |

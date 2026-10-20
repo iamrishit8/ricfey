@@ -238,3 +238,46 @@ Different answers would let anyone test which emails are Ricfey users.
 the account exists? Why or why not?
 
 My answer:
+
+---
+
+## C5. Web shell and style sheet
+
+### 1. Design tokens
+
+A token is a named decision ("brand colour", "radius") stored once as a CSS variable.
+Components use names, never raw values, so changing one token restyles everything, and
+dark mode is just a second set of values for the same names.
+
+**Q:** Why is `bg-brand` better than `bg-[#d9441e]` in a component, even if they look identical today?
+
+My answer:
+
+### 2. Same-origin through a proxy
+
+Browsers treat `localhost:5173` and `localhost:4000` as different origins. Vite forwards
+`/api/*` to the API, so the browser only ever talks to one origin and sends the session
+cookie without any CORS configuration.
+
+**Q:** What would you have to configure on the API if the web app called `http://localhost:4000` directly?
+
+My answer:
+
+### 3. React StrictMode runs effects twice
+
+In development React mounts, unmounts and remounts components to expose effects that aren't
+safe to repeat. Our magic page would POST the single-use token twice; a `useRef` guard sends it once.
+
+**Q:** Why is "safe to run twice" a good property for effects even in production?
+
+My answer:
+
+### 4. httpOnly in practice
+
+The browser test prints `document.cookie` as empty while the session works. JavaScript can't
+read an httpOnly cookie, but the browser still attaches it to requests.
+
+**Q:** If an attacker injects a script into a page (XSS), what can they still do even though
+they can't read the cookie?
+
+My answer:

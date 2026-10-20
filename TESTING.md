@@ -97,3 +97,16 @@ Manual (dev mode, no Resend key):
 | Logout                          | `curl -b jar -c jar -X POST localhost:4000/auth/logout -H 'content-type: application/json' -d '{}'` then `/auth/me` | 401                                                                                           |
 | **Google (needs client)**       | open `http://localhost:4000/auth/google` in a browser                                                               | Google account chooser → back to `WEB_URL/` with a session                                    |
 | **Resend (needs key + domain)** | set `RESEND_API_KEY`, `EMAIL_FROM`, request a link to your inbox                                                    | email arrives with the link                                                                   |
+
+## C5. Web shell and style sheet
+
+| What             | Steps                                                                        | Expected                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Build            | `cd apps/web && bun run build`                                               | builds, no errors                                                                                 |
+| Styleguide       | `bun run dev:api` + `bun run dev:web`, open http://localhost:5173/styleguide | type scale, 10 colour swatches, 3 accent cards (1 marked Chosen), buttons, lesson card, quiz card |
+| Quiz card        | pick an answer, Check answer                                                 | right answer turns green, a wrong pick turns red, explanation shown                               |
+| Dark mode        | click ☾ Dark, or open `/styleguide?theme=dark`                               | dark token set; choice remembered after reload                                                    |
+| Phone width      | `bun run shot -- http://localhost:5173/styleguide out.png 390`               | "no horizontal overflow"                                                                          |
+| Login (browser)  | `/login`, enter an email, open the link from the API console                 | lands on `/` with "Signed in as …"                                                                |
+| Login (scripted) | `bun run dev:api > api.log 2>&1 &` then `bun run e2e:login -- api.log`       | 7 ✓ lines: submit, link, signed in, cookie flags, JS can't read cookie, reuse rejected, sign-out  |
+| Change accent    | edit `--brand: var(--accent-2)` in tokens.css                                | whole app switches to Cobalt                                                                      |

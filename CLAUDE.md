@@ -14,6 +14,9 @@ Ricfey turns "learn X, to depth Y, in Z weeks" into a day-by-day course (lesson,
 ```sh
 bun install            # install all workspaces
 bun run dev:api        # API on :4000 with watch (reads root .env)
+bun run dev:web        # web on :5173, proxies /api → :4000
+bun run shot -- <url> <out.png> [width]    # headless Chrome screenshot, flags horizontal overflow
+bun run e2e:login -- <api-log>             # login flow in real Chrome (API in dev mode)
 bun run gen:sample -- --skill X --depth working --weeks 4 [--model M] [--provider fake]
 bun run cost:report    # docs/phase-1-cost-report.md from docs/samples/*/*/usage.json
 bun run check          # typecheck + lint + format:check + test; must be green before a PR
@@ -23,7 +26,8 @@ bun run check          # typecheck + lint + format:check + test; must be green b
 
 ```
 apps/api/        Fastify: src/{app,server}.ts, config/, lib/, plugins/, routes/, db/, models/, llm/; scripts/
-apps/web/        Vite React app
+apps/web/        Vite React app: src/{pages,components,components/ui,lib,styles}; tokens in styles/tokens.css
+tools/browser/   Chrome DevTools-protocol scripts for screenshots and browser e2e
 packages/shared/ Zod schemas + types shared by api and web
 docs/            phases/, samples/ (real generated courses), cost report
 ```
