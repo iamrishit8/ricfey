@@ -1,0 +1,92 @@
+{
+  "day": 1,
+  "title": "Cash Flow Audit and Baseline Budgeting",
+  "lesson": {
+    "markdown": "# Cash Flow Audit and Baseline Budgeting\n\nMost financial stress does not stem from low earnings, but from blind spots in daily cash movement. Before you can invest or optimize, you must know your exact net cash inflow and where every rupee leaves your account.\n\n---\n\n## 1. Calculating Real Monthly Take-Home Income\n\nNever build a monthly budget using your annual CTC (Cost to Company) or gross monthly pay. Taxes (TDS), Employee Provident Fund (EPF), and professional tax are deducted before money hits your account.\n\n### The Take-Home Formula\n$$\\text{Real Monthly Baseline} = \\text{Predictable In-Hand Salary} + \\text{Conservative Irregular Inflow}$$\n\nConsider Rajesh, a software engineer in Bengaluru:\n- **CTC:** ₹14,40,000 / year (₹1,20,000 / month gross)\n- **Monthly Deductions:** ₹8,500 (EPF) + ₹11,200 (TDS) + ₹200 (Professional Tax) = ₹19,900\n- **Net Bank Credit:** ₹1,00,100\n- **Quarterly Bonus / Variable:** ₹30,000 every 3 months (~₹10,000 / month)\n\n**Rajesh's Baseline Budget Income:** Exactly **₹1,00,100**. Do not include irregular bonuses, performance payouts, or freelance retainers in your primary baseline. Treat unpredictable income as a windfall to direct toward debt or investments when it hits the bank, never for baseline commitments.\n\n---\n\n## 2. Categorizing 60 Days of Transactions (The 50/30/20 Lens)\n\nDownload the last 2 months of bank account statements in `.xlsx` or `.csv` format from your net banking portal. Run through each debit and assign it to one of three categories:\n\n| Category | Definition | Indian Household Examples | Benchmark Target |\n| :--- | :--- | :--- | :--- |\n| **Needs (Essentials)** | Costs required to survive and maintain your job. If you lost your income, these must still be paid. | House rent, maintenance, grocery bills (Blinkit/DMart staples), electricity/water, broadband, basic commute fuel/metro, minimum loan EMIs. | **<= 50%** |\n| **Wants (Discretionary)** | Expenses that upgrade your lifestyle but are not non-negotiable survival items. | Swiggy/Zomato deliveries, weekend dining, OTT subscriptions (Netflix, Prime), leisure travel, shopping (Myntra/Amazon), gym memberships. | **<= 30%** |\n| **Savings & Investments** | Capital allocated to future security and wealth accumulation. | Emergency fund transfers, mutual fund SIPs, PPF contributions, voluntary extra debt principal payments. | **>= 20%** |\n\n### Worked Example: Categorizing Debits\n\nLook at Rajesh's last week of transactions:\n- *Dec 02:* ₹28,000 - Society Landlord Transfer (`NEFT`) $\\rightarrow$ **Need (Rent)**\n- *Dec 03:* ₹1,499 - Amazon Prime Annual (`UPI`) $\\rightarrow$ **Want (Subscription)**\n- *Dec 04:* ₹3,240 - Nature's Basket / Grocery (`Card`) $\\rightarrow$ **Need (Food)**\n- *Dec 05:* ₹840 - Swiggy Dineout (`UPI`) $\\rightarrow$ **Want (Dining)**\n- *Dec 06:* ₹15,000 - Transfer to Zerodha / Index Fund (`NetBanking`) $\\rightarrow$ **Savings**\n\nWhen a purchase blurs the line—for instance, buying clothes or ordering specialty food—ask: *\"Can I cancel this tomorrow without affecting my health, shelter, or primary income?\"* If yes, it is a **Want**.\n\n---\n\n## 3. Detecting Subscriptions and Micro-Leaks\n\nSmall, frictionless UPI payments and auto-debits (mandates via e-NACH or cards) silently drain 5% to 15% of net income.\n\n1. **Check Standing Instructions:** Log into your bank net banking interface, open the **e-Mandate / Standing Instructions** dashboard, and list all active automated debits.\n2. **Isolate Micropayments:** Filter bank statements for transactions under ₹500 paid via UPI. Tally daily coffee, cigarette, mid-day snacking, and delivery surge charges. ₹250 a day on food apps equals ₹7,500 every month—often higher than a monthly electricity and broadband bill combined.\n3. **Prune Ghost Subscriptions:** Identify unused OTT apps, gym passes, and app storage tiers. Cancel recurring mandates immediately.\n\n---\n\n## Two Common Mistakes\n\n1. **Budgeting with Gross Salary or Anticipated Bonuses:** Budgeting against expected incentives creates an immediate cash shortfall when bonuses are delayed or pruned.\n2. **Classifying Upgraded Wants as Needs:** Ordering groceries on instant-delivery apps with premium markups or calling a cab daily because of late mornings are operational lifestyle choices (**Wants**), not unalterable fixed **Needs**.\n\n---\n\n## Lesson Recap\n\n- **Baseline income equals predictable in-hand credit only;** omit bonuses, overtime, and speculative freelance payments.\n- **Apply 50/30/20 strictly;** categorize expenses based on whether cutting them impairs survival or employment.\n- **Audit e-mandates and UPI micro-debits;** run through 60 days of transaction records to plug unmonitored outflows.",
+    "estimatedMinutes": 20
+  },
+  "task": {
+    "prompt": "Perform a cash-flow baseline audit using either your real financial figures from the last 30–60 days or realistic representative numbers based on your actual living situation.\n\nProvide your submission in the following format:\n1. **Net Monthly Baseline Income**: List your monthly take-home in-hand pay (net credit in bank account) and clearly state how you handled variable bonuses or irregular income.\n2. **Expense Breakdown (50/30/20)**: Provide a categorized summary with monthly totals and percentage of income for:\n   - Needs (list at least 3 major items)\n   - Wants (list at least 3 major items)\n   - Savings/Investments\n3. **Leak & Subscription Audit**: List 2 to 3 recurring micro-leaks, ghost subscriptions, or frequent discretionary UPI trends identified from your statements, along with their monthly cost and an immediate action step (e.g., cancel, limit, or substitute).",
+    "rubric": [
+      {
+        "criterion": "Accurate In-Hand Baseline Calculation",
+        "description": "Uses net realized in-hand salary rather than CTC or gross income, explicitly excluding or separating unpredictable variable income.",
+        "points": 2
+      },
+      {
+        "criterion": "Rigorous 50/30/20 Categorization",
+        "description": "Correctly categorizes items into Needs, Wants, and Savings with realistic rupee figures and calculated percentages reflecting the framework.",
+        "points": 4
+      },
+      {
+        "criterion": "Leak and Subscription Identification",
+        "description": "Pinpoints at least 2 distinct micro-leaks or recurring subscriptions with rupee amounts and concrete remedial actions.",
+        "points": 4
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "question": "Pooja's offer letter states a CTC of ₹12,00,000 per year (₹1,00,000/month). Her monthly salary slip shows ₹12,000 deducted for income tax (TDS), ₹5,000 for EPF, and ₹200 for Professional Tax. She also receives an annual performance bonus of ₹1,20,000 paid in March. What figure should Pooja use as her baseline monthly income for budgeting?",
+        "options": [
+          "₹1,00,000 (Gross monthly salary)",
+          "₹92,800 (Monthly take-home plus averaged bonus)",
+          "₹82,800 (Net monthly bank credit)",
+          "₹1,10,000 (CTC divided by 12 plus bonus)"
+        ],
+        "answerIndex": 2,
+        "explanation": "Her baseline monthly budget must rely strictly on predictable in-hand credit: ₹1,00,000 gross minus ₹17,200 deductions (TDS, EPF, Prof Tax) = ₹82,800. Averaging annual bonuses into monthly cash flow leads to shortfalls during the other 11 months.",
+        "topic": "cash-flow"
+      },
+      {
+        "question": "Which of the following expenses should be categorized strictly under 'Needs' in a standard 50/30/20 baseline budget?",
+        "options": [
+          "A ₹3,500 monthly gym membership with a personal trainer",
+          "A ₹12,000 monthly car EMI for a second vehicle used for weekend outings",
+          "A ₹999 monthly high-speed broadband plan required for remote work",
+          "A ₹4,000 weekly grocery bill comprised mostly of gourmet imported cheeses and snacks"
+        ],
+        "answerIndex": 2,
+        "explanation": "Broadband required for employment is an essential utility directly tied to earning a living. Premium gym memberships, secondary vehicle EMIs, and gourmet snacks represent discretionary lifestyle upgrades (Wants).",
+        "topic": "budgeting"
+      },
+      {
+        "question": "While auditing 60 days of bank statements, which of the following practices is most effective for catching silent financial leaks?",
+        "options": [
+          "Reviewing only NEFT and RTGS transactions above ₹10,000",
+          "Auditing active e-mandates / recurring debit instructions and tallying sub-₹500 UPI debits",
+          "Tracking credit card transactions while ignoring savings account UPI transactions",
+          "Assuming all recurring debits under ₹1,000 belong to the 'Needs' bucket"
+        ],
+        "answerIndex": 1,
+        "explanation": "Silent leaks almost always occur via automated card/e-NACH mandates (unused subscriptions) and frictionless UPI micropayments under ₹500. Auditing both surfaces hidden lifestyle inflation.",
+        "topic": "bank-statements"
+      },
+      {
+        "question": "Sunil earns ₹60,000 net monthly. His fixed essentials (rent, basic groceries, utilities, minimum loan payments) total ₹38,000. He spends ₹16,000 on dining, entertainment, and shopping, leaving ₹6,000 for savings. What does the 50/30/20 framework diagnose regarding his finances?",
+        "options": [
+          "His needs exceed 50% (at ~63%), meaning he is structurally overcommitted and must compress essentials or supplement income.",
+          "His budget is balanced because his total expenses do not exceed his total monthly income.",
+          "His discretionary spending is too low and should be expanded to reach 30%.",
+          "He is saving at the target rate because any positive savings rate meets the framework criteria."
+        ],
+        "answerIndex": 0,
+        "explanation": "₹38,000 out of ₹60,000 is 63.3%, surpassing the 50% target for Needs. This leaves his savings at only 10% (target: >=20%), making him vulnerable to shocks even though his total cash flow is nominally non-negative.",
+        "topic": "budgeting"
+      },
+      {
+        "question": "A learner reviews their last two bank statements and notices two recurring ₹499 debits from an entertainment streaming platform they haven't opened in four months. What is the most financially sound corrective action?",
+        "options": [
+          "Keep the service active because ₹499 is too small to impact long-term net worth.",
+          "Immediately revoke the mandate/subscription and redirect the saved capital into monthly savings.",
+          "Move the charge from the 'Wants' category to the 'Needs' category to balance the column.",
+          "Leave the mandate active but commit to watching movies on that platform every weekend."
+        ],
+        "answerIndex": 1,
+        "explanation": "Unused subscriptions are pure micro-leaks. Canceling the standing mandate stops ongoing friction-free cash loss and returns funds to productive savings or debt clearance.",
+        "topic": "bank-statements"
+      }
+    ]
+  }
+}

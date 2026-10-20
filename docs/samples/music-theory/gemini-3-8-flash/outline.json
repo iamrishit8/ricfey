@@ -1,0 +1,277 @@
+{
+  "title": "Working Music Theory: Practical Harmony and Song Analysis",
+  "summary": "A 4-week, step-by-step practical music theory course designed for solo learners. Focuses on building scales, decoding intervals and chords, analyzing song progressions with Roman numerals, and transposing music for real-world performance and composition.",
+  "skill": "Music theory",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Pitches, Rhythm, and the Major Scale Architecture",
+      "days": [
+        {
+          "day": 1,
+          "title": "The 12 Pitches, Semitones, and Whole Steps",
+          "objectives": [
+            "Identify the 12 chromatic pitches and their enharmonic equivalents on a keyboard layout",
+            "Calculate intervals of whole steps and half steps between specified note pairs"
+          ],
+          "topics": [
+            "pitch",
+            "chromatic-scale",
+            "intervals"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Rhythm Values, Meters, and Time Signatures",
+          "objectives": [
+            "Calculate beat values for combinations of whole, half, quarter, eighth, and sixteenth notes",
+            "Identify measure groupings in standard 4/4, 3/4, and 6/8 time signatures"
+          ],
+          "topics": [
+            "rhythm",
+            "meter",
+            "time-signatures"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "The Major Scale Formula",
+          "objectives": [
+            "Spell any major scale using the whole-step and half-step pattern (W-W-H-W-W-W-H)",
+            "Write out scale degree numbers and note names for C, G, D, and F major"
+          ],
+          "topics": [
+            "major-scale",
+            "scale-construction"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Key Signatures and the Circle of Fifths",
+          "objectives": [
+            "Determine the number of sharps or flats in any key signature using the Circle of Fifths",
+            "Identify the root key from standard treble and bass clef key signatures"
+          ],
+          "topics": [
+            "circle-of-fifths",
+            "key-signatures"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Intervals Part 1: Seconds, Thirds, and Octaves",
+          "objectives": [
+            "Calculate interval size and quality for major, minor, and perfect seconds and thirds",
+            "Spell the correct note a major or minor third above a given root note"
+          ],
+          "topics": [
+            "intervals",
+            "interval-construction"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Intervals, Minor Keys, and Triad Construction",
+      "days": [
+        {
+          "day": 6,
+          "title": "Intervals Part 2: Fourths, Fifths, Sixths, and Sevenths",
+          "objectives": [
+            "Classify perfect fourths, perfect fifths, tritones, and major/minor sixths and sevenths",
+            "Invert any simple interval and name the resulting interval size and quality"
+          ],
+          "topics": [
+            "intervals",
+            "interval-inversion"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "The Natural Minor Scale and Relative Keys",
+          "objectives": [
+            "Derive the natural minor scale using its relative major counterpart",
+            "Spell natural minor scales using the interval formula (W-H-W-W-H-W-W)"
+          ],
+          "topics": [
+            "minor-scale",
+            "relative-minor"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Harmonic and Melodic Minor Scales",
+          "objectives": [
+            "Construct harmonic and melodic minor scales for any given root",
+            "Explain why the 7th degree is raised in minor key compositions to create a leading tone"
+          ],
+          "topics": [
+            "minor-scale",
+            "leading-tone"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Building Major and Minor Triads",
+          "objectives": [
+            "Construct major and minor triads using root, third, and fifth intervals",
+            "Spell triad chords from standard lead sheet chord symbols (e.g., C, Am, F#m, Eb)"
+          ],
+          "topics": [
+            "triads",
+            "chord-construction"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Diminished Triads, Augmented Triads, and Inversions",
+          "objectives": [
+            "Build diminished and augmented triads using stacked intervals",
+            "Identify root position, first inversion, and second inversion slash chords"
+          ],
+          "topics": [
+            "triads",
+            "chord-inversions"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Diatonic Harmony, Roman Numerals, and Seventh Chords",
+      "days": [
+        {
+          "day": 11,
+          "title": "Diatonic Triads in Major Keys",
+          "objectives": [
+            "Assign Roman numerals (I through vii°) to all seven diatonic triads in any major key",
+            "Identify whether each scale degree triad in a major key is major, minor, or diminished"
+          ],
+          "topics": [
+            "diatonic-harmony",
+            "roman-numerals"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Standard Chord Progressions and Cadences",
+          "objectives": [
+            "Analyze popular chord progressions using Roman numerals (e.g., I-V-vi-IV and ii-V-I)",
+            "Identify authentic, plagal, half, and deceptive cadences in short musical excerpts"
+          ],
+          "topics": [
+            "chord-progressions",
+            "cadences",
+            "diatonic-harmony"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Diatonic Triads in Minor Keys",
+          "objectives": [
+            "Construct diatonic triads for natural and harmonic minor scales using Roman numerals",
+            "Explain why the minor key V chord is commonly altered to a major triad"
+          ],
+          "topics": [
+            "minor-scale",
+            "diatonic-harmony",
+            "chord-progressions"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Seventh Chords: Major 7, Dominant 7, and Minor 7",
+          "objectives": [
+            "Construct Major 7th, Dominant 7th, Minor 7th, and Half-Diminished 7th chords",
+            "Translate seventh chord lead sheet symbols (e.g., Cmaj7, G7, Am7, Bm7b5) into note spellings"
+          ],
+          "topics": [
+            "seventh-chords",
+            "chord-construction"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Voice Leading Principles and Reading Lead Sheets",
+          "objectives": [
+            "Arrange triad transitions using voice leading rules that minimize note movement",
+            "Read and interpret a single-page lead sheet containing melody and chord symbols"
+          ],
+          "topics": [
+            "voice-leading",
+            "lead-sheets"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Practical Analysis, Modulations, and Modes",
+      "days": [
+        {
+          "day": 16,
+          "title": "Transposition Techniques",
+          "objectives": [
+            "Transpose a chord progression to a new key using Roman numeral analysis",
+            "Transpose a melodic line to accommodate a different vocal or instrumental range"
+          ],
+          "topics": [
+            "transposition",
+            "roman-numerals"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Secondary Dominants",
+          "objectives": [
+            "Identify secondary dominant chords (such as V/V and V/vi) within chord charts",
+            "Write a secondary dominant chord that targets a specified diatonic destination chord"
+          ],
+          "topics": [
+            "secondary-dominants",
+            "chord-progressions"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Borrowed Chords and Modal Interchange",
+          "objectives": [
+            "Identify chords borrowed from the parallel minor in major-key songs (e.g., minor iv, bVI)",
+            "Explain the emotional contrast produced by borrowed chords in modern songwriting"
+          ],
+          "topics": [
+            "borrowed-chords",
+            "chord-progressions"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Everyday Modes: Dorian, Mixolydian, and Aeolian",
+          "objectives": [
+            "Differentiate Dorian and Mixolydian modes from standard major and natural minor scales",
+            "Identify characteristic modal scale degrees and modal chord vamp patterns"
+          ],
+          "topics": [
+            "modes",
+            "scale-construction"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "Full Song Harmonic Analysis",
+          "objectives": [
+            "Perform an end-to-end Roman numeral analysis on a complete pop or film song chart",
+            "Identify tonic key centers, borrowed chords, voice leading shifts, and cadence points"
+          ],
+          "topics": [
+            "harmonic-analysis",
+            "lead-sheets",
+            "roman-numerals"
+          ]
+        }
+      ]
+    }
+  ]
+}

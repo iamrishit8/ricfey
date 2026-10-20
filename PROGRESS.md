@@ -38,8 +38,8 @@
 - [x] `llmCalls` collection: purpose, model, tokens in/out/thinking, latency, estimated cost (verified in Atlas)
 - [x] Cost estimator by model and date (3.8 Flash vs 3.5 Flash-Lite; 2027 prices primary)
 - [x] `bun run gen:sample` writes outline + day 1
-- [~] Samples: 4 of 6 done. Missing: personal finance and music theory on `gemini-3.8-flash` (daily quota hit). Re-run after the quota resets (midnight Pacific).
-- [x] docs/phase-1-cost-report.md generated from the 4 complete samples
+- [x] Samples: all 6 (3 skills × 2 models). The last two ran 2026-10-20 with `llmCalls` logged to a local replica set (Atlas was unreachable: IP access list).
+- [x] docs/phase-1-cost-report.md generated from all 6 samples
 - [ ] You read the samples (gate)
 
 ### C4. Auth

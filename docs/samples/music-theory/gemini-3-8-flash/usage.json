@@ -5,34 +5,25 @@
   "daysPerWeek": 5,
   "provider": "gemini",
   "model": "gemini-3.8-flash",
-  "generatedAt": "2026-10-17T19:31:27.884Z",
+  "generatedAt": "2026-10-20T11:32:37.031Z",
   "calls": [
     {
       "purpose": "course_outline",
       "attempt": 1,
-      "status": "error",
-      "tokensIn": 0,
-      "tokensOut": 0,
-      "tokensThinking": 0,
-      "latencyMs": 326
+      "status": "ok",
+      "tokensIn": 278,
+      "tokensOut": 4159,
+      "tokensThinking": 2683,
+      "latencyMs": 35255
     },
     {
-      "purpose": "course_outline",
+      "purpose": "day_content",
       "attempt": 1,
-      "status": "error",
-      "tokensIn": 0,
-      "tokensOut": 0,
-      "tokensThinking": 0,
-      "latencyMs": 426
-    },
-    {
-      "purpose": "course_outline",
-      "attempt": 1,
-      "status": "error",
-      "tokensIn": 0,
-      "tokensOut": 0,
-      "tokensThinking": 0,
-      "latencyMs": 376
+      "status": "ok",
+      "tokensIn": 1063,
+      "tokensOut": 3225,
+      "tokensThinking": 731,
+      "latencyMs": 107421
     }
   ]
 }

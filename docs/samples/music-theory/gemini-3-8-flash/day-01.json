@@ -1,0 +1,92 @@
+{
+  "day": 1,
+  "title": "The 12 Pitches, Semitones, and Whole Steps",
+  "lesson": {
+    "markdown": "Every melody, bassline, and chord in modern music—from Western pop and rock to modern Indian film scores—relies on a shared pool of exactly 12 distinct pitches. Mastering how these 12 notes are arranged and how to navigate the distances between them will give you the foundational vocabulary for scales, chords, and song analysis.\n\n### The 12 Chromatic Pitches\n\nWestern music uses the first seven letters of the Latin alphabet for natural notes: **A, B, C, D, E, F, G**. After G, the sequence repeats at a higher register (an octave higher): A, B, C, and so on.\n\nBetween most of these natural notes sits an intermediate pitch. You can label these intermediate pitches using two common symbols called **accidentals**:\n- **Sharp (♯)**: raises a note by one half step (higher in pitch).\n- **Flat (♭)**: lowers a note by one half step (lower in pitch).\n\nBecause an intermediate pitch can be approached from either below or above, the same physical pitch has two common names. This is called **enharmonic equivalence**.\n\nHere are all 12 pitches arranged in ascending order, using a standard piano keyboard or harmonium keyboard as our mental map:\n\n| Pitch Number | Note Name (Sharp) | Note Name (Flat) | Keyboard Key Type |\n|---|---|---|---|\n| 1 | C | C | White key |\n| 2 | C♯ | D♭ | Black key |\n| 3 | D | D | White key |\n| 4 | D♯ | E♭ | Black key |\n| 5 | E | E | White key |\n| 6 | F | F | White key |\n| 7 | F♯ | G♭ | Black key |\n| 8 | G | G | White key |\n| 9 | G♯ | A♭ | Black key |\n| 10 | A | A | White key |\n| 11 | A♯ | B♭ | Black key |\n| 12 | B | B | White key |\n\nAfter B, the cycle restarts on C.\n\n### The Natural Half Steps: The Exception You Must Memorize\n\nNotice the pattern of white and black keys. Between C and D, there is a black key (C♯/D♭). But look closely between **E and F**, and between **B and C**:\n- There is **no black key** between **E and F**.\n- There is **no black key** between **B and C**.\n\nThese two pairs are naturally adjacent. Moving from E to F is an immediate step, just like moving from C to C♯.\n\n### Semitones (Half Steps) and Whole Steps\n\nMusical distance is measured in intervals. The two smallest building blocks are:\n\n1. **Half Step (Semitone / H)**: The distance between any note and the very next immediate pitch, up or down (including black keys). On a guitar, this is 1 fret. On a keyboard, this is the very next key to the left or right.\n   - *Examples*: C to C♯ is 1 half step. E to F is 1 half step. B to C is 1 half step. F♯ to G is 1 half step.\n\n2. **Whole Step (Tone / W)**: The distance of exactly **two half steps** (skipping one pitch in between). On a guitar, this is 2 frets. On a keyboard, it skips exactly one key.\n   - *Examples*: C to D is 1 whole step (skips C♯). E to F♯ is 1 whole step (E → F is 1 half step, F → F♯ is the second half step). B♭ to C is 1 whole step (B♭ → B is 1 half step, B → C is the second half step).\n\n### Worked Navigations\n\nLet's calculate three concrete moves:\n\n1. **Move up 1 Whole Step from A**:\n   - 1 half step up from A is A♯.\n   - Another half step up from A♯ is **B**.\n   - Result: A to B = 1 Whole Step.\n\n2. **Move up 1 Whole Step from E**:\n   - 1 half step up from E is F (remember, no black key!).\n   - Another half step up from F is **F♯**.\n   - Result: E to F♯ = 1 Whole Step (E to F is only a half step!).\n\n3. **Move down 1 Whole Step from D**:\n   - 1 half step down from D is D♭ (or C♯).\n   - Another half step down is **C**.\n   - Result: D down to C = 1 Whole Step.\n\n### Common Mistakes to Avoid\n\n- **Assuming all natural notes are a whole step apart**: Beginners often write that E to F is a whole step because both are unadorned letters. Always remember: **E-F** and **B-C** are half steps.\n- **Mixing up sharp and flat directions**: Sharps always move up in pitch (to the right on a keyboard); flats always move down in pitch (to the left on a keyboard). D♯ is higher than D; D♭ is lower than D.\n\n### Recap\n- Western harmony uses **12 unique chromatic pitches** before repeating at the octave.\n- A **half step** is the distance to the adjacent pitch; a **whole step** equals two half steps.\n- **E to F** and **B to C** are naturally occurring half steps with no intervening notes.",
+    "estimatedMinutes": 15
+  },
+  "task": {
+    "prompt": "Complete the following three pitch navigation exercises in plain text:\n\nPart 1: Distance Calculation\nFor each pair of notes, identify the exact distance in half steps (semitones) and state whether the distance is a 'Half step', a 'Whole step', or 'Neither':\n1. D to E\n2. B to C\n3. G to B♭\n4. F to F♯\n\nPart 2: Note Identification\nCalculate the target note for each navigation:\n1. Start on G. Move up 1 Whole Step.\n2. Start on B. Move up 1 Half Step.\n3. Start on A♭. Move up 1 Whole Step.\n4. Start on D. Move down 1 Whole Step.\n\nPart 3: Enharmonics\nProvide the standard enharmonic equivalent for:\n1. F♯\n2. E♭\n3. A♯",
+    "rubric": [
+      {
+        "criterion": "Part 1: Distance Calculations",
+        "description": "Correctly states the semitone count and step classification for all four pairs: 1 is 2 semitones / Whole step; 2 is 1 semitone / Half step; 3 is 3 semitones / Neither (1.5 steps); 4 is 1 semitone / Half step.",
+        "points": 4
+      },
+      {
+        "criterion": "Part 2: Note Navigations",
+        "description": "Correctly identifies the resulting pitch for each move: 1 is A; 2 is C (acknowledging natural half step); 3 is B♭ (or A♯); 4 is C.",
+        "points": 4
+      },
+      {
+        "criterion": "Part 3: Enharmonic Equivalents",
+        "description": "Correctly names the enharmonic spelling for each note: F♯ = G♭; E♭ = D♯; A♯ = B♭.",
+        "points": 2
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "question": "What is the interval distance between the notes E and F?",
+        "options": [
+          "One whole step (2 semitones)",
+          "One half step (1 semitone)",
+          "A step and a half (3 semitones)",
+          "Zero steps (they are enharmonic equivalents)"
+        ],
+        "answerIndex": 1,
+        "explanation": "E and F are naturally adjacent white keys on a keyboard with no black key between them, making their distance exactly 1 half step (1 semitone). Thinking it is a whole step is a common mistake caused by assuming all letter names without accidentals are separated by a whole step.",
+        "topic": "intervals"
+      },
+      {
+        "question": "Which of the following pairs represents two enharmonic equivalents?",
+        "options": [
+          "C♯ and D♭",
+          "F and G♭",
+          "D♯ and E♯",
+          "A♭ and B♭"
+        ],
+        "answerIndex": 0,
+        "explanation": "C♯ (C raised by one half step) and D♭ (D lowered by one half step) land on the exact same physical pitch and key, making them enharmonic equivalents.",
+        "topic": "pitch"
+      },
+      {
+        "question": "If you start on the note F♯ and move up one whole step, which note do you land on?",
+        "options": [
+          "G",
+          "A♭",
+          "G♯",
+          "A"
+        ],
+        "answerIndex": 2,
+        "explanation": "A whole step is two half steps. Moving one half step up from F♯ brings you to G; moving a second half step up brings you to G♯ (or A♭). G is only one half step above F♯, and A is three half steps above F♯.",
+        "topic": "intervals"
+      },
+      {
+        "question": "How many total discrete pitches make up the complete chromatic system before repeating at the octave?",
+        "options": [
+          "7",
+          "8",
+          "10",
+          "12"
+        ],
+        "answerIndex": 3,
+        "explanation": "There are 12 chromatic pitches (7 natural notes plus 5 accidentals). 7 is the number of natural notes in a diatonic scale, and 8 is the octave note, but the full chromatic pool contains 12 pitches.",
+        "topic": "chromatic-scale"
+      },
+      {
+        "question": "Starting on B♭, what pitch is reached by moving DOWN one half step?",
+        "options": [
+          "B",
+          "A",
+          "A♭",
+          "C"
+        ],
+        "answerIndex": 1,
+        "explanation": "Moving down lowers the pitch. One half step below B♭ is A. Moving up one half step would lead to B, while A♭ is two half steps (a whole step) below B♭.",
+        "topic": "pitch"
+      }
+    ]
+  }
+}

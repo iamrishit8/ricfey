@@ -1,6 +1,6 @@
 # Phase 1 cost report
 
-Generated 2026-10-17 by `bun run cost:report` from 4 samples in `docs/samples/`.
+Generated 2026-10-20 by `bun run cost:report` from 6 samples in `docs/samples/`.
 Do not edit the tables by hand; re-run the script.
 
 ## Method
@@ -11,24 +11,26 @@ Do not edit the tables by hand; re-run the script.
 - **Cost per course-day** = day-1 cost + (outline cost ÷ days in that course).
 - **30-day course** = outline cost per day × 30 + day-1 cost × 30. Day 1 stands in for every day.
 - Prices: paid-tier standard prices from https://ai.google.dev/gemini-api/docs/pricing (read 2026-10-17).
-  **Primary figures use prices from 2027-01-01**; prices on 2026-10-17 shown beside them.
+  **Primary figures use prices from 2027-01-01**; prices on 2026-10-20 shown beside them.
   The free tier costs nothing but has daily limits (below) and different data terms.
 
 ## Per sample
 
-| Skill | Model | Outline tokens in / out | Day tokens in / out | Thinking share of day output | Retries | $/course-day from 2027-01-01 | $/course-day on 2026-10-17 |
+| Skill | Model | Outline tokens in / out | Day tokens in / out | Thinking share of day output | Retries | $/course-day from 2027-01-01 | $/course-day on 2026-10-20 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Music theory | `gemini-3.5-flash-lite` | 278 / 1955 | 983 / 2052 | 0% | 0 | $0.00567 | $0.00567 |
 | Personal finance | `gemini-3.5-flash-lite` | 278 / 1878 | 913 / 2068 | 0% | 0 | $0.00568 | $0.00568 |
 | Python | `gemini-3.5-flash-lite` | 276 / 1815 | 876 / 1742 | 0% | 0 | $0.00485 | $0.00485 |
+| Music theory | `gemini-3.8-flash` | 278 / 4159 | 1063 / 3225 | 23% | 0 | $0.0274 | $0.0137 |
+| Personal finance | `gemini-3.8-flash` | 278 / 4716 | 1064 / 3065 | 5% | 0 | $0.0264 | $0.0132 |
 | Python | `gemini-3.8-flash` | 276 / 3195 | 975 / 2800 | 0% | 0 | $0.0237 | $0.0118 |
 
 ## 30-day course, averaged over skills
 
-| Model | Samples | $/course-day from 2027-01-01 | 30-day course from 2027-01-01 | 30-day course on 2026-10-17 |
+| Model | Samples | $/course-day from 2027-01-01 | 30-day course from 2027-01-01 | 30-day course on 2026-10-20 |
 | --- | --- | --- | --- | --- |
 | `gemini-3.5-flash-lite` | 3 | $0.00540 | **$0.1621** | $0.1621 |
-| `gemini-3.8-flash` | 1 | $0.0237 | **$0.7104** | $0.3552 |
+| `gemini-3.8-flash` | 3 | $0.0258 | **$0.7742** | $0.3871 |
 
 ## Free-tier limits
 
@@ -43,13 +45,6 @@ Fill in from AI Studio → rate limits, for this account:
 | `gemini-3.8-flash` | _fill in_ | _fill in_ | 20 (from a 429 on 2026-10-18: `GenerateRequestsPerDayPerProjectPerModel-FreeTier`, limit 20) | ≈ 10 (1 outline + 1 day each) |
 
 Free-tier content is "used to improve our products"; paid-tier content is not (https://ai.google.dev/gemini-api/docs/pricing).
-
-## Incomplete samples (left out of every figure above)
-
-- Personal finance / `gemini-3.8-flash`
-- Music theory / `gemini-3.8-flash`
-
-A call failed (usually the free-tier daily quota) before both the outline and day 1 succeeded. Re-run `gen:sample` for these and then `cost:report`.
 
 ## Caveats
 
