@@ -1,7 +1,8 @@
 // The whole learner journey in a real browser, against the dev servers with LLM_PROVIDER=fake.
 //   bun run e2e:learner -- <api-log-file> [screenshot-dir]
 // Signs in, creates a course, takes placement, edits + approves the outline, opens Today,
-// submits the task and quiz, flags a mistake, checks progress. Screens are checked at 390px.
+// submits the task and quiz, flags a mistake, checks progress, re-plans from the weak topic.
+// Screens are checked at 390px.
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { openBrowser } from './cdp';
@@ -155,6 +156,19 @@ try {
     throw new Error(`progress should show 1 day done, got: ${done?.[0]}`);
   step(`progress: ${done[0]}, topic score shown`);
   await shot('progress');
+
+  // Re-plan: the quiz above scored 2/5, so day 1's topic is weak.
+  await b.goto((await b.evaluate<string>('location.href')).replace(/\/progress$/, ''));
+  await b.waitFor(`document.body.innerText.includes('Adapt your plan')`);
+  if (!(await text()).includes('Needs work')) throw new Error('weak topic not shown');
+  await b.click('Adapt days');
+  await b.waitFor(`document.body.innerText.includes('Use the new plan')`, 20000);
+  step('re-plan proposed: old and new days shown');
+  await shot('replan-proposed');
+  await b.click('Use the new plan');
+  await b.waitFor(`document.body.innerText.includes('Your new plan is in place')`);
+  await b.waitFor(`document.body.innerText.includes('Revisit')`);
+  step('re-plan accepted; the day list shows the rewritten days');
   if (b.errors.length || phone.errors.length)
     console.info('page errors:', [...b.errors, ...phone.errors]);
 } catch (e) {

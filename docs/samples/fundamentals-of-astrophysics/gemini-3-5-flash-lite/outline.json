@@ -1,0 +1,272 @@
+{
+  "title": "Fundamentals of Astrophysics: A Working Guide",
+  "summary": "A 4-week practical course on understanding celestial mechanics, stellar evolution, and cosmic scales using accessible physics.",
+  "skill": "Fundamentals of astrophysics",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Scales and Starlight",
+      "days": [
+        {
+          "day": 1,
+          "title": "Cosmic Distances",
+          "objectives": [
+            "Calculate light-years to parsecs",
+            "Explain the inverse-square law for brightness"
+          ],
+          "topics": [
+            "distance-scales",
+            "inverse-square"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "The Electromagnetic Spectrum in Space",
+          "objectives": [
+            "Identify which wavebands penetrate Earth's atmosphere",
+            "Relate photon wavelength to energy"
+          ],
+          "topics": [
+            "em-spectrum",
+            "photons"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Blackbody Radiation",
+          "objectives": [
+            "Apply Wien's Law to find a star's temperature",
+            "Calculate peak wavelength from temperature"
+          ],
+          "topics": [
+            "blackbody",
+            "wiens-law"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Stefan-Boltzmann Law",
+          "objectives": [
+            "Calculate star luminosity from radius and temperature",
+            "Explain surface flux differences"
+          ],
+          "topics": [
+            "stefan-boltzmann",
+            "luminosity"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Stellar Spectroscopy",
+          "objectives": [
+            "Interpret absorption lines in stellar spectra",
+            "Identify spectral classes O through M"
+          ],
+          "topics": [
+            "spectroscopy",
+            "spectral-classes"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Stellar Physics and Evolution",
+      "days": [
+        {
+          "day": 6,
+          "title": "Hydrostatic Equilibrium",
+          "objectives": [
+            "Balance gravity and pressure in a simple stellar model",
+            "Explain why stars do not collapse instantly"
+          ],
+          "topics": [
+            "hydrostatic-equilibrium",
+            "stellar-structure"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Nuclear Fusion in Cores",
+          "objectives": [
+            "Describe the proton-proton chain",
+            "Calculate mass-energy conversion using Einstein's equation"
+          ],
+          "topics": [
+            "nuclear-fusion",
+            "mass-energy"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "The Hertzsprung-Russell Diagram",
+          "objectives": [
+            "Plot stars on an HR diagram",
+            "Identify main sequence, giants, and white dwarfs"
+          ],
+          "topics": [
+            "hr-diagram",
+            "stellar-evolution"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Low-Mass Star Evolution",
+          "objectives": [
+            "Trace the path of a Sun-like star off the main sequence",
+            "Describe planetary nebula formation"
+          ],
+          "topics": [
+            "stellar-evolution",
+            "white-dwarfs"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "High-Mass Stars and Supernovae",
+          "objectives": [
+            "Describe core collapse in massive stars",
+            "Differentiate Type Ia and Type II supernovae"
+          ],
+          "topics": [
+            "supernovae",
+            "stellar-evolution"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Stellar Remnants and Gravity",
+      "days": [
+        {
+          "day": 11,
+          "title": "White Dwarfs and Degeneracy",
+          "objectives": [
+            "Explain electron degeneracy pressure",
+            "State the Chandrasekhar limit"
+          ],
+          "topics": [
+            "white-dwarfs",
+            "chandrasekhar-limit"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Neutron Stars and Pulsars",
+          "objectives": [
+            "Describe neutron star formation",
+            "Explain the lighthouse model of pulsars"
+          ],
+          "topics": [
+            "neutron-stars",
+            "pulsars"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Introduction to Black Holes",
+          "objectives": [
+            "Calculate the Schwarzschild radius for a given mass",
+            "Define the event horizon"
+          ],
+          "topics": [
+            "black-holes",
+            "schwarzschild-radius"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Orbital Mechanics Basics",
+          "objectives": [
+            "Apply Kepler's Third Law to binary systems",
+            "Calculate orbital periods from masses and separation"
+          ],
+          "topics": [
+            "keplers-laws",
+            "orbital-mechanics"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Binary Star Systems",
+          "objectives": [
+            "Determine masses using spectroscopic binaries",
+            "Identify Roche lobes and mass transfer"
+          ],
+          "topics": [
+            "binary-stars",
+            "mass-transfer"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Galaxies and Cosmology",
+      "days": [
+        {
+          "day": 16,
+          "title": "Milky Way Structure",
+          "objectives": [
+            "Identify galactic disk, bulge, and halo components",
+            "Describe stellar population differences"
+          ],
+          "topics": [
+            "milky-way",
+            "stellar-populations"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Galaxy Classification",
+          "objectives": [
+            "Classify galaxies using the Hubble tuning fork",
+            "Distinguish spirals from ellipticals"
+          ],
+          "topics": [
+            "galaxy-classification",
+            "hubble-sequence"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Dark Matter Evidence",
+          "objectives": [
+            "Interpret galaxy rotation curves",
+            "Explain the necessity of dark matter"
+          ],
+          "topics": [
+            "dark-matter",
+            "rotation-curves"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Cosmic Expansion",
+          "objectives": [
+            "Calculate recession velocity using Hubble's Law",
+            "Interpret cosmological redshift"
+          ],
+          "topics": [
+            "hubbles-law",
+            "redshift"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "The Early Universe",
+          "objectives": [
+            "Describe the Cosmic Microwave Background",
+            "Summarize standard Big Bang timeline milestones"
+          ],
+          "topics": [
+            "cmb",
+            "big-bang"
+          ]
+        }
+      ]
+    }
+  ]
+}

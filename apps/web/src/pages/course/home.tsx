@@ -1,6 +1,7 @@
 import type { DaySummary, ProgressView, PublicCourse } from '@ricfey/shared';
 import { Link } from 'react-router';
 import { ErrorNote, Spinner } from '@/components/page';
+import { ReplanPanel } from '@/components/replan-panel';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -81,6 +82,16 @@ export function CourseHome({ course }: { course: PublicCourse }) {
           </CardContent>
         </Card>
       </div>
+
+      {course.status === 'active' && (
+        <ReplanPanel
+          course={course}
+          onApplied={() => {
+            days.reload();
+            progress.reload();
+          }}
+        />
+      )}
 
       <div className="grid gap-6">
         {[...weeks].map(([week, list]) => (

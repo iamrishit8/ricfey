@@ -1,4 +1,10 @@
-import { COURSE_DEPTHS, type CourseDepth, type PublicCourse } from '@ricfey/shared';
+import {
+  COURSE_DEPTHS,
+  REPLAN_MODES,
+  type CourseDepth,
+  type PublicCourse,
+  type ReplanMode,
+} from '@ricfey/shared';
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { ErrorNote, Page } from '@/components/page';
@@ -17,6 +23,16 @@ const DEPTHS: Record<CourseDepth, { title: string; body: string }> = {
   },
   deep: { title: 'Deep', body: 'Expert-level understanding. Short placement quiz first.' },
 };
+const REPLAN: Record<ReplanMode, { title: string; body: string }> = {
+  manual: {
+    title: 'When I ask',
+    body: 'Your quiz scores suggest changes; you decide whether to use them.',
+  },
+  auto: {
+    title: 'Automatically',
+    body: 'The next few days adapt by themselves when a topic needs more work.',
+  },
+};
 const MINUTES = [10, 15, 20, 30, 45, 60, 90, 120];
 
 export function NewCoursePage() {
@@ -25,6 +41,7 @@ export function NewCoursePage() {
   const [depth, setDepth] = useState<CourseDepth>('working');
   const [weeks, setWeeks] = useState(4);
   const [minutes, setMinutes] = useState(30);
+  const [replanMode, setReplanMode] = useState<ReplanMode>('manual');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,6 +55,7 @@ export function NewCoursePage() {
         depth,
         weeks,
         minutesPerDay: minutes,
+        replanMode,
       });
       void navigate(`/courses/${course.id}`);
     } catch (err) {
@@ -121,6 +139,39 @@ export function NewCoursePage() {
         <p className="text-small text-muted-foreground">
           Five learning days a week. Each day: a lesson, a short task and a quiz.
         </p>
+
+        <fieldset className="grid gap-3">
+          <legend className="mb-1 text-small font-medium">
+            How should your plan adapt to your scores?
+          </legend>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {REPLAN_MODES.map((m) => (
+              <label
+                key={m}
+                className={cn(
+                  'cursor-pointer rounded-lg border p-4 transition has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/40',
+                  replanMode === m ? 'border-brand bg-brand-soft' : 'hover:bg-muted',
+                )}
+              >
+                <input
+                  type="radio"
+                  name="replanMode"
+                  value={m}
+                  checked={replanMode === m}
+                  onChange={() => setReplanMode(m)}
+                  className="sr-only"
+                />
+                <span className="font-medium">{REPLAN[m].title}</span>
+                <span className="mt-1 block text-small text-muted-foreground">
+                  {REPLAN[m].body}
+                </span>
+              </label>
+            ))}
+          </div>
+          <p className="text-small text-muted-foreground">
+            You can change this later. Re-plans are free for your first 7 days.
+          </p>
+        </fieldset>
 
         {error && <ErrorNote>{error}</ErrorNote>}
         <Button

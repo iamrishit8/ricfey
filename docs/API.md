@@ -60,4 +60,17 @@ Source of truth: `apps/api/src/routes/*.ts`. Request/response types: `packages/s
 | POST   | `/courses/:id/days/:n/report` | "Flag a mistake": `{ kind: "factual_error"\|"wrong_quiz_answer"\|"unclear"\|"other", message, excerpt? }`. Max 20 per day.                                                                                                           |
 | GET    | `/courses/:id/progress`       | `{ daysTotal, daysCompleted, topicScores[], streak: { current, longest } }`.                                                                                                                                                         |
 
+## Re-planning ([walkthrough](walkthroughs/06-replanning.md))
+
+| Method | Path                              | Body / notes                                                                                                                                                                                                           |
+| ------ | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/courses/:id/mastery`            | `{ mastery: { topics: [{ topic, correct, total, percent, status }], weakTopics, strongTopics } }`.                                                                                                                     |
+| GET    | `/courses/:id/replan`             | `{ replan, policy }`. `replan`: latest one or null (`status`, `trigger`, `before`, `after`, `rationale`, `weakTopics`, `quality`, `priceCredits`). `policy`: `{ mode, horizon, freeDays, priceNow, replannableDays }`. |
+| POST   | `/courses/:id/replan`             | Start a re-plan → **202** `generating`; poll the GET. 409 if no day is finished yet, no upcoming day is left, or one is already open.                                                                                  |
+| POST   | `/courses/:id/replan/:rid/accept` | Apply a `proposed` re-plan (transaction). 409 if not proposed or now **stale**.                                                                                                                                        |
+| POST   | `/courses/:id/replan/:rid/reject` | Close a `proposed` re-plan without changes.                                                                                                                                                                            |
+| PATCH  | `/courses/:id/settings`           | `{ replanMode: "manual" \| "auto" }` → `{ course }`.                                                                                                                                                                   |
+
+`POST /courses` also accepts `replanMode` (default `manual`).
+
 A day counts as finished when a quiz **and** a task have been submitted (not necessarily passed). Finishing day _n_ opens day _n+1_ immediately; otherwise it opens on its scheduled date (India time).

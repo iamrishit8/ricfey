@@ -2,8 +2,8 @@
 
 How to verify everything that exists today. Updated at the end of each checkpoint and each phase.
 
-**Snapshot (2026-10-25, end of Phase 2):** `bun run check` green: typecheck, lint, format, **137 tests, 0 fail**
-(21 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
+**Snapshot (2026-10-25, end of Phase 3):** `bun run check` green: typecheck, lint, format, **153 tests, 0 fail**
+(23 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
 so a green run without it proves less. Browser e2e and `smoke:real` are run by hand (they need Chrome / a
 Gemini key) and are not part of `check`.
 
@@ -203,3 +203,14 @@ Manual (dev mode, fake LLM): finish day 1 with a wrong quiz, then
 `curl -b jar localhost:4000/courses/<id>/replan` (→ `proposed`), then `POST …/replan/<rid>/accept`.
 
 Real model: `bun run smoke:real` now ends with a re-plan step (~1 extra call).
+
+## P3-C2. Re-planning screens
+
+| What | Steps | Expected |
+| --- | --- | --- |
+| Scripted | `bun run e2e:learner -- api.log shots/` (fake LLM) | ends with "re-plan proposed" and "re-plan accepted; the day list shows the rewritten days"; no overflow at 390px |
+| Mode at intake | New course → choose "Automatically" → create | `GET /courses/<id>` shows `replanMode: "auto"` |
+| Propose and compare | Finish day 1 with a poor quiz → course home → "Adapt days N–M" | "Rethinking…", then changed days highlighted with the old title struck through |
+| Accept / reject | "Use the new plan" or "Keep my plan" | day list updates / nothing changes; a short status line explains |
+| Stale | Propose, open the first proposed day, then accept | error: the proposal expired |
+| Switch mode | Toggle "When I ask" / "Automatically" on the course home | persists after reload |

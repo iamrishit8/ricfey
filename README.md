@@ -5,8 +5,8 @@ day-by-day course: each day is a short lesson, a practice task and a quiz. Your 
 re-shape the rest of the plan. Any subject that can be taught and tested through text.
 Pay-as-you-go credits in rupees.
 
-**Status.** Phases 1 (foundations) and 2 (course creation and the daily loop) are built.
-Phase 3 (re-planning from quiz scores), Phase 4 (credits and Razorpay) and Phase 5 (launch) are
+**Status.** Phases 1 (foundations), 2 (course creation and the daily loop) and 3 (re-planning
+from quiz scores) are built. Phase 4 (credits and Razorpay) and Phase 5 (launch) are
 planned. See [ARCHITECTURE.md](ARCHITECTURE.md) for what exists and what does not.
 
 **New here?** Read [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) (running it in 10 minutes),
