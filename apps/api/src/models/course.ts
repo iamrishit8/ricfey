@@ -5,6 +5,7 @@ import {
   MAX_WEEKS,
   MIN_WEEKS,
   PLACEMENT_LEVELS,
+  REPLAN_MODES,
   type PublicCourse,
 } from '@ricfey/shared';
 
@@ -27,6 +28,7 @@ const courseSchema = new Schema(
     outlineGenerationStartedAt: { type: Date },
     currentOutlineVersion: { type: Number, default: null },
     approvedOutlineVersion: { type: Number, default: null },
+    replanMode: { type: String, enum: REPLAN_MODES, default: 'manual', required: true },
     placement: {
       type: new Schema(
         {
@@ -70,6 +72,7 @@ export function toPublicCourse(c: CourseDoc): PublicCourse {
         }
       : null,
     outlineStatus: c.outlineStatus,
+    replanMode: c.replanMode,
     approvedOutlineVersion: c.approvedOutlineVersion ?? null,
     startedAt: c.startedAt?.toISOString() ?? null,
     createdAt: (c.get('createdAt') as Date).toISOString(),

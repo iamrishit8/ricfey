@@ -57,6 +57,24 @@ export function devFakeResponder(prompt: string, purpose: LlmPurpose): string {
         quizConsistent: true,
         issues: [],
       });
+    case 'replan': {
+      // Keep each day's number, prefix the title, and spread the weak topics across the days.
+      const days = (req.days as Array<Record<string, unknown>> | undefined) ?? [];
+      const weak = (req.weakTopics as string[] | undefined) ?? [];
+      return JSON.stringify({
+        rationale: `[FAKE] Re-planned ${days.length} days to give more practice on ${weak.join(', ') || 'recent topics'}.`,
+        days: days.map((d, i) => {
+          const extra = weak.filter((_, w) => w % days.length === i);
+          const topics = [...new Set([...extra, ...(d.topics as string[])])].slice(0, 4);
+          return {
+            day: d.day,
+            title: extra.length ? `[FAKE] Revisit ${extra.join(' and ')}` : String(d.title),
+            objectives: d.objectives,
+            topics,
+          };
+        }),
+      });
+    }
     case 'task_grading': {
       const max = Number(req.maxScore ?? 5);
       const criteria = (req.rubric as Array<{ criterion: string }> | undefined) ?? [];

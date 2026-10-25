@@ -185,3 +185,21 @@ Manual (dev mode): on an open, generated day:
 | Locked day               | open `/courses/<id>/days/2` before finishing day 1                                                                                                                      | "Not open yet" with the date                                                               |
 | Real LLM path            | `bun run smoke:real` (uses quota)                                                                                                                                       | every step prints a status; output in `docs/samples/smoke/`                                |
 | Report API               | `apps/api/src/routes/grading.test.ts` → "flag a mistake"                                                                                                                | stored, validated, other learners 404                                                      |
+
+## P3-C1. Re-planning backend
+
+Automated: `packages/shared/src/schemas/replan.test.ts` (mastery thresholds, horizon, price, quality
+metrics) and `apps/api/src/routes/replan.test.ts` (weak/strong mastery; no re-plan before a finished
+day; propose → accept rewrites only unopened days within the horizon as outline version
+`replanned`, and later generation uses it; prompt carries scores as delimited data; one open re-plan
+per course; reject; a day opened after the proposal makes it **stale** with nothing changed; a model
+that omits the weak topic twice → `failed`; auto mode applies by itself and waits 3 days before the
+next; auto without weak topics and manual mode never re-plan; price 0 until 7 finished days, then 2;
+settings; **another learner → 404 on every route**). Mutation check: disabling the weak-topic rule
+makes the "omits the weak topic" test fail.
+
+Manual (dev mode, fake LLM): finish day 1 with a wrong quiz, then
+`curl -b jar localhost:4000/courses/<id>/mastery`, `curl -b jar -X POST localhost:4000/courses/<id>/replan`,
+`curl -b jar localhost:4000/courses/<id>/replan` (→ `proposed`), then `POST …/replan/<rid>/accept`.
+
+Real model: `bun run smoke:real` now ends with a re-plan step (~1 extra call).

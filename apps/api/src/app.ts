@@ -13,6 +13,7 @@ import { courseRoutes } from './routes/courses';
 import { dayRoutes } from './routes/days';
 import { gradingRoutes } from './routes/grading';
 import { healthRoutes } from './routes/health';
+import { replanRoutes } from './routes/replan';
 
 export type AppConfig = {
   webUrl: string;
@@ -71,6 +72,7 @@ export function buildApp(
   app.register(courseRoutes, deps);
   app.register(dayRoutes, deps);
   app.register(gradingRoutes, deps);
+  app.register(replanRoutes, deps);
 
   return app;
 }

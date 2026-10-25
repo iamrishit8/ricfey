@@ -4,14 +4,14 @@ import { CourseDayModel } from '../models/course-day';
 import { QuizAttemptModel } from '../models/quiz-attempt';
 import { streaks } from './streak';
 
-export async function courseProgress(course: CourseDoc, now: Date): Promise<ProgressView> {
-  const filter = { courseId: course._id, userId: course.userId };
-  const [days, attempts] = await Promise.all([
-    CourseDayModel.find(filter).select({ day: 1, completedAt: 1 }).lean(),
-    QuizAttemptModel.find(filter).sort({ createdAt: -1 }).lean(),
-  ]);
+type TopicScore = ProgressView['topicScores'][number];
 
-  // Topic scores use each day's latest quiz attempt, so retaking a quiz updates them.
+/** Percent right per quiz topic, weakest first, from each day's latest quiz attempt. */
+export async function topicScores(course: CourseDoc): Promise<TopicScore[]> {
+  const attempts = await QuizAttemptModel.find({ courseId: course._id, userId: course.userId })
+    .sort({ createdAt: -1 })
+    .lean();
+  // Each day's latest attempt only, so retaking a quiz updates the scores.
   const latestPerDay = new Map<number, (typeof attempts)[number]>();
   for (const a of attempts) if (!latestPerDay.has(a.day)) latestPerDay.set(a.day, a);
   const topics = new Map<string, { correct: number; total: number }>();
@@ -24,13 +24,23 @@ export async function courseProgress(course: CourseDoc, now: Date): Promise<Prog
     }
   }
 
+  return [...topics]
+    .map(([topic, t]) => ({ topic, ...t, percent: Math.round((t.correct / t.total) * 100) }))
+    .sort((a, b) => a.percent - b.percent || a.topic.localeCompare(b.topic));
+}
+
+export async function courseProgress(course: CourseDoc, now: Date): Promise<ProgressView> {
+  const [days, scores] = await Promise.all([
+    CourseDayModel.find({ courseId: course._id, userId: course.userId })
+      .select({ day: 1, completedAt: 1 })
+      .lean(),
+    topicScores(course),
+  ]);
   const completions = days.flatMap((d) => (d.completedAt ? [d.completedAt] : []));
   return {
     daysTotal: days.length,
     daysCompleted: completions.length,
-    topicScores: [...topics]
-      .map(([topic, t]) => ({ topic, ...t, percent: Math.round((t.correct / t.total) * 100) }))
-      .sort((a, b) => a.percent - b.percent || a.topic.localeCompare(b.topic)),
+    topicScores: scores,
     streak: streaks(completions, now),
   };
 }

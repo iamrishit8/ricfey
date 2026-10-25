@@ -1,0 +1,292 @@
+{
+  "title": "Practical Fundamentals of Astrophysics",
+  "summary": "A 4-week, quantitative introduction to astrophysics tailored for self-learners, covering radiation physics, stellar mechanics, stellar life cycles, and introductory cosmology with daily bite-sized calculation tasks.",
+  "skill": "Fundamentals of astrophysics",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Astronomical Measurements, Radiation, and Spectra",
+      "days": [
+        {
+          "day": 1,
+          "title": "Cosmic Distances and Coordinate Systems",
+          "objectives": [
+            "Convert between astronomical units, parsecs, and light-years",
+            "Calculate stellar distances given parallax angles in milliarcseconds"
+          ],
+          "topics": [
+            "astrometry",
+            "parallax",
+            "distance-scales"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Blackbody Radiation and Stellar Temperatures",
+          "objectives": [
+            "Calculate peak emission wavelengths using Wien's displacement law",
+            "Determine total radiant surface flux using the Stefan-Boltzmann law"
+          ],
+          "topics": [
+            "blackbody-radiation",
+            "thermodynamics",
+            "stellar-temperatures"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Flux, Luminosity, and the Inverse-Square Law",
+          "objectives": [
+            "Calculate radiant flux received at Earth given a star's luminosity and distance",
+            "Estimate stellar radii using luminosity and effective temperature"
+          ],
+          "topics": [
+            "luminosity",
+            "flux",
+            "stellar-radii"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "The Magnitude Scale and Distance Modulus",
+          "objectives": [
+            "Convert between radiant flux ratios and apparent magnitude differences",
+            "Calculate source distances using absolute magnitude and the distance modulus equation"
+          ],
+          "topics": [
+            "magnitude-scale",
+            "distance-modulus",
+            "photometry"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Stellar Spectroscopy and Spectral Classification",
+          "objectives": [
+            "Identify stellar spectral classes (OBAFGKM) based on characteristic absorption lines",
+            "Determine surface temperatures and compositions from absorption line profiles"
+          ],
+          "topics": [
+            "spectroscopy",
+            "spectral-classification",
+            "stellar-atmospheres"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Orbital Mechanics and Stellar Structure",
+      "days": [
+        {
+          "day": 6,
+          "title": "Keplerian Orbits and Binary Mass Determination",
+          "objectives": [
+            "Calculate combined system masses from orbital periods and semi-major axes using Kepler's third law",
+            "Estimate individual masses of stars in spectroscopic binary systems"
+          ],
+          "topics": [
+            "orbital-mechanics",
+            "binary-stars",
+            "gravitation"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Hydrostatic Equilibrium in Stars",
+          "objectives": [
+            "Calculate central pressure estimates of stars using the hydrostatic equilibrium equation",
+            "Explain why a star maintains a stable size against gravitational collapse"
+          ],
+          "topics": [
+            "hydrostatic-equilibrium",
+            "stellar-interiors",
+            "stellar-structure"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Core Nuclear Fusion and Energy Generation",
+          "objectives": [
+            "Calculate mass-energy conversion efficiency for the proton-proton chain",
+            "Compare conditions required for the proton-proton chain versus the CNO cycle"
+          ],
+          "topics": [
+            "nuclear-fusion",
+            "stellar-interiors",
+            "energy-generation"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "The Hertzsprung-Russell Diagram and Stellar Groups",
+          "objectives": [
+            "Plot stars on an H-R diagram using luminosity, color index, and temperature",
+            "Distinguish main-sequence stars, giants, and white dwarfs by their positions on the H-R diagram"
+          ],
+          "topics": [
+            "hr-diagram",
+            "stellar-classification",
+            "photometry"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Mass-Luminosity Relations and Main-Sequence Lifetimes",
+          "objectives": [
+            "Calculate luminosity from stellar mass using empirical power-law relations",
+            "Estimate the main-sequence lifetime of a star relative to the Sun"
+          ],
+          "topics": [
+            "mass-luminosity-relation",
+            "stellar-evolution",
+            "lifetime-estimation"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Stellar Evolution, Remnants, and the Interstellar Medium",
+      "days": [
+        {
+          "day": 11,
+          "title": "The Interstellar Medium and the Jeans Instability",
+          "objectives": [
+            "Calculate the Jeans mass and Jeans length for a cold molecular cloud",
+            "Determine whether an interstellar cloud core will undergo gravitational collapse"
+          ],
+          "topics": [
+            "interstellar-medium",
+            "star-formation",
+            "gravitation"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Post-Main-Sequence Evolution of Low-Mass Stars",
+          "objectives": [
+            "Trace the evolutionary path of a Sun-like star through the red giant and asymptotic giant branches",
+            "Describe the physical mechanism forming a planetary nebula and white dwarf"
+          ],
+          "topics": [
+            "stellar-evolution",
+            "post-main-sequence",
+            "hr-diagram"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Degeneracy Pressure and the Chandrasekhar Limit",
+          "objectives": [
+            "Explain electron degeneracy pressure using the Pauli exclusion principle",
+            "Calculate the radius and density of a carbon-oxygen white dwarf near the Chandrasekhar mass"
+          ],
+          "topics": [
+            "degenerate-matter",
+            "white-dwarfs",
+            "quantum-astrophysics"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Core-Collapse Supernovae and Neutron Stars",
+          "objectives": [
+            "Calculate the gravitational binding energy released during a core collapse",
+            "Estimate neutron star densities and surface gravitational acceleration"
+          ],
+          "topics": [
+            "supernovae",
+            "neutron-stars",
+            "extreme-matter"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Stellar-Mass Black Holes and the Event Horizon",
+          "objectives": [
+            "Calculate the Schwarzschild radius for a given stellar mass",
+            "Compute the gravitational redshift for photons emitted near an event horizon"
+          ],
+          "topics": [
+            "black-holes",
+            "general-relativity",
+            "gravitation"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Galactic Dynamics and Observational Cosmology",
+      "days": [
+        {
+          "day": 16,
+          "title": "Galactic Structure and Rotation Curves",
+          "objectives": [
+            "Calculate orbital speeds of disk stars as a function of radius",
+            "Infer the presence and distribution of dark matter from flat galactic rotation curves"
+          ],
+          "topics": [
+            "galactic-dynamics",
+            "dark-matter",
+            "milky-way"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "The Extragalactic Distance Ladder",
+          "objectives": [
+            "Estimate distances to nearby galaxies using Cepheid period-luminosity relations",
+            "Use Type Ia supernova peak magnitudes as standard candles to measure cosmological distances"
+          ],
+          "topics": [
+            "distance-ladder",
+            "standard-candles",
+            "cosmology"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Hubble-Lemaître Law and Cosmic Expansion",
+          "objectives": [
+            "Calculate recessional velocities from observed cosmological redshifts",
+            "Estimate the expansion age of the universe using the Hubble constant"
+          ],
+          "topics": [
+            "hubble-law",
+            "redshift",
+            "cosmic-expansion"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "The Cosmic Microwave Background",
+          "objectives": [
+            "Calculate the temperature of the early universe at decoupling using CMB redshift",
+            "Explain the physical origin of CMB blackbody radiation and its temperature fluctuations"
+          ],
+          "topics": [
+            "cmb",
+            "early-universe",
+            "blackbody-radiation"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "Cosmological Parameters and the Universal Energy Budget",
+          "objectives": [
+            "Calculate the critical density of the universe given the current Hubble constant",
+            "Estimate the relative contributions of baryonic matter, dark matter, and dark energy from density parameters"
+          ],
+          "topics": [
+            "cosmology",
+            "dark-energy",
+            "friedmann-equations"
+          ]
+        }
+      ]
+    }
+  ]
+}

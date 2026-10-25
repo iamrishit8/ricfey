@@ -25,6 +25,7 @@ export type PublicCourse = {
     weakTopics: string[];
   } | null;
   outlineStatus: 'none' | 'generating' | 'ready' | 'failed';
+  replanMode: 'manual' | 'auto';
   approvedOutlineVersion: number | null;
   startedAt: string | null;
   createdAt: string;

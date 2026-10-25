@@ -54,5 +54,9 @@ export type OutlineView = {
   approvedVersion: number | null;
   outline: CourseOutline | null;
   quote: CreditQuote | null;
-  versions: Array<{ version: number; source: 'generated' | 'edited'; createdAt: string }>;
+  versions: Array<{
+    version: number;
+    source: 'generated' | 'edited' | 'replanned';
+    createdAt: string;
+  }>;
 };

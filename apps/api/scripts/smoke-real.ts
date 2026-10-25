@@ -1,7 +1,7 @@
 /**
- * One course through every Phase 2 LLM step with the REAL provider, in-process:
- * placement bank → placement → outline → day 1 + self-check → task grading.
- * Costs about 5 calls on GEMINI_MODEL and 1–2 on GEMINI_CHECK_MODEL (more if retries happen).
+ * One course through every LLM step with the REAL provider, in-process:
+ * placement bank → placement → outline → day 1 + self-check → task grading → re-plan.
+ * Costs about 6 calls on GEMINI_MODEL and 1–2 on GEMINI_CHECK_MODEL (more if retries happen).
  *   bun run smoke:real                      (uses MONGODB_URI; llmCalls are logged there)
  * Writes the generated course to docs/samples/smoke/<date>.json for reading.
  */
@@ -76,6 +76,19 @@ try {
     `task grading: ${task!.status} ${task!.score}/${task!.maxScore}; missed ${JSON.stringify(task!.missedCriteria)}`,
   );
 
+  // Fail day 1's quiz on purpose so its topics are weak, then ask for a re-plan.
+  const key = (day!.content as { quiz: { questions: Array<{ answerIndex: number }> } }).quiz
+    .questions;
+  await inject('POST', `/courses/${id}/days/1/quiz`, {
+    answers: key.map((q) => (q.answerIndex + 1) % 4),
+  });
+  await inject('POST', `/courses/${id}/replan`);
+  await background.drain();
+  const replan = (await inject('GET', `/courses/${id}/replan`)).json().data.replan;
+  say(
+    `re-plan: ${replan?.status}; weak ${JSON.stringify(replan?.weakTopics)}; quality ${JSON.stringify(replan?.quality)}`,
+  );
+
   const out = resolve(import.meta.dir, '../../../docs/samples/smoke');
   await mkdir(out, { recursive: true });
   const file = join(out, `${new Date().toISOString().slice(0, 10)}-personal-finance.json`);
@@ -93,6 +106,7 @@ try {
           feedback: task!.feedback,
           missedCriteria: task!.missedCriteria,
         },
+        replan,
       },
       null,
       2,

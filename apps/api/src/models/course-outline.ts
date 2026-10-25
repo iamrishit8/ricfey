@@ -5,7 +5,7 @@ const courseOutlineSchema = new Schema(
     courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     version: { type: Number, required: true },
-    source: { type: String, enum: ['generated', 'edited'], required: true },
+    source: { type: String, enum: ['generated', 'edited', 'replanned'], required: true },
     // A CourseOutline, always validated with Zod before it is written.
     outline: { type: Schema.Types.Mixed, required: true },
   },

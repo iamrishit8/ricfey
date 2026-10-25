@@ -14,6 +14,7 @@ import { CourseModel, type CourseDoc } from '../models/course';
 import { CourseDayModel, type CourseDayDoc } from '../models/course-day';
 import { QuizAttemptModel } from '../models/quiz-attempt';
 import { TaskAttemptModel, type TaskAttemptDoc } from '../models/task-attempt';
+import { maybeAutoReplan } from '../replan/service';
 import { gradeQuiz } from './quiz';
 import { maxScore, taskGradingPrompt } from './task-prompt';
 
@@ -72,23 +73,33 @@ function taskResult(t: TaskAttemptDoc): TaskResult {
  * conditional on completedAt being null, so it happens once. When every day is finished the
  * course is completed.
  */
-async function maybeCompleteDay(course: CourseDoc, day: CourseDayDoc, now: Date): Promise<void> {
+async function maybeCompleteDay(
+  course: CourseDoc,
+  day: CourseDayDoc,
+  now: Date,
+  deps: GradingDeps,
+): Promise<void> {
   if (day.completedAt) return;
   const [quiz, task] = await Promise.all([
     QuizAttemptModel.exists({ courseId: course._id, day: day.day }),
     TaskAttemptModel.exists({ courseId: course._id, day: day.day }),
   ]);
   if (!quiz || !task) return;
-  await CourseDayModel.updateOne(
+  const finished = await CourseDayModel.updateOne(
     { _id: day._id, completedAt: null },
     { $set: { completedAt: now } },
   );
+  if (finished.modifiedCount !== 1) return;
   const open = await CourseDayModel.exists({ courseId: course._id, completedAt: null });
-  if (!open)
+  if (!open) {
     await CourseModel.updateOne(
       { _id: course._id, status: 'active' },
       { $set: { status: 'completed' } },
     );
+    return;
+  }
+  // Auto re-plan mode: a newly finished day may reshape the next few days.
+  await maybeAutoReplan(course, deps);
 }
 
 export async function submitQuiz(
@@ -107,7 +118,7 @@ export async function submitQuiz(
     answers,
     ...graded,
   });
-  await maybeCompleteDay(course, day, now);
+  await maybeCompleteDay(course, day, now, deps);
   return quizResult(content, {
     answers,
     score: graded.score,
@@ -151,7 +162,7 @@ export async function submitTask(
     gradingStartedAt: now,
     maxScore: maxScore(content),
   });
-  await maybeCompleteDay(course, day, now);
+  await maybeCompleteDay(course, day, now, deps);
   deps.background.run('task_grading', () => gradeTask(attempt, content, deps));
   return taskResult(attempt);
 }
