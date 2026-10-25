@@ -1,6 +1,6 @@
 # Phase 1 cost report
 
-Generated 2026-10-17 by `bun run cost:report` from 4 samples in `docs/samples/`.
+Generated 2026-10-25 by `bun run cost:report` from 8 samples in `docs/samples/`.
 Do not edit the tables by hand; re-run the script.
 
 ## Method
@@ -11,24 +11,28 @@ Do not edit the tables by hand; re-run the script.
 - **Cost per course-day** = day-1 cost + (outline cost ÷ days in that course).
 - **30-day course** = outline cost per day × 30 + day-1 cost × 30. Day 1 stands in for every day.
 - Prices: paid-tier standard prices from https://ai.google.dev/gemini-api/docs/pricing (read 2026-10-17).
-  **Primary figures use prices from 2027-01-01**; prices on 2026-10-17 shown beside them.
+  **Primary figures use prices from 2027-01-01**; prices on 2026-10-25 shown beside them.
   The free tier costs nothing but has daily limits (below) and different data terms.
 
 ## Per sample
 
-| Skill | Model | Outline tokens in / out | Day tokens in / out | Thinking share of day output | Retries | $/course-day from 2027-01-01 | $/course-day on 2026-10-17 |
+| Skill | Model | Outline tokens in / out | Day tokens in / out | Thinking share of day output | Retries | $/course-day from 2027-01-01 | $/course-day on 2026-10-25 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| Computer science fundamentals | `gemini-3.5-flash-lite` | 372 / 1734 | 999 / 2030 | 0% | 0 | $0.00560 | $0.00560 |
+| Fundamentals of astrophysics | `gemini-3.5-flash-lite` | 372 / 1663 | 989 / 2206 | 0% | 0 | $0.00603 | $0.00603 |
 | Music theory | `gemini-3.5-flash-lite` | 278 / 1955 | 983 / 2052 | 0% | 0 | $0.00567 | $0.00567 |
 | Personal finance | `gemini-3.5-flash-lite` | 278 / 1878 | 913 / 2068 | 0% | 0 | $0.00568 | $0.00568 |
 | Python | `gemini-3.5-flash-lite` | 276 / 1815 | 876 / 1742 | 0% | 0 | $0.00485 | $0.00485 |
+| Computer science fundamentals | `gemini-3.8-flash` | 372 / 2171 | 1140 / 3132 | 0% | 0 | $0.0260 | $0.0130 |
+| Fundamentals of astrophysics | `gemini-3.8-flash` | 372 / 2026 | 1089 / 4079 | 18% | 0 | $0.0330 | $0.0165 |
 | Python | `gemini-3.8-flash` | 276 / 3195 | 975 / 2800 | 0% | 0 | $0.0237 | $0.0118 |
 
 ## 30-day course, averaged over skills
 
-| Model | Samples | $/course-day from 2027-01-01 | 30-day course from 2027-01-01 | 30-day course on 2026-10-17 |
+| Model | Samples | $/course-day from 2027-01-01 | 30-day course from 2027-01-01 | 30-day course on 2026-10-25 |
 | --- | --- | --- | --- | --- |
-| `gemini-3.5-flash-lite` | 3 | $0.00540 | **$0.1621** | $0.1621 |
-| `gemini-3.8-flash` | 1 | $0.0237 | **$0.7104** | $0.3552 |
+| `gemini-3.5-flash-lite` | 5 | $0.00557 | **$0.1670** | $0.1670 |
+| `gemini-3.8-flash` | 3 | $0.0276 | **$0.8274** | $0.4137 |
 
 ## Free-tier limits
 

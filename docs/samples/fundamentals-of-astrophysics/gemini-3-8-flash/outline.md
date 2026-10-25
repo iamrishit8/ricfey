@@ -1,133 +1,133 @@
-# Practical Fundamentals of Astrophysics
+# Working Fundamentals of Astrophysics
 
 _Depth: working_
 
-A 4-week, quantitative introduction to astrophysics tailored for self-learners, covering radiation physics, stellar mechanics, stellar life cycles, and introductory cosmology with daily bite-sized calculation tasks.
+A practical, calculation-driven 4-week introduction to astrophysics. Master orbital mechanics, radiation laws, stellar interiors, compact remnants, and cosmological expansion using core physical equations and real observational data.
 
-## Week 1: Astronomical Measurements, Radiation, and Spectra
+## Week 1: Celestial Mechanics, Radiation, and Spectroscopy
 
-**Day 1: Cosmic Distances and Coordinate Systems**  
-Topics: `astrometry`, `parallax`, `distance-scales`
+**Day 1: Keplerian Orbits and Planetary Motion**  
+Topics: `orbital-mechanics`, `keplers-laws`
 
-- Convert between astronomical units, parsecs, and light-years
-- Calculate stellar distances given parallax angles in milliarcseconds
+- Calculate semi-major axes and orbital periods using Kepler's third law
+- Compute orbital velocity at periastron and apastron for eccentric orbits
 
-**Day 2: Blackbody Radiation and Stellar Temperatures**  
-Topics: `blackbody-radiation`, `thermodynamics`, `stellar-temperatures`
+**Day 2: Gravitational Potential and Escape Velocity**  
+Topics: `gravitation`, `orbital-mechanics`
 
-- Calculate peak emission wavelengths using Wien's displacement law
-- Determine total radiant surface flux using the Stefan-Boltzmann law
+- Calculate the escape velocity for any spherical celestial body
+- Determine whether a test mass is gravitationally bound given its kinetic and potential energy
 
-**Day 3: Flux, Luminosity, and the Inverse-Square Law**  
-Topics: `luminosity`, `flux`, `stellar-radii`
+**Day 3: Radiation Flux and Luminosity**  
+Topics: `stellar-radiation`, `flux-and-luminosity`
 
-- Calculate radiant flux received at Earth given a star's luminosity and distance
-- Estimate stellar radii using luminosity and effective temperature
+- Calculate radiant flux from a source using the inverse-square law
+- Differentiate between intrinsic luminosity and observed flux in astronomical measurements
 
-**Day 4: The Magnitude Scale and Distance Modulus**  
-Topics: `magnitude-scale`, `distance-modulus`, `photometry`
+**Day 4: Blackbody Radiation and Stellar Temperatures**  
+Topics: `blackbody-radiation`, `stellar-radiation`
 
-- Convert between radiant flux ratios and apparent magnitude differences
-- Calculate source distances using absolute magnitude and the distance modulus equation
+- Determine a star's surface temperature using Wien's displacement law
+- Estimate total stellar luminosity using the Stefan-Boltzmann law and stellar radius
 
-**Day 5: Stellar Spectroscopy and Spectral Classification**  
-Topics: `spectroscopy`, `spectral-classification`, `stellar-atmospheres`
+**Day 5: Astronomical Spectroscopy and Radial Velocity**  
+Topics: `spectroscopy`, `doppler-shift`
 
-- Identify stellar spectral classes (OBAFGKM) based on characteristic absorption lines
-- Determine surface temperatures and compositions from absorption line profiles
+- Identify primary stellar absorption lines across spectral types
+- Calculate line-of-sight velocity using the non-relativistic Doppler shift equation
 
-## Week 2: Orbital Mechanics and Stellar Structure
+## Week 2: Stellar Properties, Interiors, and Energy Generation
 
-**Day 6: Keplerian Orbits and Binary Mass Determination**  
-Topics: `orbital-mechanics`, `binary-stars`, `gravitation`
+**Day 6: Astronomical Distances and Magnitude Systems**  
+Topics: `stellar-distances`, `flux-and-luminosity`
 
-- Calculate combined system masses from orbital periods and semi-major axes using Kepler's third law
-- Estimate individual masses of stars in spectroscopic binary systems
+- Convert between stellar parallax angles in arcseconds and distance in parsecs
+- Calculate absolute magnitude and distance modulus from apparent magnitude
 
-**Day 7: Hydrostatic Equilibrium in Stars**  
-Topics: `hydrostatic-equilibrium`, `stellar-interiors`, `stellar-structure`
+**Day 7: The Hertzsprung-Russell Diagram and Stellar Classification**  
+Topics: `hr-diagram`, `stellar-classification`
 
-- Calculate central pressure estimates of stars using the hydrostatic equilibrium equation
-- Explain why a star maintains a stable size against gravitational collapse
+- Place stars on the HR diagram using spectral type and absolute magnitude
+- Extract stellar radius trends from an HR diagram plot
 
-**Day 8: Core Nuclear Fusion and Energy Generation**  
-Topics: `nuclear-fusion`, `stellar-interiors`, `energy-generation`
+**Day 8: Hydrostatic Equilibrium and Core Pressures**  
+Topics: `stellar-interiors`, `hydrostatic-equilibrium`
 
-- Calculate mass-energy conversion efficiency for the proton-proton chain
-- Compare conditions required for the proton-proton chain versus the CNO cycle
+- Formulate the hydrostatic balance equation for a stable spherical star
+- Estimate central pressure and core temperature using dimensional scaling
 
-**Day 9: The Hertzsprung-Russell Diagram and Stellar Groups**  
-Topics: `hr-diagram`, `stellar-classification`, `photometry`
+**Day 9: Nuclear Fusion and Stellar Energy Production**  
+Topics: `nuclear-fusion`, `stellar-interiors`
 
-- Plot stars on an H-R diagram using luminosity, color index, and temperature
-- Distinguish main-sequence stars, giants, and white dwarfs by their positions on the H-R diagram
+- Trace the proton-proton chain and CNO cycle energy release mechanisms
+- Calculate mass defect and energy release per fusion reaction using E=mc^2
 
-**Day 10: Mass-Luminosity Relations and Main-Sequence Lifetimes**  
-Topics: `mass-luminosity-relation`, `stellar-evolution`, `lifetime-estimation`
+**Day 10: Mass-Luminosity Relation and Stellar Lifetimes**  
+Topics: `stellar-evolution`, `hr-diagram`
 
-- Calculate luminosity from stellar mass using empirical power-law relations
-- Estimate the main-sequence lifetime of a star relative to the Sun
+- Estimate main-sequence luminosity from stellar mass using power-law scaling
+- Compute the main-sequence lifetime of a star relative to the Sun
 
-## Week 3: Stellar Evolution, Remnants, and the Interstellar Medium
+## Week 3: Stellar Evolution and Compact Objects
 
-**Day 11: The Interstellar Medium and the Jeans Instability**  
-Topics: `interstellar-medium`, `star-formation`, `gravitation`
+**Day 11: Post-Main-Sequence Evolution and Giant Phases**  
+Topics: `stellar-evolution`, `hr-diagram`
 
-- Calculate the Jeans mass and Jeans length for a cold molecular cloud
-- Determine whether an interstellar cloud core will undergo gravitational collapse
+- Chart the post-main-sequence track of a 1-solar-mass star on the HR diagram
+- Explain physical triggers behind core helium flashes and planetary nebula ejection
 
-**Day 12: Post-Main-Sequence Evolution of Low-Mass Stars**  
-Topics: `stellar-evolution`, `post-main-sequence`, `hr-diagram`
+**Day 12: White Dwarfs and Degeneracy Pressure**  
+Topics: `compact-objects`, `degeneracy-pressure`
 
-- Trace the evolutionary path of a Sun-like star through the red giant and asymptotic giant branches
-- Describe the physical mechanism forming a planetary nebula and white dwarf
+- Calculate white dwarf radius using electron degeneracy scaling
+- Determine the Chandrasekhar mass limit and describe the conditions under which it fails
 
-**Day 13: Degeneracy Pressure and the Chandrasekhar Limit**  
-Topics: `degenerate-matter`, `white-dwarfs`, `quantum-astrophysics`
+**Day 13: Supernovae and Neutron Stars**  
+Topics: `supernovae`, `compact-objects`
 
-- Explain electron degeneracy pressure using the Pauli exclusion principle
-- Calculate the radius and density of a carbon-oxygen white dwarf near the Chandrasekhar mass
+- Distinguish between Type Ia and core-collapse supernova mechanisms
+- Calculate the average density and surface gravity of a 1.4-solar-mass neutron star
 
-**Day 14: Core-Collapse Supernovae and Neutron Stars**  
-Topics: `supernovae`, `neutron-stars`, `extreme-matter`
+**Day 14: Black Holes and the Schwarzschild Metric**  
+Topics: `black-holes`, `gravitation`
 
-- Calculate the gravitational binding energy released during a core collapse
-- Estimate neutron star densities and surface gravitational acceleration
+- Calculate the Schwarzschild radius for stellar and supermassive black holes
+- Compute gravitational redshift for photons emitted near an event horizon
 
-**Day 15: Stellar-Mass Black Holes and the Event Horizon**  
-Topics: `black-holes`, `general-relativity`, `gravitation`
+**Day 15: Binary Systems and Mass Transfer**  
+Topics: `binary-stars`, `orbital-mechanics`
 
-- Calculate the Schwarzschild radius for a given stellar mass
-- Compute the gravitational redshift for photons emitted near an event horizon
+- Identify Roche lobe overflow conditions in close binary systems
+- Calculate binary orbital separation from orbital period and component masses
 
-## Week 4: Galactic Dynamics and Observational Cosmology
+## Week 4: Galactic Dynamics, High-Energy Astrophysics, and Cosmology
 
-**Day 16: Galactic Structure and Rotation Curves**  
-Topics: `galactic-dynamics`, `dark-matter`, `milky-way`
+**Day 16: Galactic Rotation and Dark Matter**  
+Topics: `galactic-dynamics`, `dark-matter`
 
-- Calculate orbital speeds of disk stars as a function of radius
-- Infer the presence and distribution of dark matter from flat galactic rotation curves
+- Plot expected Keplerian versus observed flat galactic rotation curves
+- Calculate the dynamical mass enclosed within a given galactic radius
 
-**Day 17: The Extragalactic Distance Ladder**  
-Topics: `distance-ladder`, `standard-candles`, `cosmology`
+**Day 17: Active Galactic Nuclei and the Eddington Limit**  
+Topics: `agn-and-quasars`, `black-holes`
 
-- Estimate distances to nearby galaxies using Cepheid period-luminosity relations
-- Use Type Ia supernova peak magnitudes as standard candles to measure cosmological distances
+- Calculate the theoretical maximum luminosity (Eddington limit) for an accretion disk
+- Estimate black hole accretion rate from observed bolometric AGN luminosity
 
-**Day 18: Hubble-Lemaître Law and Cosmic Expansion**  
-Topics: `hubble-law`, `redshift`, `cosmic-expansion`
+**Day 18: Cosmic Expansion and Hubble's Law**  
+Topics: `cosmology`, `hubble-law`
 
-- Calculate recessional velocities from observed cosmological redshifts
-- Estimate the expansion age of the universe using the Hubble constant
+- Calculate recessional velocity and distance using Hubble's law
+- Estimate the age of the universe from Hubble constant measurements
 
-**Day 19: The Cosmic Microwave Background**  
-Topics: `cmb`, `early-universe`, `blackbody-radiation`
+**Day 19: Cosmological Redshift and Scale Factor**  
+Topics: `cosmology`, `doppler-shift`
 
-- Calculate the temperature of the early universe at decoupling using CMB redshift
-- Explain the physical origin of CMB blackbody radiation and its temperature fluctuations
+- Convert between cosmological redshift z and cosmic scale factor a(t)
+- Calculate lookback time and distance for low-redshift astronomical targets
 
-**Day 20: Cosmological Parameters and the Universal Energy Budget**  
-Topics: `cosmology`, `dark-energy`, `friedmann-equations`
+**Day 20: The Cosmic Microwave Background and Energy Budget**  
+Topics: `cosmology`, `blackbody-radiation`
 
-- Calculate the critical density of the universe given the current Hubble constant
-- Estimate the relative contributions of baryonic matter, dark matter, and dark energy from density parameters
+- Interpret the Planck spectrum and peak temperature of the CMB
+- Calculate critical density and evaluate the cosmic energy breakdown between matter and dark energy
