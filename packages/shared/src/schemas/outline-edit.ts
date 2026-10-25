@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { creditsPerDay } from '../credits';
 import type { CourseOutline } from './course-outline';
 
 /**
@@ -36,15 +37,16 @@ export type CreditQuote = {
   formula: string;
 };
 
-/** Fixed formula, shown before approval. Nothing is charged in Phase 2. */
+/** Shown before approval. Each day is charged when it is first opened, not up front. */
 export function creditQuote(days: number, minutesPerDay: number): CreditQuote {
-  const creditsPerDay = Math.ceil(minutesPerDay / 15);
+  const perDay = creditsPerDay(minutesPerDay);
   return {
     days,
     minutesPerDay,
-    creditsPerDay,
-    totalCredits: days * creditsPerDay,
-    formula: 'credits per day = ⌈minutes per day ÷ 15⌉; total = days × credits per day',
+    creditsPerDay: perDay,
+    totalCredits: days * perDay,
+    formula:
+      'credits per day = ⌈minutes per day ÷ 15⌉, charged when you first open a day; total = days × credits per day',
   };
 }
 

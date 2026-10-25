@@ -206,11 +206,25 @@ Real model: `bun run smoke:real` now ends with a re-plan step (~1 extra call).
 
 ## P3-C2. Re-planning screens
 
-| What | Steps | Expected |
-| --- | --- | --- |
-| Scripted | `bun run e2e:learner -- api.log shots/` (fake LLM) | ends with "re-plan proposed" and "re-plan accepted; the day list shows the rewritten days"; no overflow at 390px |
-| Mode at intake | New course → choose "Automatically" → create | `GET /courses/<id>` shows `replanMode: "auto"` |
-| Propose and compare | Finish day 1 with a poor quiz → course home → "Adapt days N–M" | "Rethinking…", then changed days highlighted with the old title struck through |
-| Accept / reject | "Use the new plan" or "Keep my plan" | day list updates / nothing changes; a short status line explains |
-| Stale | Propose, open the first proposed day, then accept | error: the proposal expired |
-| Switch mode | Toggle "When I ask" / "Automatically" on the course home | persists after reload |
+| What                | Steps                                                          | Expected                                                                                                         |
+| ------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Scripted            | `bun run e2e:learner -- api.log shots/` (fake LLM)             | ends with "re-plan proposed" and "re-plan accepted; the day list shows the rewritten days"; no overflow at 390px |
+| Mode at intake      | New course → choose "Automatically" → create                   | `GET /courses/<id>` shows `replanMode: "auto"`                                                                   |
+| Propose and compare | Finish day 1 with a poor quiz → course home → "Adapt days N–M" | "Rethinking…", then changed days highlighted with the old title struck through                                   |
+| Accept / reject     | "Use the new plan" or "Keep my plan"                           | day list updates / nothing changes; a short status line explains                                                 |
+| Stale               | Propose, open the first proposed day, then accept              | error: the proposal expired                                                                                      |
+| Switch mode         | Toggle "When I ask" / "Automatically" on the course home       | persists after reload                                                                                            |
+
+## P4-C1. Credits ledger
+
+Automated: `apps/api/src/routes/credits.test.ts`: welcome credits granted once (also under parallel
+calls); approval charges nothing; opening a day charges ⌈minutes ÷ 15⌉ once; **5 concurrent first
+opens by a brand-new learner → one charge, one generation**; not enough credits → 402
+`INSUFFICIENT_CREDITS` with `{needed, balance}` and the day is not claimed; a failed generation is
+retried free; a priced re-plan is charged once on accept, never on reject or a second accept;
+accepting without credits → 402, still proposed, outline unchanged; auto mode without credits stays
+proposed; each learner sees only their own ledger. Every test checks the ledger invariant: the sum of
+entries equals the balance and each `balanceAfter` chains.
+
+Manual: `curl -b jar localhost:4000/credits` → `{ balance: 30, entries: [welcome] }`; open a day →
+balance drops by ⌈minutes ÷ 15⌉; open it again → unchanged.

@@ -1,0 +1,274 @@
+{
+  "title": "Computer Science Fundamentals: Practical Core for Builders",
+  "summary": "A hands-on 4-week foundation in practical computer science essentials. Master data structures, algorithmic complexity, system memory, networking, and concurrency to write efficient and robust software.",
+  "skill": "Computer science fundamentals",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Data Representations, Memory, and Complexity",
+      "days": [
+        {
+          "day": 1,
+          "title": "Binary, Hexadecimal, and Data Encoding",
+          "objectives": [
+            "Convert numbers between decimal, binary, and hexadecimal formats",
+            "Calculate byte sizes for integer and UTF-8 encoded text payloads"
+          ],
+          "topics": [
+            "binary-encoding",
+            "data-representation"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Stack vs Heap Memory Layout",
+          "objectives": [
+            "Differentiate variable allocation between stack frames and heap space",
+            "Predict memory leak risks by tracing variable lifetimes"
+          ],
+          "topics": [
+            "memory-management",
+            "stack-and-heap"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Time and Space Complexity with Big-O",
+          "objectives": [
+            "Determine the time complexity of simple loops and nested loops",
+            "Calculate auxiliary space consumed by iterative algorithms"
+          ],
+          "topics": [
+            "big-o-notation",
+            "algorithm-analysis"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Contiguous Memory: Arrays and Dynamic Resizing",
+          "objectives": [
+            "Compute amortized cost for dynamic array appending operations",
+            "Explain CPU cache locality benefits of contiguous arrays over fragmented pointers"
+          ],
+          "topics": [
+            "arrays",
+            "memory-management"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Pointer-Based Structures: Singly and Doubly Linked Lists",
+          "objectives": [
+            "Trace insertion and deletion operations in linked lists step-by-step",
+            "Choose between dynamic arrays and linked lists given specific read/write access patterns"
+          ],
+          "topics": [
+            "linked-lists",
+            "algorithm-analysis"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Essential Data Structures and Retrieval",
+      "days": [
+        {
+          "day": 6,
+          "title": "LIFO and FIFO: Stacks, Queues, and Deques",
+          "objectives": [
+            "Implement a FIFO queue using array or linked node backends",
+            "Trace stack operations to validate matching pairs of parentheses in expressions"
+          ],
+          "topics": [
+            "stacks-and-queues",
+            "data-representation"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Hash Tables and Collision Resolution",
+          "objectives": [
+            "Explain how hash collisions occur and how separate chaining resolves them",
+            "Calculate load factors to decide when hash tables require resizing"
+          ],
+          "topics": [
+            "hash-tables",
+            "big-o-notation"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Recursion and Call Stack Limits",
+          "objectives": [
+            "Identify the base case and recursive relation in recursive functions",
+            "Diagnose and prevent stack overflow conditions in deeply recursive routines"
+          ],
+          "topics": [
+            "recursion",
+            "stack-and-heap"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Divide and Conquer: Binary Search and Sorting",
+          "objectives": [
+            "Implement binary search on sorted data to achieve logarithmic search time",
+            "Compare merge sort and quicksort tradeoffs in terms of worst-case time and space"
+          ],
+          "topics": [
+            "binary-search",
+            "sorting-algorithms",
+            "big-o-notation"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Hierarchical Data: Binary Search Trees (BST)",
+          "objectives": [
+            "Trace in-order, pre-order, and post-order traversals of a binary tree",
+            "Explain how an unbalanced binary search tree degrades lookup performance to linear time"
+          ],
+          "topics": [
+            "trees",
+            "binary-search"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Graphs, Storage, and System Organization",
+      "days": [
+        {
+          "day": 11,
+          "title": "Graph Representations: Adjacency Matrix vs List",
+          "objectives": [
+            "Model network topologies using adjacency list representations",
+            "Compare storage footprints of dense versus sparse graph representations"
+          ],
+          "topics": [
+            "graph-fundamentals",
+            "memory-management"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Graph Traversal: BFS vs DFS",
+          "objectives": [
+            "Trace breadth-first search to find the shortest path in unweighted graphs",
+            "Trace depth-first search to detect cycles within a directed graph"
+          ],
+          "topics": [
+            "graph-fundamentals",
+            "stacks-and-queues"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Operating System Basics: Processes, Threads, and Context Switching",
+          "objectives": [
+            "Contrast process memory isolation with thread shared-memory models",
+            "Explain the computational overhead involved in operating system context switches"
+          ],
+          "topics": [
+            "os-processes-threads",
+            "memory-management"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Concurrency Challenges: Race Conditions and Deadlocks",
+          "objectives": [
+            "Identify critical sections prone to data race conditions in multithreaded logic",
+            "Recognize the four conditions necessary for deadlock to arise"
+          ],
+          "topics": [
+            "concurrency",
+            "os-processes-threads"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "File Systems, Persistent Storage, and I/O Latency",
+          "objectives": [
+            "Compare latency differences between L1/L2 CPU cache, RAM, NVMe SSD, and disk",
+            "Explain why buffering and batching reduce I/O bottlenecks in data operations"
+          ],
+          "topics": [
+            "storage-and-io",
+            "memory-management"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Networking, Architecture, and Practical Synthesis",
+      "days": [
+        {
+          "day": 16,
+          "title": "Networking Core: IP Addressing, DNS, and Routing",
+          "objectives": [
+            "Explain how DNS resolves domain names into routable IP addresses",
+            "Trace a data packet routing step through subnets and gateways"
+          ],
+          "topics": [
+            "networking-basics"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Transport Layer: TCP Three-Way Handshake vs UDP",
+          "objectives": [
+            "Diagram the TCP three-way handshake and connection termination flow",
+            "Select appropriately between TCP and UDP based on reliability and latency requirements"
+          ],
+          "topics": [
+            "networking-basics",
+            "transport-protocols"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Application Layer: HTTP/HTTPS Lifecycle and Headers",
+          "objectives": [
+            "Trace an HTTP request/response exchange including status codes and headers",
+            "Explain how TLS handshakes establish encrypted communication channels"
+          ],
+          "topics": [
+            "networking-basics",
+            "http-protocol"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Caching Mechanisms: LRU Cache and Invalidation",
+          "objectives": [
+            "Combine a hash table and doubly linked list to design a Least Recently Used (LRU) cache",
+            "Identify common cache invalidation strategies and trade-offs"
+          ],
+          "topics": [
+            "caching",
+            "hash-tables",
+            "linked-lists"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "End-to-End System Design: What Happens When You Request a URL",
+          "objectives": [
+            "Trace the full lifecycle of a web request from browser input through network stacks to server disk",
+            "Diagnose system performance bottlenecks across compute, memory, and network boundaries"
+          ],
+          "topics": [
+            "system-design",
+            "networking-basics",
+            "storage-and-io"
+          ]
+        }
+      ]
+    }
+  ]
+}

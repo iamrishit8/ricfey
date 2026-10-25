@@ -1,5 +1,6 @@
 import {
   SelfCheckSchema,
+  creditsPerDay,
   toPublicContent,
   type CourseOutline,
   type DayContent,
@@ -7,6 +8,7 @@ import {
   type DayView,
   type SelfCheck,
 } from '@ricfey/shared';
+import { applyEntry, creditTransaction } from '../credits/service';
 import type { Background } from '../lib/background';
 import { AppError } from '../lib/errors';
 import { generateDay } from '../llm/course-generator';
@@ -136,21 +138,38 @@ export async function openDay(course: CourseDoc, n: number, deps: DayDeps): Prom
   await assertDayUnlocked(course, day, now);
 
   if (day.content === null) {
-    const claimed = await CourseDayModel.findOneAndUpdate(
-      {
-        _id: day._id,
-        content: null,
-        $or: [
-          { status: { $in: ['locked', 'failed'] } },
-          {
-            status: 'generating',
-            generationStartedAt: { $lt: new Date(now.getTime() - STALE_MS) },
-          },
-        ],
-      },
-      { $set: { status: 'generating', generationStartedAt: now } },
-      { returnDocument: 'after' },
-    );
+    // Claim and charge together: if the learner can't pay, the claim is rolled back. The charge
+    // is keyed by course and day, so a retried or regenerated day is never charged twice.
+    const claimed = await creditTransaction(course.userId, async (session) => {
+      const c = await CourseDayModel.findOneAndUpdate(
+        {
+          _id: day._id,
+          content: null,
+          $or: [
+            { status: { $in: ['locked', 'failed'] } },
+            {
+              status: 'generating',
+              generationStartedAt: { $lt: new Date(now.getTime() - STALE_MS) },
+            },
+          ],
+        },
+        { $set: { status: 'generating', generationStartedAt: now } },
+        { returnDocument: 'after', session },
+      );
+      if (!c) return null;
+      await applyEntry(
+        {
+          userId: course.userId,
+          delta: -creditsPerDay(course.minutesPerDay),
+          reason: 'day',
+          idempotencyKey: `day:${course.id as string}:${n}`,
+          note: `Day ${n}: ${day.title}`.slice(0, 200),
+          courseId: course._id,
+        },
+        session,
+      );
+      return c;
+    });
     if (claimed) {
       day = claimed;
       deps.background.run('day_content', () => generateAndCheck(claimed, course, deps));

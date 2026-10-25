@@ -12,6 +12,7 @@ import { authRoutes } from './routes/auth';
 import { courseRoutes } from './routes/courses';
 import { dayRoutes } from './routes/days';
 import { gradingRoutes } from './routes/grading';
+import { creditRoutes } from './routes/credits';
 import { healthRoutes } from './routes/health';
 import { replanRoutes } from './routes/replan';
 
@@ -73,6 +74,7 @@ export function buildApp(
   app.register(dayRoutes, deps);
   app.register(gradingRoutes, deps);
   app.register(replanRoutes, deps);
+  app.register(creditRoutes, deps);
 
   return app;
 }

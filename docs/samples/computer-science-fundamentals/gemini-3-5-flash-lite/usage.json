@@ -1,0 +1,29 @@
+{
+  "skill": "Computer science fundamentals",
+  "depth": "working",
+  "weeks": 4,
+  "daysPerWeek": 5,
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "generatedAt": "2026-10-25T09:25:57.408Z",
+  "calls": [
+    {
+      "purpose": "course_outline",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 372,
+      "tokensOut": 1734,
+      "tokensThinking": 0,
+      "latencyMs": 5118
+    },
+    {
+      "purpose": "day_content",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 999,
+      "tokensOut": 2030,
+      "tokensThinking": 0,
+      "latencyMs": 7257
+    }
+  ]
+}

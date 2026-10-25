@@ -1,0 +1,272 @@
+{
+  "title": "Computer Science Fundamentals for Working Professionals",
+  "summary": "Master the core pillars of computer science—data structures, algorithms, system design basics, and core architecture—to build efficient, scalable software.",
+  "skill": "Computer science fundamentals",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Data Structures & Memory",
+      "days": [
+        {
+          "day": 1,
+          "title": "How Computers Store Data: Memory and Variables",
+          "objectives": [
+            "Explain how RAM stores variables using memory addresses",
+            "Differentiate between stack and heap memory allocation"
+          ],
+          "topics": [
+            "memory-basics",
+            "stack-vs-heap"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Arrays and Strings in Memory",
+          "objectives": [
+            "Calculate memory offsets for contiguous array elements",
+            "Identify performance bottlenecks of string manipulation"
+          ],
+          "topics": [
+            "arrays",
+            "string-memory"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Linked Lists: Pointers and Nodes",
+          "objectives": [
+            "Draw node references for singly and doubly linked lists",
+            "Compare time complexities of insertions in arrays versus linked lists"
+          ],
+          "topics": [
+            "linked-lists",
+            "pointers"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Stacks and Queues: LIFO and FIFO",
+          "objectives": [
+            "Implement a stack using basic array operations",
+            "Explain real-world queue use cases like task scheduling"
+          ],
+          "topics": [
+            "stacks",
+            "queues"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Hash Maps and Collision Resolution",
+          "objectives": [
+            "Explain how hash functions map keys to indices",
+            "Resolve collisions using chaining and open addressing"
+          ],
+          "topics": [
+            "hash-maps",
+            "collision-resolution"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Algorithms & Complexity",
+      "days": [
+        {
+          "day": 6,
+          "title": "Introduction to Big O Notation",
+          "objectives": [
+            "Calculate time complexity for simple loops",
+            "Differentiate between O(1), O(n), and O(n^2) runtimes"
+          ],
+          "topics": [
+            "big-o",
+            "time-complexity"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Searching Algorithms: Linear and Binary Search",
+          "objectives": [
+            "Implement binary search on a sorted dataset",
+            "Determine when to apply binary search over linear search"
+          ],
+          "topics": [
+            "binary-search",
+            "search-algorithms"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Basic Sorting: Bubble, Selection, and Insertion Sort",
+          "objectives": [
+            "Trace the state of an array through insertion sort passes",
+            "Compare worst-case efficiencies of basic sorting algorithms"
+          ],
+          "topics": [
+            "sorting",
+            "insertion-sort"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Efficient Sorting: Merge Sort and Quick Sort",
+          "objectives": [
+            "Explain the divide-and-conquer strategy in merge sort",
+            "Choose appropriate sorting algorithms based on dataset constraints"
+          ],
+          "topics": [
+            "sorting",
+            "divide-and-conquer"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Recursion Fundamentals",
+          "objectives": [
+            "Identify the base case and recursive step in a function",
+            "Trace call stack growth during recursive execution"
+          ],
+          "topics": [
+            "recursion",
+            "call-stack"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Databases & Storage",
+      "days": [
+        {
+          "day": 11,
+          "title": "Relational Databases & Normalization",
+          "objectives": [
+            "Design normalized tables up to 3rd Normal Form",
+            "Define primary and foreign keys to enforce relationships"
+          ],
+          "topics": [
+            "databases",
+            "normalization"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "SQL Query Optimization & Indexes",
+          "objectives": [
+            "Write efficient JOIN queries across multiple tables",
+            "Explain how B-Trees improve database lookup speeds"
+          ],
+          "topics": [
+            "sql",
+            "indexes"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Transactions and ACID Properties",
+          "objectives": [
+            "Explain each letter of the ACID acronym with examples",
+            "Identify scenarios requiring database transaction rollbacks"
+          ],
+          "topics": [
+            "transactions",
+            "acid-properties"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "NoSQL Concepts and Choosing a Database",
+          "objectives": [
+            "Compare document-oriented storage with relational schemas",
+            "Select between SQL and NoSQL based on application requirements"
+          ],
+          "topics": [
+            "nosql",
+            "database-selection"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Caching Strategies",
+          "objectives": [
+            "Design cache-aside patterns using Redis or Memcached",
+            "Define cache invalidation strategies for frequently updated data"
+          ],
+          "topics": [
+            "caching",
+            "redis"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Systems, Networks & Security",
+      "days": [
+        {
+          "day": 16,
+          "title": "How the Web Works: HTTP and DNS",
+          "objectives": [
+            "Trace the DNS lookup process when a URL is entered",
+            "Analyze HTTP request and response status codes"
+          ],
+          "topics": [
+            "http",
+            "dns"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "API Design and REST Principles",
+          "objectives": [
+            "Design clean RESTful endpoints using proper HTTP verbs",
+            "Structure JSON request and response payloads effectively"
+          ],
+          "topics": [
+            "api-design",
+            "rest"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Concurrency, Threads, and Processes",
+          "objectives": [
+            "Differentiate between operating system processes and threads",
+            "Identify race conditions in multithreaded environments"
+          ],
+          "topics": [
+            "concurrency",
+            "threads"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Basic Cybersecurity and Authentication",
+          "objectives": [
+            "Explain token-based authentication using JWT",
+            "Prevent common vulnerabilities like SQL injection and XSS"
+          ],
+          "topics": [
+            "security",
+            "authentication"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "System Scalability and Load Balancing",
+          "objectives": [
+            "Explain horizontal versus vertical scaling strategies",
+            "Describe how load balancers distribute traffic across servers"
+          ],
+          "topics": [
+            "scalability",
+            "load-balancing"
+          ]
+        }
+      ]
+    }
+  ]
+}

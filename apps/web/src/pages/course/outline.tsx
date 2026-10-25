@@ -229,9 +229,7 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
                   credits for {dirty ? totalDays : view.quote.days} days
                 </p>
               </div>
-              <p className="text-small text-muted-foreground">
-                {view.quote.formula}. Nothing is charged yet.
-              </p>
+              <p className="text-small text-muted-foreground">{view.quote.formula}.</p>
               {actionError && <ErrorNote>{actionError}</ErrorNote>}
               {dirty ? (
                 <div className="grid gap-2">

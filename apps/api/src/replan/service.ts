@@ -1,4 +1,4 @@
-import mongoose, { type ClientSession } from 'mongoose';
+import type { ClientSession } from 'mongoose';
 import {
   AUTO_REPLAN_EVERY_DAYS,
   CourseOutlineSchema,
@@ -16,6 +16,7 @@ import {
   type ReplanQuality,
   type ReplanView,
 } from '@ricfey/shared';
+import { applyEntry, creditTransaction } from '../credits/service';
 import type { Background } from '../lib/background';
 import { AppError } from '../lib/errors';
 import { parseId } from '../lib/ids';
@@ -209,9 +210,14 @@ async function generate(
       },
       { returnDocument: 'after' },
     );
-    if (proposed && proposed.trigger === 'auto') {
-      const fresh = await CourseModel.findById(course._id);
-      if (fresh) await applyReplan(fresh, proposed);
+    if (!proposed || proposed.trigger !== 'auto') return;
+    const fresh = await CourseModel.findById(course._id);
+    if (!fresh) return;
+    try {
+      await applyReplan(fresh, proposed);
+    } catch (err) {
+      // Auto mode but not enough credits: leave it proposed for the learner to decide.
+      if (!(err instanceof AppError && err.code === 'INSUFFICIENT_CREDITS')) throw err;
     }
   } catch (err) {
     await ReplanModel.updateOne(
@@ -223,7 +229,7 @@ async function generate(
 }
 
 /**
- * Apply a proposed re-plan in one transaction: a new outline version (source "replanned")
+ * Apply a proposed re-plan in one transaction (charging its price, if any): a new outline version (source "replanned")
  * becomes the approved one, and the rewritten days' entries are updated. If any of those days
  * was opened or finished in the meantime, nothing changes and the re-plan is marked stale.
  */
@@ -234,7 +240,7 @@ export async function applyReplan(course: CourseDoc, replan: ReplanDoc): Promise
   const numbers = after.map((d) => d.day);
 
   let stale = false;
-  await mongoose.connection.transaction(async (session) => {
+  await creditTransaction(course.userId, async (session) => {
     stale = false;
     const untouched = await CourseDayModel.countDocuments(
       {
@@ -276,6 +282,19 @@ export async function applyReplan(course: CourseDoc, replan: ReplanDoc): Promise
     );
     if (marked.modifiedCount !== 1)
       throw new AppError('CONFLICT', 'This re-plan is not waiting for a decision');
+    if (replan.priceCredits > 0) {
+      await applyEntry(
+        {
+          userId: course.userId,
+          delta: -replan.priceCredits,
+          reason: 'replan',
+          idempotencyKey: `replan:${replan.id as string}`,
+          note: `Re-plan of days ${numbers[0]}–${numbers.at(-1)}`,
+          courseId: course._id,
+        },
+        session,
+      );
+    }
 
     await CourseOutlineModel.create(
       [
