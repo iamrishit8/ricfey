@@ -226,7 +226,7 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
                   {dirty ? '—' : view.quote.totalCredits}
                 </p>
                 <p className="text-small text-muted-foreground">
-                  credits for {dirty ? totalDays : view.quote.days} days
+                  credits for {dirty ? totalDays : view.quote.days} days, paid day by day
                 </p>
               </div>
               <p className="text-small text-muted-foreground">{view.quote.formula}.</p>

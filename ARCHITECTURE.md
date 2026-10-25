@@ -9,8 +9,8 @@ A learner says what they want to learn, how deep, for how many weeks and minutes
 non-beginners an adaptive quiz measures their level. An LLM drafts a day-by-day outline, which
 the learner edits and approves. Each day then unlocks a lesson, a practice task graded by the
 model against a rubric, and an auto-graded quiz. Progress, topic scores and a streak accumulate.
-Quiz scores re-shape the next few days, on request or automatically.
-(Planned: credits pay for it.)
+Quiz scores re-shape the next few days, on request or automatically. Learners pay per day in
+credits, bought in rupee packs through Razorpay.
 
 ## System
 
@@ -22,6 +22,7 @@ Quiz scores re-shape the next few days, on request or automatically.
     ├─ routes/        thin HTTP layer: auth, courses, outline, days, grading, health
     ├─ services       placement/, outline/, days/, grading/, progress/, replan/  (business rules)
     ├─ auth/          sessions, magic link, Google, rate limits, mailer
+    ├─ credits/       ledger, transactions;  payments/  PaymentGateway ─► Razorpay | Fake
     ├─ llm/           LlmProvider ─► BaseLlmProvider (cap · validate · retry · log)
     │                     ├─ GeminiProvider (@google/genai)
     │                     └─ FakeProvider  (tests + offline dev)
@@ -29,7 +30,7 @@ Quiz scores re-shape the next few days, on request or automatically.
     └─ models/        Mongoose schemas
     │
     ▼
- MongoDB (replica set)     Gemini API     Resend (email)     Razorpay (planned)
+ MongoDB (replica set)     Gemini API     Resend (email)     Razorpay
 
  packages/shared   Zod schemas + types imported by both apps, so they cannot disagree
  tools/browser     Chrome DevTools-protocol scripts: screenshots, browser e2e
@@ -63,6 +64,7 @@ Quiz scores re-shape the next few days, on request or automatically.
 **Course:** `placement → outline → active → completed` (`intro` depth starts at `outline`; `archived` is reserved).
 **Day:** `locked → generating → ready | flagged | failed`; finished when a quiz and a task are both submitted.
 **Re-plan:** `generating → proposed → applied | rejected | stale`, or `failed`.
+**Payment:** `created → paid` (by checkout or webhook, once).
 **Task attempt:** `grading → graded | failed`. **Placement:** `generating → ready → completed | failed`.
 
 ## Request flow (example: opening a day)

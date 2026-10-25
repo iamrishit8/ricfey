@@ -2,6 +2,7 @@ import { createBrowserRouter, Outlet } from 'react-router';
 import { RequireAuth } from '@/components/require-auth';
 import { SiteHeader } from '@/components/site-header';
 import { CoursePage } from '@/pages/course';
+import { CreditsPage } from '@/pages/credits';
 import { DayPage } from '@/pages/day';
 import { NewCoursePage } from '@/pages/new-course';
 import { ProgressPage } from '@/pages/progress';
@@ -66,6 +67,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <ProgressPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/credits',
+        element: (
+          <RequireAuth>
+            <CreditsPage />
           </RequireAuth>
         ),
       },

@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { Markdown } from '@/components/markdown';
+import { NoCredits } from '@/components/no-credits';
 import { ErrorNote, Page, Spinner } from '@/components/page';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,6 +42,18 @@ export function DayPage() {
           {unlockAt ? ` (${indiaDate(unlockAt)})` : ''}
         </p>
         <Button className="mt-8" variant="outline" asChild>
+          <Link to={`/courses/${id}`}>Back to the course</Link>
+        </Button>
+      </Page>
+    );
+  }
+
+  if (error?.code === 'INSUFFICIENT_CREDITS') {
+    return (
+      <Page narrow>
+        <h1 className="mb-6 text-h1 font-medium">Day {n}</h1>
+        <NoCredits details={error.details} />
+        <Button className="mt-6" variant="outline" asChild>
           <Link to={`/courses/${id}`}>Back to the course</Link>
         </Button>
       </Page>

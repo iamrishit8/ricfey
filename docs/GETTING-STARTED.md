@@ -66,7 +66,13 @@ Check the API: `curl localhost:4000/health` should show `"db":"connected"`.
 With `LLM_PROVIDER=fake` (the default) all text is placeholder, marked `[FAKE]`. That is correct:
 it proves the plumbing without spending quota.
 
-## 6. Use the real model
+## 6. Credits
+
+Every learner starts with 30 credits (header, top right). Opening a day costs ⌈minutes ÷ 15⌉.
+**Credits → Buy** works offline: `PAYMENTS_PROVIDER=fake` simulates the payment, labelled "Test mode".
+For real Razorpay test mode see [walkthroughs/07-credits-and-payments.md](walkthroughs/07-credits-and-payments.md).
+
+## 7. Use the real model
 
 ```
 LLM_PROVIDER=gemini
@@ -77,7 +83,7 @@ Restart the API. Expect 1 to 4 minutes per generation step on the free tier. The
 allows 20 requests per day per model; `LLM_DAILY_CALL_CAP` (default 16) stops the app before that.
 Rough cost of a course in calls: 2 up front (placement bank, outline), then 2 to 4 per day, plus 1 per task submission.
 
-## 7. Verify everything
+## 8. Verify everything
 
 ```sh
 bun run check            # typecheck + lint + format + tests (DB tests run if MONGODB_URI_TEST is set)

@@ -2,13 +2,13 @@
 
 How to verify everything that exists today. Updated at the end of each checkpoint and each phase.
 
-**Snapshot (2026-10-25, end of Phase 3):** `bun run check` green: typecheck, lint, format, **153 tests, 0 fail**
-(23 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
+**Snapshot (2026-10-25, end of Phase 4):** `bun run check` green: typecheck, lint, format, **175 tests, 0 fail**
+(25 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
 so a green run without it proves less. Browser e2e and `smoke:real` are run by hand (they need Chrome / a
 Gemini key) and are not part of `check`.
 
 **Not covered by any test (verify manually when the dependency exists):** Resend delivery, real Google
-OAuth, Safari cookies, whether a real model obeys injected instructions, lesson factual accuracy,
+OAuth, real Razorpay and its live webhook payloads, Safari cookies, whether a real model obeys injected instructions, lesson factual accuracy,
 real-phone layout.
 
 ## All-in-one
@@ -253,3 +253,13 @@ curl -b jar -X POST localhost:4000/payments/verify -H 'content-type: application
 Real Razorpay [UNVERIFIED]: needs test-mode keys (NEEDS-FROM-ME). Then `PAYMENTS_PROVIDER=razorpay`,
 buy a pack with UPI id `success@razorpay` (test mode, no money). Webhooks need a public HTTPS URL
 (Razorpay does not call localhost); use a tunnel.
+
+## P4-C3. Credits screens
+
+| What                             | Steps                                                                                    | Expected                                                                                            |
+| -------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Scripted                         | `bun run e2e:learner -- api.log shots/` (fake LLM, fake payments)                        | ends with "credits: 28 after day 1; bought the Starter pack (test mode) → 78"; no overflow at 390px |
+| Header balance                   | Sign in                                                                                  | header shows `30`; after opening a new day it drops by ⌈minutes ÷ 15⌉                               |
+| Out of credits                   | Spend down (or set the balance low in the DB with an `adjustment` entry), open a new day | "You’re out of credits for this" with needed/balance and **Get credits →**                          |
+| Buy (fake)                       | Credits → Buy for ₹149                                                                   | "Test mode" note; "Added 50 credits"; history shows `Bought … +50`                                  |
+| Buy (Razorpay test) [UNVERIFIED] | `PAYMENTS_PROVIDER=razorpay` + test keys; Buy → Checkout → UPI `success@razorpay`        | credited once; closing Checkout adds nothing                                                        |

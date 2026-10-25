@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth';
+import { CreditBadge } from './credit-badge';
 import { ThemeToggle } from './theme-toggle';
 
 export function SiteHeader() {
@@ -17,6 +18,7 @@ export function SiteHeader() {
         <ThemeToggle />
         {user ? (
           <>
+            <CreditBadge />
             <Button variant="ghost" size="sm" asChild>
               <Link to="/">My courses</Link>
             </Button>

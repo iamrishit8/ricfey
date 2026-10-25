@@ -7,6 +7,7 @@ import type {
   ReplanView,
 } from '@ricfey/shared';
 import { useState } from 'react';
+import { NoCredits } from '@/components/no-credits';
 import { ErrorNote, Spinner } from '@/components/page';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -39,7 +40,7 @@ export function ReplanPanel({
   });
   const [mode, setMode] = useState<ReplanMode>(course.replanMode);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
 
   async function act(fn: () => Promise<unknown>, after?: () => void) {
     setBusy(true);
@@ -49,7 +50,9 @@ export function ReplanPanel({
       after?.();
       state.reload();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Something went wrong.');
+      setError(
+        err instanceof ApiError ? err : new ApiError(0, 'INTERNAL_ERROR', 'Something went wrong.'),
+      );
     } finally {
       setBusy(false);
     }
@@ -122,7 +125,11 @@ export function ReplanPanel({
           </div>
         </fieldset>
 
-        {error && <ErrorNote>{error}</ErrorNote>}
+        {error?.code === 'INSUFFICIENT_CREDITS' ? (
+          <NoCredits details={error.details} />
+        ) : (
+          error && <ErrorNote>{error.message}</ErrorNote>
+        )}
         {state.error && <ErrorNote>{state.error.message}</ErrorNote>}
 
         {replan?.status === 'generating' && <Spinner label="Rethinking your next days…" />}

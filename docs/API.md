@@ -9,7 +9,7 @@ Source of truth: `apps/api/src/routes/*.ts`. Request/response types: `packages/s
 - **Auth.** A session cookie `ricfey_session` (httpOnly, SameSite=Lax, `Secure` by default). "Auth" below means that cookie is required; without it the route returns 401 `UNAUTHORIZED`.
 - **Ownership.** Every `/courses/:id/…` route checks the course belongs to the caller. Someone else's course returns **404**, the same as a course that does not exist.
 - **Validation.** Bodies and queries are validated with Zod; failures are 400 `VALIDATION_ERROR` with per-field `details`.
-- **Error codes** (closed list, `packages/shared/src/api.ts`): `BAD_REQUEST`, `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `FORBIDDEN` (403), `NOT_FOUND` (404), `CONFLICT` (409), `RATE_LIMITED` (429), `LLM_CAP_REACHED`, `LLM_INVALID_OUTPUT`, `LLM_UNAVAILABLE`, `SERVICE_UNAVAILABLE`, `INTERNAL_ERROR`. Unknown errors become a generic `INTERNAL_ERROR`; internals are never leaked.
+- **Error codes** (closed list, `packages/shared/src/api.ts`): `BAD_REQUEST`, `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401), `INSUFFICIENT_CREDITS` (402, `details: { needed, balance }`), `FORBIDDEN` (403), `NOT_FOUND` (404), `CONFLICT` (409), `RATE_LIMITED` (429), `LLM_CAP_REACHED`, `LLM_INVALID_OUTPUT`, `LLM_UNAVAILABLE`, `SERVICE_UNAVAILABLE`, `INTERNAL_ERROR`. Unknown errors become a generic `INTERNAL_ERROR`; internals are never leaked.
 - **Slow work is asynchronous.** Placement bank, outline, day generation and task grading run in the background. The route returns at once with a status (`generating`, `grading`); clients poll the matching GET until it is `ready`/`graded`/`failed`.
 
 ## Health
@@ -74,3 +74,14 @@ Source of truth: `apps/api/src/routes/*.ts`. Request/response types: `packages/s
 `POST /courses` also accepts `replanMode` (default `manual`).
 
 A day counts as finished when a quiz **and** a task have been submitted (not necessarily passed). Finishing day _n_ opens day _n+1_ immediately; otherwise it opens on its scheduled date (India time).
+
+## Credits and payments ([walkthrough](walkthroughs/07-credits-and-payments.md))
+
+| Method | Path                                 | Auth      | Body / notes                                                                                                                                                             |
+| ------ | ------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | `/credits`                           | yes       | `{ credits: { balance, entries[] } }` (latest 50). Grants 30 welcome credits on first use.                                                                               |
+| GET    | `/payments/packs`                    | no        | `{ packs: [{ id, credits, pricePaise, label }] }`.                                                                                                                       |
+| POST   | `/payments/orders`                   | yes       | `{ packId }` → 201 `{ order: { orderId, amountPaise, currency, keyId, gateway, pack } }`. 10 per hour.                                                                   |
+| POST   | `/payments/verify`                   | yes       | `{ orderId, paymentId, signature }` from Checkout. Bad signature → 400; someone else's order → 404. → `{ payment: { status, credits, balance } }`. Idempotent.           |
+| POST   | `/payments/orders/:orderId/simulate` | yes       | **Fake gateway only.** Returns a signed pretend payment to pass to `verify`.                                                                                             |
+| POST   | `/webhooks/razorpay`                 | signature | Raw JSON body; `X-Razorpay-Signature` required (401 if wrong), `X-Razorpay-Event-Id` deduplicates. Credits on `order.paid` / `payment.captured` when the amount matches. |

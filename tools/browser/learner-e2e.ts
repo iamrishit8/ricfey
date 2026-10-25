@@ -1,7 +1,8 @@
 // The whole learner journey in a real browser, against the dev servers with LLM_PROVIDER=fake.
 //   bun run e2e:learner -- <api-log-file> [screenshot-dir]
 // Signs in, creates a course, takes placement, edits + approves the outline, opens Today,
-// submits the task and quiz, flags a mistake, checks progress, re-plans from the weak topic.
+// submits the task and quiz, flags a mistake, checks progress, re-plans from the weak topic,
+// and buys a credit pack (fake gateway).
 // Screens are checked at 390px.
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -169,6 +170,16 @@ try {
   await b.waitFor(`document.body.innerText.includes('Your new plan is in place')`);
   await b.waitFor(`document.body.innerText.includes('Revisit')`);
   step('re-plan accepted; the day list shows the rewritten days');
+
+  // Credits: welcome 30, day 1 cost 2 (30 minutes), the re-plan was free → 28. Buy 50.
+  await b.click('a[aria-label="Credits"]');
+  await b.waitFor(`document.body.innerText.includes('Top up')`);
+  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('28')`);
+  await shot('credits');
+  await b.click('Buy for ₹149');
+  await b.waitFor(`document.body.innerText.includes('Added 50 credits')`, 15000);
+  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('78')`);
+  step('credits: 28 after day 1; bought the Starter pack (test mode) → 78');
   if (b.errors.length || phone.errors.length)
     console.info('page errors:', [...b.errors, ...phone.errors]);
 } catch (e) {
