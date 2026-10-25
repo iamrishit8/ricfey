@@ -12,7 +12,7 @@
   --accent-3: oklch(0.5 0.1 160); /* 3 · Forest */
   --accent-3-foreground: oklch(0.99 0.005 85);
 
-  /* ▼ THE ONE TOKEN TO CHANGE. Chosen: option 1 (see DECISIONS.md). Swap to --accent-2/3. */
+  /* ▼ THE ONE TOKEN TO CHANGE. Chosen: option 1 (Vermilion). Swap to --accent-2/3. */
   --brand: var(--accent-1);
   --brand-foreground: var(--accent-1-foreground);
 

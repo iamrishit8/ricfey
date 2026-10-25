@@ -12,7 +12,7 @@ export async function upsertUserByEmail(email: string, now: Date): Promise<UserD
 
 /**
  * Google login. Match on googleId first; otherwise on verified email, linking the Google
- * account to an existing magic-link user (see DECISIONS.md); otherwise create.
+ * account to an existing magic-link user; otherwise create.
  */
 export async function upsertUserFromGoogle(p: GoogleProfile, now: Date): Promise<UserDoc> {
   const byGoogle = await UserModel.findOne({ googleId: p.sub });

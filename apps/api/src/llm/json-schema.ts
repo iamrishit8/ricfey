@@ -36,7 +36,7 @@ function strip(node: unknown): unknown {
   if (node === null || typeof node !== 'object') return node;
   const obj = node as Record<string, unknown>;
   // Gemini returns 400 INVALID_ARGUMENT when arrays of objects carry item-count bounds that
-  // multiply into a large schema (found by bisection on 2026-10-18; see DECISIONS.md).
+  // multiply into a large schema (found by bisection on 2026-10-18).
   // Drop them there; Zod enforces the counts on the response and the prompt states them.
   const dropBounds = isObjectArray(obj);
   const out: Record<string, unknown> = {};
