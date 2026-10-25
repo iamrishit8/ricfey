@@ -2,6 +2,7 @@ import { buildApp } from './app';
 import { HttpGoogleOAuthClient } from './auth/google';
 import { ResendMailer } from './auth/mailer';
 import { createLlmProviders } from './llm/factory';
+import { FakeGateway, RazorpayGateway } from './payments/gateway';
 import { MongoLlmUsageStore } from './llm/usage-store';
 import { loadEnv } from './config/env';
 import { connectDb, disconnectDb, redactCredentials } from './db/connect';
@@ -41,6 +42,15 @@ const app = buildApp({
         : undefined,
     // Every LLM call is capped and logged to llmCalls in MongoDB.
     llm: createLlmProviders(env, new MongoLlmUsageStore()),
+    // Fake payments sign like Razorpay but move no money; env rules require razorpay in production.
+    payments:
+      env.PAYMENTS_PROVIDER === 'razorpay'
+        ? new RazorpayGateway(
+            env.RAZORPAY_KEY_ID!,
+            env.RAZORPAY_KEY_SECRET!,
+            env.RAZORPAY_WEBHOOK_SECRET!,
+          )
+        : new FakeGateway(),
     google:
       env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_REDIRECT_URI
         ? new HttpGoogleOAuthClient({

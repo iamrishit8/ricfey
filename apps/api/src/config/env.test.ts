@@ -58,6 +58,16 @@ describe('auth env rules', () => {
     expect(msg).toContain('COOKIE_SECURE: must be true in production');
   });
 
+  test('payments: razorpay needs all three keys; production needs razorpay', () => {
+    expect(() => loadEnv({ ...base, PAYMENTS_PROVIDER: 'razorpay', RAZORPAY_KEY_ID: 'k' })).toThrow(
+      /RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are required/,
+    );
+    expect(loadEnv(base).PAYMENTS_PROVIDER).toBe('fake');
+    expect(() => loadEnv({ ...base, NODE_ENV: 'production' })).toThrow(
+      /PAYMENTS_PROVIDER: must be razorpay in production/,
+    );
+  });
+
   test('empty optional values count as unset', () => {
     const env = loadEnv({
       ...base,

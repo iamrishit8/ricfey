@@ -39,6 +39,11 @@ const EnvSchema = LlmEnvSchema.extend({
   GOOGLE_REDIRECT_URI: z.preprocess((v) => (v === '' ? undefined : v), z.url().optional()),
   RESEND_API_KEY: optionalString,
   EMAIL_FROM: optionalString,
+  // fake = offline payments with the same signature checks (no money); razorpay = real API.
+  PAYMENTS_PROVIDER: z.enum(['fake', 'razorpay']).default('fake'),
+  RAZORPAY_KEY_ID: optionalString,
+  RAZORPAY_KEY_SECRET: optionalString,
+  RAZORPAY_WEBHOOK_SECRET: optionalString,
   MONGODB_URI: z
     .string({ error: 'is required' })
     .refine((v) => v.startsWith('mongodb://') || v.startsWith('mongodb+srv://'), {
@@ -62,7 +67,25 @@ const EnvWithRules = EnvSchema.superRefine((env, ctx) => {
       message: 'is required when LLM_PROVIDER=gemini',
     });
   }
+  if (
+    env.PAYMENTS_PROVIDER === 'razorpay' &&
+    !(env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET && env.RAZORPAY_WEBHOOK_SECRET)
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['RAZORPAY_KEY_ID'],
+      message:
+        'RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are required when PAYMENTS_PROVIDER=razorpay',
+    });
+  }
   if (env.NODE_ENV === 'production') {
+    if (env.PAYMENTS_PROVIDER !== 'razorpay') {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['PAYMENTS_PROVIDER'],
+        message: 'must be razorpay in production',
+      });
+    }
     if (env.LLM_PROVIDER !== 'gemini') {
       ctx.addIssue({
         code: 'custom',

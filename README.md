@@ -79,29 +79,33 @@ bun run smoke:real                      # every Phase 2 LLM step on real Gemini 
 
 Every variable lives in `.env.example`. Never commit `.env`.
 
-| Variable               | Required           | Default                 | Purpose                                                                                                                      |
-| ---------------------- | ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `NODE_ENV`             | no                 | `development`           | `development`, `test` or `production`                                                                                        |
-| `HOST`                 | no                 | `127.0.0.1`             | API bind address (`0.0.0.0` in containers)                                                                                   |
-| `PORT`                 | no                 | `4000`                  | API port                                                                                                                     |
-| `LOG_LEVEL`            | no                 | `info`                  | `fatal` … `trace`                                                                                                            |
-| `MONGODB_URI`          | yes                |                         | Atlas connection string. Secret. Must be a replica set (Atlas always is)                                                     |
-| `MONGODB_URI_TEST`     | no                 |                         | Throwaway replica set for DB tests; skipped if empty. Tests drop this DB                                                     |
-| `GEMINI_API_KEY`       | for real LLM calls |                         | From https://aistudio.google.com/apikey. Secret                                                                              |
-| `GEMINI_MODEL`         | no                 | `gemini-3.8-flash`      | Model ID; `gen:sample --model` overrides it                                                                                  |
-| `LLM_DAILY_CALL_CAP`   | no                 | `16`                    | Max LLM calls per UTC day, retries included                                                                                  |
-| `LLM_DAILY_TOKEN_CAP`  | no                 | `1000000`               | Max tokens (in + out) per UTC day                                                                                            |
-| `WEB_URL`              | no                 | `http://localhost:5173` | Web origin for magic links and login redirects                                                                               |
-| `COOKIE_SECURE`        | no                 | `true`                  | Secure session cookie. Must be `true` in production. Safari won't keep Secure cookies on http://localhost                    |
-| `TRUST_PROXY`          | no                 | `false`                 | `true` only behind a proxy that sets X-Forwarded-For                                                                         |
-| `SESSION_TTL_DAYS`     | no                 | `30`                    | Session lifetime                                                                                                             |
-| `GOOGLE_CLIENT_ID`     | no                 |                         | Google OAuth client ID. Set all three Google vars or none                                                                    |
-| `GOOGLE_CLIENT_SECRET` | no                 |                         | Google OAuth client secret. Secret                                                                                           |
-| `GOOGLE_REDIRECT_URI`  | no                 |                         | e.g. `http://localhost:4000/auth/google/callback`; must match the Google console                                             |
-| `RESEND_API_KEY`       | prod               |                         | Empty in dev: magic links print to the API console. Secret                                                                   |
-| `EMAIL_FROM`           | prod               |                         | Sender, e.g. `Ricfey <login@yourdomain>`; domain must be verified in Resend                                                  |
-| `LLM_PROVIDER`         | no                 | `fake`                  | `fake`: offline placeholder content, no quota. `gemini`: real calls (needs `GEMINI_API_KEY`). Must be `gemini` in production |
-| `GEMINI_CHECK_MODEL`   | no                 | `gemini-3.5-flash-lite` | Cheaper model for lesson self-checks                                                                                         |
+| Variable                  | Required           | Default                 | Purpose                                                                                                                                |
+| ------------------------- | ------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`                | no                 | `development`           | `development`, `test` or `production`                                                                                                  |
+| `HOST`                    | no                 | `127.0.0.1`             | API bind address (`0.0.0.0` in containers)                                                                                             |
+| `PORT`                    | no                 | `4000`                  | API port                                                                                                                               |
+| `LOG_LEVEL`               | no                 | `info`                  | `fatal` … `trace`                                                                                                                      |
+| `MONGODB_URI`             | yes                |                         | Atlas connection string. Secret. Must be a replica set (Atlas always is)                                                               |
+| `MONGODB_URI_TEST`        | no                 |                         | Throwaway replica set for DB tests; skipped if empty. Tests drop this DB                                                               |
+| `GEMINI_API_KEY`          | for real LLM calls |                         | From https://aistudio.google.com/apikey. Secret                                                                                        |
+| `GEMINI_MODEL`            | no                 | `gemini-3.8-flash`      | Model ID; `gen:sample --model` overrides it                                                                                            |
+| `LLM_DAILY_CALL_CAP`      | no                 | `16`                    | Max LLM calls per UTC day, retries included                                                                                            |
+| `LLM_DAILY_TOKEN_CAP`     | no                 | `1000000`               | Max tokens (in + out) per UTC day                                                                                                      |
+| `WEB_URL`                 | no                 | `http://localhost:5173` | Web origin for magic links and login redirects                                                                                         |
+| `COOKIE_SECURE`           | no                 | `true`                  | Secure session cookie. Must be `true` in production. Safari won't keep Secure cookies on http://localhost                              |
+| `TRUST_PROXY`             | no                 | `false`                 | `true` only behind a proxy that sets X-Forwarded-For                                                                                   |
+| `SESSION_TTL_DAYS`        | no                 | `30`                    | Session lifetime                                                                                                                       |
+| `GOOGLE_CLIENT_ID`        | no                 |                         | Google OAuth client ID. Set all three Google vars or none                                                                              |
+| `GOOGLE_CLIENT_SECRET`    | no                 |                         | Google OAuth client secret. Secret                                                                                                     |
+| `GOOGLE_REDIRECT_URI`     | no                 |                         | e.g. `http://localhost:4000/auth/google/callback`; must match the Google console                                                       |
+| `RESEND_API_KEY`          | prod               |                         | Empty in dev: magic links print to the API console. Secret                                                                             |
+| `EMAIL_FROM`              | prod               |                         | Sender, e.g. `Ricfey <login@yourdomain>`; domain must be verified in Resend                                                            |
+| `LLM_PROVIDER`            | no                 | `fake`                  | `fake`: offline placeholder content, no quota. `gemini`: real calls (needs `GEMINI_API_KEY`). Must be `gemini` in production           |
+| `GEMINI_CHECK_MODEL`      | no                 | `gemini-3.5-flash-lite` | Cheaper model for lesson self-checks                                                                                                   |
+| `PAYMENTS_PROVIDER`       | no                 | `fake`                  | `fake`: offline payments signed like Razorpay, no money. `razorpay`: real API (needs the three keys). Must be `razorpay` in production |
+| `RAZORPAY_KEY_ID`         | with razorpay      |                         | Dashboard → API keys. Use test-mode keys until launch                                                                                  |
+| `RAZORPAY_KEY_SECRET`     | with razorpay      |                         | Signs checkout responses. Secret                                                                                                       |
+| `RAZORPAY_WEBHOOK_SECRET` | with razorpay      |                         | Set when creating the webhook (events `order.paid`, `payment.captured`). Secret                                                        |
 
 ## Docs
 

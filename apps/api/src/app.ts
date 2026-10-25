@@ -12,8 +12,10 @@ import { authRoutes } from './routes/auth';
 import { courseRoutes } from './routes/courses';
 import { dayRoutes } from './routes/days';
 import { gradingRoutes } from './routes/grading';
+import { FakeGateway, type PaymentGateway } from './payments/gateway';
 import { creditRoutes } from './routes/credits';
 import { healthRoutes } from './routes/health';
+import { paymentRoutes } from './routes/payments';
 import { replanRoutes } from './routes/replan';
 
 export type AppConfig = {
@@ -29,6 +31,7 @@ export type AppDeps = {
   now: () => Date;
   llm: LlmProviders;
   background: Background;
+  payments: PaymentGateway;
 };
 
 /** Offline default: fake model for every purpose, usage kept in memory. */
@@ -64,6 +67,7 @@ export function buildApp(
     now: opts.deps?.now ?? (() => new Date()),
     llm: opts.deps?.llm ?? defaultLlm(),
     background: opts.deps?.background ?? new InProcessBackground(app.log),
+    payments: opts.deps?.payments ?? new FakeGateway(),
   };
 
   registerErrorHandler(app);
@@ -75,6 +79,7 @@ export function buildApp(
   app.register(gradingRoutes, deps);
   app.register(replanRoutes, deps);
   app.register(creditRoutes, deps);
+  app.register(paymentRoutes, deps);
 
   return app;
 }

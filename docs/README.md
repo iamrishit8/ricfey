@@ -13,4 +13,4 @@ Start at the top and go down; each page assumes only the ones above it.
    6. [06-replanning.md](walkthroughs/06-replanning.md): mastery, re-plan modes, transactions.
 4. Reference: [API.md](API.md), [DATA-MODEL.md](DATA-MODEL.md), [../TESTING.md](../TESTING.md).
 5. Process: [CONTRIBUTING.md](CONTRIBUTING.md), [phases/](phases/).
-6. Evidence: [phase-1-cost-report.md](phase-1-cost-report.md), `samples/` (real generated courses).
+6. Evidence: [phase-1-cost-report.md](phase-1-cost-report.md), [pricing.md](pricing.md), `samples/` (real generated courses).

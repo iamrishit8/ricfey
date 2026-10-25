@@ -228,3 +228,28 @@ entries equals the balance and each `balanceAfter` chains.
 
 Manual: `curl -b jar localhost:4000/credits` → `{ balance: 30, entries: [welcome] }`; open a day →
 balance drops by ⌈minutes ÷ 15⌉; open it again → unchanged.
+
+## P4-C2. Razorpay (fake gateway by default)
+
+Automated: `apps/api/src/routes/payments.test.ts`: the real `RazorpayGateway` builds the documented
+request (Basic auth, amount in paise, receipt) against a stubbed `fetch`, hides Razorpay's error
+body, and checks both signature schemes; packs listed; order → checkout verify credits the pack once,
+a replayed proof adds nothing; tampered signature or foreign payment id → 400, no credits; another
+learner → 404 on verify and simulate; webhook credits once, redelivery (same event id) and a later
+checkout add nothing; **checkout and webhook at the same time → exactly one purchase entry**; bad
+webhook signature → 401; wrong amount, unknown order, other events → no credits; malformed body →
+400; unknown pack → 400; 10 orders per hour; the simulate route doesn't exist with the real gateway.
+`config/env.test.ts`: razorpay needs all three keys; production needs `PAYMENTS_PROVIDER=razorpay`.
+
+Manual (fake gateway):
+
+```sh
+curl -b jar -X POST localhost:4000/payments/orders -H 'content-type: application/json' -d '{"packId":"starter"}'
+curl -b jar -X POST localhost:4000/payments/orders/<orderId>/simulate          # → paymentId, signature
+curl -b jar -X POST localhost:4000/payments/verify -H 'content-type: application/json' \
+  -d '{"orderId":"<orderId>","paymentId":"<paymentId>","signature":"<signature>"}'   # → paid, balance +50
+```
+
+Real Razorpay [UNVERIFIED]: needs test-mode keys (NEEDS-FROM-ME). Then `PAYMENTS_PROVIDER=razorpay`,
+buy a pack with UPI id `success@razorpay` (test mode, no money). Webhooks need a public HTTPS URL
+(Razorpay does not call localhost); use a tunnel.

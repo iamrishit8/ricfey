@@ -3,6 +3,7 @@ export * from './auth';
 export * from './course';
 export * from './credits';
 export * from './llm';
+export * from './payments';
 export * from './schemas/course-outline';
 export * from './schemas/day-content';
 export * from './schemas/intake';
