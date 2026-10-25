@@ -1,0 +1,47 @@
+# Data model (MongoDB via Mongoose)
+
+All collections live in one database. MongoDB **must be a replica set** (checked at startup).
+Source of truth: `apps/api/src/models/*.ts`. Every learner-owned document carries `userId`, and
+every query filters by it.
+
+```
+User 1───* Session
+  │  └───* MagicToken (by email, not a reference)
+  └───* Course 1───1 Placement
+              ├────* CourseOutline (one per version)
+              ├────* CourseDay ──┬─* QuizAttempt
+              │                  └─* TaskAttempt
+              └────* Report
+LlmCall, RateLimit: standalone
+```
+
+| Collection (model)               | Purpose                                      | Key fields                                                                                                                                                                                                                      | Indexes / lifecycle                                                                                                                                             |
+| -------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `users` (User)                   | A person                                     | `email` (lowercased), `name`, `avatarUrl`, `googleId?`, `emailVerifiedAt`, `lastLoginAt`                                                                                                                                        | unique `email`; unique `googleId` only when set                                                                                                                 |
+| `sessions` (Session)             | Logged-in browser                            | `tokenHash` (SHA-256 of the cookie value), `userId`, `expiresAt`                                                                                                                                                                | TTL on `expiresAt`. The raw token exists only in the cookie.                                                                                                    |
+| `magicTokens` (MagicToken)       | One-time sign-in link                        | `tokenHash`, `email`, `expiresAt` (15 min), `usedAt`                                                                                                                                                                            | Redeemed with an atomic update on `usedAt: null`, so it works exactly once. TTL removes rows 24 h after expiry.                                                 |
+| `rateLimits` (RateLimit)         | Fixed 15-minute counters                     | `key` (`magic:ip:…`, `magic:email:<hash>`), `windowStart`, `count`, `expiresAt`                                                                                                                                                 | `key`, `windowStart`, `count`, `expiresAt`. Atomic upsert increment (unique `{key, windowStart}`); the email is hashed so no addresses are stored. TTL cleanup. |
+| `courses` (Course)               | A learner's course                           | `userId`, `skill`, `depth`, `weeks`, `minutesPerDay`, `daysPerWeek` (5), `status`, `title`, `startedAt`, `outlineStatus`, `currentOutlineVersion`, `approvedOutlineVersion`, `placement{level,ability,strongTopics,weakTopics}` | `{userId, createdAt}`, `{userId, status}`                                                                                                                       |
+| `placements` (Placement)         | Adaptive placement state                     | `courseId`, `userId`, `status` (`generating`\|`ready`\|`failed`\|`completed`), `bank[]` (15 questions **with** answers), `history[]`, `currentQid`, `currentTarget`, `result`                                                   | unique `courseId`. Answers never leave the server before an answer is submitted.                                                                                |
+| `courseOutlines` (CourseOutline) | Versioned outline                            | `courseId`, `userId`, `version`, `source` (`generated`\|`edited`), `outline` (validated `CourseOutline`)                                                                                                                        | unique `{courseId, version}`. Edits append a version; old ones stay readable.                                                                                   |
+| `courseDays` (CourseDay)         | One row per outline day, created at approval | `courseId`, `userId`, `day`, `week`, `title`, `objectives`, `topics`, `unlockAt`, `status`, `generationStartedAt`, `content` (validated `DayContent`, null until generated), `selfCheck`, `completedAt`                         | unique `{courseId, day}`. `status`: `locked` → `generating` → `ready` \| `flagged` \| `failed`.                                                                 |
+| `quizAttempts` (QuizAttempt)     | Every quiz submission                        | `courseId`, `userId`, `day`, `answers`, `results[{correct, answerIndex, topic}]`, `score`, `total`                                                                                                                              | `{courseId, day, createdAt}`                                                                                                                                    |
+| `taskAttempts` (TaskAttempt)     | Every task submission                        | `answer`, `status` (`grading`\|`graded`\|`failed`), `gradingStartedAt`, `score`, `maxScore`, `feedback`, `missedCriteria`                                                                                                       | A `grading` attempt older than 5 min counts as stale.                                                                                                           |
+| `reports` (Report)               | "Flag a mistake"                             | `courseId`, `userId`, `day`, `kind`, `message`, `excerpt`, `status` (`open`\|`resolved`)                                                                                                                                        |                                                                                                                                                                 |
+| `llmCalls` (LlmCall)             | Ledger of every model call                   | `purpose`, `provider`, `model`, `status`, `attempt`, `tokensIn/Out/Thinking`, `latencyMs`, `estimatedCostUsd`, `error`, `createdAt`                                                                                             | `{createdAt}`, `{purpose, model, createdAt}`. Source of the daily cap and the cost report.                                                                      |
+
+## Course status machine
+
+```
+placement ──(placement done)──► outline ──(approve)──► active ──(all days finished)──► completed
+    ▲                              ▲
+    └ working/deep depth           └ intro depth starts here
+```
+
+`archived` exists in the enum but nothing sets it yet.
+
+## Content shapes (validated with Zod in `packages/shared/src/schemas`)
+
+- **CourseOutline**: weeks → days; each day has `day`, `title`, `objectives[]`, `topics[]`.
+- **DayContent**: `lesson` (Markdown), `task` (prompt + rubric of named, weighted criteria), `quiz` (questions with `options`, `answerIndex`, `topic`, `explanation`).
+- Clients receive a _public_ projection (`toPublicContent`) with quiz answers and explanations removed.

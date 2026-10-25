@@ -1,0 +1,45 @@
+# Walkthrough 2: Creating a course (intake → placement → outline)
+
+**Goal.** Turn "learn X, to depth Y, in Z weeks" into an approved, editable day-by-day plan tuned to what the learner already knows.
+**Code:** `routes/courses.ts`, `placement/` (service, adaptive, prompt), `outline/service.ts`, `llm/course-generator.ts`, `lib/background.ts`; shared schemas `intake`, `placement`, `course-outline`, `outline-edit`. **Web:** `pages/new-course.tsx`, `pages/course/{index,placement,outline,home}.tsx`.
+
+```
+ POST /courses
+   ├─ depth = intro ────────────────────────────┐
+   └─ depth = working | deep → status placement │
+        placement bank (1 LLM call) → adaptive quiz (no LLM)
+        └─ done → level + strong/weak topics ────┴─► status outline
+                                                      outline generated in background (1 LLM call)
+                                                      learner edits (new versions) → approve → status active
+```
+
+## Step 1: Intake
+
+`POST /courses` validates `{ skill, depth, weeks, minutesPerDay }` with Zod (`CreateCourseSchema`; skill is one line, 2–120 chars). A `Course` is created for the caller. Days per week default to 5.
+
+## Step 2: Placement (skipped for `intro`)
+
+- **One LLM call** (`placement_bank`) creates a bank of 15 multiple-choice questions: 3 at each difficulty 1–5, each with a topic. The call runs in the background; the web app polls `GET /placement` ("Writing…").
+- **The quiz itself costs no model calls.** `placement/adaptive.ts` is a deterministic staircase: start at difficulty 3; harder after a correct answer, easier after a wrong one (clamped 1–5). It prefers the least-asked topic among equally suitable questions so the quiz covers the subject broadly.
+- **Stopping.** It asks at least 8 and at most 12 questions. From question 8 on it stops when the last four targets stay within 1 of each other (the staircase has settled), at question 12, or when the bank runs out.
+- **Result.** `ability` = where the staircase settled; mapped to `foundation | intermediate | advanced`; topics answered right/wrong become `strongTopics`/`weakTopics`. Stored on the course.
+- **Secrecy.** Questions are sent without `answerIndex`. Answering the same question twice → 409. Another user → 404.
+
+## Step 3: Outline
+
+- Triggered automatically when placement finishes (or at once for `intro`). One job per course: starting it is an atomic claim, so double requests do not double-generate.
+- The prompt carries level, strong/weak topics, weeks, minutes per day, and the skill. The model returns a `CourseOutline` (weeks → days with title, objectives, topics); it is Zod-validated plus extra checks (day numbering, count) before storage. Failure → `outlineStatus: failed` and a Retry button.
+- **Versions.** Each save is a new row in `courseOutlines` (`generated`, then `edited`…). `GET …/outline?version=N` reads old ones.
+- **What a learner may edit** (`PUT /outline`): rename days and week themes, remove days, reorder. They reference days by `fromDay`, so **topics and objectives cannot be edited**: later prompts are built from the stored text, not from learner-typed text. A stale `baseVersion` → 409.
+- **Credit quote.** `⌈minutesPerDay ÷ 15⌉ × days`, shown before approval. Nothing is charged until Phase 4.
+- **Approve** (`POST …/approve {version}`, latest only): course becomes `active`, `startedAt` is set, and `createDays` inserts one `courseDays` row per outline day with its `unlockAt` date. Calling it twice is safe (unique index).
+
+## Background work
+
+Slow LLM calls run through `lib/background.ts`. The route returns immediately; the model call continues in-process, and clients poll. Stale claims (older than ~5 min) can be re-claimed. This is simple and fine for one API process; moving to a real job queue is a Phase 5 question.
+
+## Prompt safety
+
+Learner-provided values (skill, minutes…) are JSON-encoded in a `<request>` block with `<` escaped, so they cannot close the block, and each prompt states that tagged text is data and instructions inside it must be ignored. See [04-llm-layer.md](04-llm-layer.md).
+
+Tests: `routes/courses.test.ts`, `placement/adaptive.test.ts`, `outline/service.test.ts`, `routes/outline.test.ts` (including 404 for other learners on every route).

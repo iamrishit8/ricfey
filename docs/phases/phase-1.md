@@ -20,6 +20,13 @@ credits can cover. Around that, lay the skeleton: API, database, auth, design sy
 
 Course creation UI, the daily loop, re-planning, credits, payments, deployment.
 
+## Outcome (2026-10-25)
+
+All five checkpoints built. Measured: a 30-day course costs about $0.16 on `gemini-3.5-flash-lite`
+and $0.77 on `gemini-3.8-flash` at prices from 2027-01-01 ([cost report](../phase-1-cost-report.md);
+covers outline + day 1 only). Real Gemini verified live. Not done: the human gate of reading the samples.
+Deferred: real Google OAuth and Resend (no accounts yet; dev stand-ins used).
+
 ## Gate (all must be true to close the phase)
 
 - [ ] Three generated courses (Python, personal finance, music theory) the user has read and
@@ -27,7 +34,6 @@ Course creation UI, the daily loop, re-planning, credits, payments, deployment.
 - [ ] A measured cost per course-day, from real `llmCalls` data, in docs/phase-1-cost-report.md
 - [ ] Login (Google and magic link) works locally end to end
 - [ ] `/styleguide` renders in light and dark
-- [ ] PROGRESS.md ticked
 - [ ] `bun run check` green
 
 ## If the gate fails

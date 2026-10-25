@@ -5,7 +5,12 @@ day-by-day course: each day is a short lesson, a practice task and a quiz. Your 
 re-shape the rest of the plan. Any subject that can be taught and tested through text.
 Pay-as-you-go credits in rupees.
 
-Status: Phases 1 and 2 built (draft PRs). Start with [HANDOFF.md](HANDOFF.md).
+**Status.** Phases 1 (foundations) and 2 (course creation and the daily loop) are built.
+Phase 3 (re-planning from quiz scores), Phase 4 (credits and Razorpay) and Phase 5 (launch) are
+planned. See [ARCHITECTURE.md](ARCHITECTURE.md) for what exists and what does not.
+
+**New here?** Read [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) (running it in 10 minutes),
+then the [walkthroughs](docs/walkthroughs/) (how each part works, in the order a learner meets it).
 
 ## Run it
 
@@ -62,12 +67,13 @@ bun run smoke:real                      # every Phase 2 LLM step on real Gemini 
 
 ## Repo layout
 
-| Path              | What                                |
-| ----------------- | ----------------------------------- |
-| `apps/api`        | Fastify API (Bun, TypeScript)       |
-| `apps/web`        | React + Vite web app                |
-| `packages/shared` | Zod schemas and types used by both  |
-| `docs/`           | Phase scopes, samples, cost reports |
+| Path              | What                                                      |
+| ----------------- | --------------------------------------------------------- |
+| `apps/api`        | Fastify API (Bun, TypeScript)                             |
+| `apps/web`        | React + Vite web app                                      |
+| `packages/shared` | Zod schemas and types used by both                        |
+| `tools/browser`   | Chrome scripts for screenshots and browser e2e            |
+| `docs/`           | Guides, walkthroughs, phase scopes, samples, cost reports |
 
 ## Environment variables
 
@@ -99,7 +105,14 @@ Every variable lives in `.env.example`. Never commit `.env`.
 
 ## Docs
 
-- [ARCHITECTURE.md](ARCHITECTURE.md): what exists and what is planned
-- [DECISIONS.md](DECISIONS.md): why things are the way they are
-- [TESTING.md](TESTING.md): how to verify each piece
-- [LEARNING.md](LEARNING.md): concept log
+| Doc                                                        | Read it to…                                            |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md)         | set up, run, and click through the app                 |
+| [docs/walkthroughs/](docs/walkthroughs/)                   | understand each area end to end, with code pointers    |
+| [ARCHITECTURE.md](ARCHITECTURE.md)                         | see the system shape and what is BUILT vs PLANNED      |
+| [docs/API.md](docs/API.md)                                 | look up any HTTP route                                 |
+| [docs/DATA-MODEL.md](docs/DATA-MODEL.md)                   | look up any MongoDB collection                         |
+| [TESTING.md](TESTING.md)                                   | verify each piece (automated and manual)               |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)               | follow the rules, and update docs when closing a phase |
+| [docs/phases/](docs/phases/)                               | see what each phase set out to do and its gate         |
+| [docs/phase-1-cost-report.md](docs/phase-1-cost-report.md) | see measured LLM cost per course-day                   |

@@ -16,3 +16,9 @@ coverage/
 .idea/
 e2e-login-fail.png
 e2e-shots/
+
+# Private working docs (not for other people): agent instructions, progress log, decisions,
+# learning answers, handoff, things needed from the owner. Public docs live in README.md,
+# ARCHITECTURE.md, TESTING.md and docs/.
+/private/
+/CLAUDE.md

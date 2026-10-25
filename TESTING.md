@@ -1,6 +1,15 @@
 # Testing
 
-How to verify everything that exists today. Updated at the end of each checkpoint.
+How to verify everything that exists today. Updated at the end of each checkpoint and each phase.
+
+**Snapshot (2026-10-25, end of Phase 2):** `bun run check` green: typecheck, lint, format, **137 tests, 0 fail**
+(21 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
+so a green run without it proves less. Browser e2e and `smoke:real` are run by hand (they need Chrome / a
+Gemini key) and are not part of `check`.
+
+**Not covered by any test (verify manually when the dependency exists):** Resend delivery, real Google
+OAuth, Safari cookies, whether a real model obeys injected instructions, lesson factual accuracy,
+real-phone layout.
 
 ## All-in-one
 

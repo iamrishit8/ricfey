@@ -1,58 +1,87 @@
 # Architecture
 
-Each part is marked **BUILT** or **PLANNED** (with the checkpoint or phase that builds it).
+How Ricfey is put together, and which parts exist. Each part is marked **BUILT** or **PLANNED**.
+Deeper explanations: [docs/walkthroughs/](docs/walkthroughs/). Routes: [docs/API.md](docs/API.md). Collections: [docs/DATA-MODEL.md](docs/DATA-MODEL.md).
 
-## Overview
+## The product in one paragraph
+
+A learner says what they want to learn, how deep, for how many weeks and minutes a day. For
+non-beginners an adaptive quiz measures their level. An LLM drafts a day-by-day outline, which
+the learner edits and approves. Each day then unlocks a lesson, a practice task graded by the
+model against a rubric, and an auto-graded quiz. Progress, topic scores and a streak accumulate.
+(Planned: scores re-shape the remaining days; credits pay for it.)
+
+## System
 
 ```
- Browser (apps/web: React + Vite, React Router, Tailwind v4, shadcn/ui-style components)
-     │  same origin: Vite proxies /api/* → API (dev); JSON + httpOnly session cookie
-     ▼
- API (apps/api: Bun + Fastify)
-     ├── auth      Google OAuth, magic link, sessions
-     ├── courses   outline + day generation, re-planning
-     ├── llm       LlmProvider ─► BaseLlmProvider (cap, log, validate, retry once)
-     │                              ├─ GeminiProvider (@google/genai)
-     │                              └─ FakeProvider (tests, offline)
-     │             course-generator: prompts + extra checks; pricing: cost by model and date
-     ├── credits   balance, ledger (transactions)
-     └── payments  Razorpay orders + webhooks
-     │
-     ▼
- MongoDB Atlas (replica set)          Gemini API          Resend          Razorpay
+ Browser  apps/web  React + Vite + Tailwind + shadcn/ui-style components
+    │   same origin: Vite proxies /api/* → API in dev; JSON + httpOnly session cookie
+    ▼
+ API  apps/api  Bun + Fastify + TypeScript
+    ├─ routes/        thin HTTP layer: auth, courses, outline, days, grading, health
+    ├─ services       placement/, outline/, days/, grading/, progress/  (business rules)
+    ├─ auth/          sessions, magic link, Google, rate limits, mailer
+    ├─ llm/           LlmProvider ─► BaseLlmProvider (cap · validate · retry · log)
+    │                     ├─ GeminiProvider (@google/genai)
+    │                     └─ FakeProvider  (tests + offline dev)
+    ├─ lib/           AppError, response envelope, validate(), background jobs
+    └─ models/        Mongoose schemas
+    │
+    ▼
+ MongoDB (replica set)     Gemini API     Resend (email)     Razorpay (planned)
+
+ packages/shared   Zod schemas + types imported by both apps, so they cannot disagree
+ tools/browser     Chrome DevTools-protocol scripts: screenshots, browser e2e
 ```
 
-`packages/shared` holds Zod schemas used on both sides, so the web app and API agree on shapes.
+## Parts and status
 
-## Parts
+| Part                                                                                                | Status            | Notes                                                   |
+| --------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------- |
+| Bun workspaces monorepo, shared tsconfig, ESLint, Prettier                                          | **BUILT** (P1-C1) |                                                         |
+| Fastify app, `/health`, response envelope, single `AppError`, Zod validation helper, env validation | **BUILT** (P1-C2) | fail fast at startup                                    |
+| Mongoose + `User`, `Course` models                                                                  | **BUILT** (P1-C2) | replica set enforced                                    |
+| Shared `CourseOutline` / `DayContent` schemas                                                       | **BUILT** (P1-C3) |                                                         |
+| `LlmProvider`, Gemini, Fake, daily cap, `llmCalls`, cost estimator                                  | **BUILT** (P1-C3) | Gemini verified live                                    |
+| `gen:sample` + cost report                                                                          | **BUILT** (P1-C3) | 6 real samples in `docs/samples`                        |
+| Magic-link auth, sessions, rate limits                                                              | **BUILT** (P1-C4) | Resend delivery **[UNVERIFIED]**                        |
+| Google OAuth                                                                                        | **BUILT** (P1-C4) | tested with a fake Google; real Google **[UNVERIFIED]** |
+| Web shell, tokens (light/dark), `/styleguide`, login                                                | **BUILT** (P1-C5) |                                                         |
+| Intake + adaptive placement                                                                         | **BUILT** (P2-C1) | 1 LLM call, deterministic staircase                     |
+| Versioned outline: edit, approve, credit quote                                                      | **BUILT** (P2-C2) |                                                         |
+| Daily unlock, lazy idempotent generation, self-check                                                | **BUILT** (P2-C3) |                                                         |
+| Quiz + task grading, progress, streak                                                               | **BUILT** (P2-C4) |                                                         |
+| Learner web screens, flag a mistake, browser e2e, real-LLM smoke                                    | **BUILT** (P2-C5) |                                                         |
+| Topic mastery + re-planning from scores                                                             | PLANNED (Phase 3) |                                                         |
+| Credits ledger (Mongo transactions)                                                                 | PLANNED (Phase 4) | quote exists, nothing charged                           |
+| Razorpay orders, webhooks, idempotency                                                              | PLANNED (Phase 4) |                                                         |
+| Deploy, monitoring, spend alerts, legal pages                                                       | PLANNED (Phase 5) |                                                         |
 
-| Part                                                                                             | Status                                       | Notes                                                |
-| ------------------------------------------------------------------------------------------------ | -------------------------------------------- | ---------------------------------------------------- |
-| Monorepo, Bun workspaces, shared tsconfig, ESLint, Prettier                                      | **BUILT** (C1)                               |                                                      |
-| Fastify app, `GET /health`                                                                       | **BUILT** (C2)                               |                                                      |
-| Response envelope `{ success, data }` / `{ success, error: { code, message } }`                  | **BUILT** (C2)                               | single `AppError` class, one error handler           |
-| Zod request-validation helper                                                                    | **BUILT** (C2)                               |                                                      |
-| Env config validated with Zod at startup                                                         | **BUILT** (C2)                               | fail fast with clear message                         |
-| Mongoose connection, `User` and `Course` models                                                  | **BUILT** (C2)                               |                                                      |
-| Shared schemas `CourseOutline`, `DayContent`                                                     | **BUILT** (C3)                               |                                                      |
-| `LlmProvider` interface, `GeminiProvider`, `FakeProvider`                                        | **BUILT** (C3); Gemini verified live         | retry once on invalid JSON with error fed back       |
-| LLM daily cap + `llmCalls` collection                                                            | **BUILT** (C3)                               | one enforcement point                                |
-| `gen:sample` script + cost report                                                                | **BUILT** (C3); 4 of 6 real samples          |                                                      |
-| Google OAuth, magic link, sessions                                                               | **BUILT** (C4); Google + Resend [UNVERIFIED] | hashed single-use tokens, 15 min expiry, rate limits |
-| Web shell, router, Tailwind, shadcn/ui, tokens, `/styleguide`, login                             | **BUILT** (C5)                               |                                                      |
-| Intake + adaptive placement (P2-C1)                                                              | **BUILT**                                    | one bank call, staircase 8–12 Qs                     |
-| Versioned outline, edit/approve, credit quote (P2-C2)                                            | **BUILT**                                    |                                                      |
-| Lazy idempotent day generation, unlock rules, self-check + flag (P2-C3)                          | **BUILT**                                    |                                                      |
-| Quiz auto-grading, model task grading, progress + streak (P2-C4)                                 | **BUILT**                                    |                                                      |
-| Web screens: intake → placement → outline → Today → task/quiz → progress, flag a mistake (P2-C5) | **BUILT**                                    |                                                      |
-| Adaptive re-planning from quiz scores                                                            | PLANNED (Phase 3)                            |                                                      |
-| Credits ledger + Razorpay                                                                        | PLANNED (Phase 4)                            | needs Mongo transactions                             |
-| Deploy, observability, launch                                                                    | PLANNED (Phase 5)                            |                                                      |
+## Lifecycles
 
-## Key principles
+**Course:** `placement → outline → active → completed` (`intro` depth starts at `outline`; `archived` is reserved).
+**Day:** `locked → generating → ready | flagged | failed`; finished when a quiz and a task are both submitted.
+**Task attempt:** `grading → graded | failed`. **Placement:** `generating → ready → completed | failed`.
 
-- **One error shape.** Every route returns the envelope; errors are thrown as `AppError` and
-  shaped in one place.
-- **LLM behind an interface.** No code outside provider implementations touches an LLM SDK.
-  Every call is capped and logged.
-- **Validate at boundaries.** Env at startup, requests at the route, LLM output against Zod.
+## Request flow (example: opening a day)
+
+1. Browser `GET /api/courses/:id/days/3` → Vite proxy → Fastify.
+2. `requireUser` resolves the session cookie → user. `loadOwnCourse(userId, id)` → 404 if not theirs.
+3. `openDay`: unlocked? (else 403). Content missing? Atomic claim → background job → respond `generating`.
+4. Browser polls; job generates, self-checks, validates with Zod, stores. Next poll returns the lesson (quiz answers stripped).
+
+## Principles
+
+- **One error shape.** Routes return `{success,data}` or `{success:false,error}`; everything throws `AppError` and one handler shapes it. Raw errors never reach a client.
+- **LLM behind an interface.** Only `llm/` touches an SDK. Every call is capped and logged.
+- **Validate at every boundary.** Env at startup, requests at routes, model output before store or display.
+- **Learner text is data.** Delimited in prompts; the editable parts of an outline are limited so edited text never becomes instruction.
+- **Ownership everywhere.** Every course-scoped query includes `userId`; other users get 404.
+- **Lazy, idempotent expensive work.** Generate when asked; conditional updates make double-clicks and retries safe.
+- **Offline by default.** `LLM_PROVIDER=fake` and the dev mailer mean the whole product runs with no external accounts.
+
+## Known limits (be honest)
+
+- Background jobs run in the API process; a restart abandons in-flight work (recovered by stale-claim re-claiming). Fine for one instance.
+- Lesson correctness is not verified by the system. The self-check is a filter; learners can flag mistakes.
+- Free-tier Gemini: 20 requests/day/model and 1–4 minutes per generation.
