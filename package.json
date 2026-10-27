@@ -21,7 +21,8 @@
     "e2e:login": "bun tools/browser/login-e2e.ts",
     "e2e:learner": "bun tools/browser/learner-e2e.ts",
     "smoke:real": "bun --env-file=.env apps/api/scripts/smoke-real.ts",
-    "migrate:depth": "bun --env-file=.env apps/api/scripts/migrate-depth.ts"
+    "migrate:depth": "bun --env-file=.env apps/api/scripts/migrate-depth.ts",
+    "seed:gallery": "bun --env-file=.env apps/api/scripts/seed-gallery.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

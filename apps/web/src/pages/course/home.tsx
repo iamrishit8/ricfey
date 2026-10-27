@@ -83,7 +83,7 @@ export function CourseHome({ course }: { course: PublicCourse }) {
         </Card>
       </div>
 
-      {course.status === 'active' && (
+      {course.status === 'active' && course.source === 'custom' && (
         <ReplanPanel
           course={course}
           onApplied={() => {

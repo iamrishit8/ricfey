@@ -59,7 +59,7 @@ export type OutlineView = {
   quote: CreditQuote | null;
   versions: Array<{
     version: number;
-    source: 'generated' | 'edited' | 'replanned';
+    source: 'generated' | 'edited' | 'replanned' | 'gallery';
     createdAt: string;
   }>;
 };

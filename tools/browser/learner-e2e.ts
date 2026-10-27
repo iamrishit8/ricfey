@@ -2,7 +2,8 @@
 //   bun run e2e:learner -- <api-log-file> [screenshot-dir]
 // Signs in, creates a course, takes placement, edits + approves the outline, opens Today,
 // submits the task and quiz, flags a mistake, checks progress, re-plans from the weak topic,
-// and buys a credit pack (fake gateway).
+// buys a credit pack (fake gateway), then finds a ready-made course in the gallery and buys it.
+// Needs one gallery course: bun run seed:gallery -- --skill Knitting --depth basic --weeks 1 --minutes 20 --provider fake
 // Screens are checked at 390px.
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -200,6 +201,31 @@ try {
   step(
     'credits: 0 after buying the course (days and the re-plan free); bought Spark (test mode) → 100',
   );
+
+  // Gallery: the chat offers the ready-made course before writing a custom one.
+  await b.goto(`${WEB}/courses/new`);
+  await b.waitFor(`!!document.querySelector('#chat-input')`);
+  await b.fill('#chat-input', 'Knitting');
+  await b.click('Send');
+  await b.waitFor(`document.body.innerText.includes('ready-made course')`);
+  await shot('chat-gallery-offer');
+  step('chat: a topic with a ready-made course offers it first');
+  await b.evaluate(
+    `[...document.querySelectorAll('a')].find((a) => a.href.includes('/gallery/')).click()`,
+  );
+  await b.waitFor(`document.body.innerText.includes('The roadmap')`);
+  await shot('gallery-detail');
+  await b.click('Buy for 20 credits');
+  await b.waitFor(`document.body.innerText.includes('Start →')`);
+  step('gallery: bought the ready-made course for 20 credits (60% of 40)');
+  if ((await text()).includes('Adapt your plan'))
+    throw new Error('a re-plan panel is shown on a gallery course');
+  await b.click('Start →');
+  await b.waitFor(`document.body.innerText.includes('Practice task')`, 8000);
+  step('gallery copy: day 1 opens at once with its lesson');
+  await b.goto(`${WEB}/gallery`);
+  await b.waitFor(`document.body.innerText.includes('Ready-made courses')`);
+  await shot('gallery');
   if (b.errors.length || phone.errors.length)
     console.info('page errors:', [...b.errors, ...phone.errors]);
 } catch (e) {

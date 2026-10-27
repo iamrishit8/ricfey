@@ -12,6 +12,7 @@ Start at the top and go down; each page assumes only the ones above it.
    5. [05-web-app.md](walkthroughs/05-web-app.md): routes, data fetching, design tokens.
    6. [06-replanning.md](walkthroughs/06-replanning.md): mastery, re-plan modes, transactions.
    7. [07-credits-and-payments.md](walkthroughs/07-credits-and-payments.md): ledger, charging, Razorpay.
+   8. [08-gallery.md](walkthroughs/08-gallery.md): publishing, search, buying a ready-made course.
 4. Reference: [API.md](API.md), [DATA-MODEL.md](DATA-MODEL.md), [../TESTING.md](../TESTING.md).
 5. Process: [CONTRIBUTING.md](CONTRIBUTING.md), [phases/](phases/).
 6. Evidence: [phase-1-cost-report.md](phase-1-cost-report.md), [pricing.md](pricing.md), `samples/` (real generated courses).

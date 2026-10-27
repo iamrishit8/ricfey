@@ -14,6 +14,7 @@ const REASON: Record<string, string> = {
   welcome: 'Welcome',
   purchase: 'Bought',
   course: 'Course',
+  gallery: 'Gallery course',
   replan: 'Re-plan',
   adjustment: 'Adjustment',
 };

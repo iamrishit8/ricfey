@@ -72,7 +72,13 @@ Every learner starts with 100 credits (header, top right). A course is paid once
 **Credits → Buy** works offline: `PAYMENTS_PROVIDER=fake` simulates the payment, labelled "Test mode".
 For real Razorpay test mode see [walkthroughs/07-credits-and-payments.md](walkthroughs/07-credits-and-payments.md).
 
-## 7. Use the real model
+## 7. Fill the gallery (optional)
+
+The gallery starts empty; courses join it when learners finish them. For a demo:
+`bun run seed:gallery -- --skill Knitting --depth basic --weeks 1 --minutes 20 --provider fake`.
+Then **Gallery** shows it, and typing "Knitting" in **New course** offers it first.
+
+## 8. Use the real model
 
 ```
 LLM_PROVIDER=gemini
@@ -83,7 +89,7 @@ Restart the API. Expect 1 to 4 minutes per generation step on the free tier. The
 allows 20 requests per day per model; `LLM_DAILY_CALL_CAP` (default 16) stops the app before that.
 Rough cost of a course in calls: 2 up front (placement bank, outline), then 2 to 4 per day, plus 1 per task submission.
 
-## 8. Verify everything
+## 9. Verify everything
 
 ```sh
 bun run check            # typecheck + lint + format + tests (DB tests run if MONGODB_URI_TEST is set)

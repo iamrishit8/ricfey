@@ -59,3 +59,27 @@ Real Razorpay; the exchange rate and model-cost inputs of [../pricing.md](../pri
 ## P5-C2: not verified
 
 How well a real model judges topics (safety and specificity) and writes narrower options; only the fake responder was run. Check with `bun run smoke:real` and a few hand-typed topics at P7-C3.
+
+## P5-C3: verified
+
+`bun run check`: tests green (see [../../TESTING.md](../../TESTING.md)); 8 new in `routes/gallery.test.ts`:
+
+- a finished course is published at 60 %, with nothing about its learner (id, email and answers are absent from the stored data)
+- a flagged day or an open report keeps a course out (mutation check: removing the flagged-day rule fails it)
+- one course per variant
+- a bought copy is never re-published and counts as a completion
+- search ranking, the filters, an empty result, a stray quote, sign-in required
+- buying: fixed price once, finished lessons at once, no model call, no re-plan, a second buy refused
+- five simultaneous buys make one copy and one charge
+- 402 with no copy, and hidden gallery courses are 404
+
+`bun run e2e:learner` now ends by typing "Knitting" in the chat (the ready-made course is offered first), opening it, buying it for 20 credits, and opening day 1 at once, checked at 390px.
+
+## P5-C3: not verified
+
+Search ranking on a larger gallery; how real courses fare at the quality gates; multi-account abuse.
+
+## Gate (owner's)
+
+- [ ] Fill the gallery with the three real courses (music theory, astrophysics, CS fundamentals) once a paid Gemini tier is on: `bun run seed:gallery` three times (about 60 model calls each).
+- [ ] Try the whole flow in a browser: sign up, chat, buy, learn, gallery.

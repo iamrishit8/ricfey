@@ -25,7 +25,23 @@ export function coursePrice(days: number, minutesPerDay: number, depth: CourseDe
   return Math.max(10, Math.round(raw / 10) * 10);
 }
 
-export const CREDIT_REASONS = ['welcome', 'purchase', 'course', 'replan', 'adjustment'] as const;
+/** A ready-made gallery course costs this share of what a custom one would (no writing cost, no re-plans). */
+export const GALLERY_PRICE_FACTOR = 0.6;
+
+/** Price of a gallery course, fixed when it is published: 60 % of the custom price, nearest 10 (min 10). */
+export function galleryPrice(days: number, minutesPerDay: number, depth: CourseDepth): number {
+  const custom = coursePrice(days, minutesPerDay, depth);
+  return Math.max(10, Math.round((custom * GALLERY_PRICE_FACTOR) / 10) * 10);
+}
+
+export const CREDIT_REASONS = [
+  'welcome',
+  'purchase',
+  'course',
+  'gallery',
+  'replan',
+  'adjustment',
+] as const;
 export type CreditReason = (typeof CREDIT_REASONS)[number];
 
 export type CreditEntryView = {

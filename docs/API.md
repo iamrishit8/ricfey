@@ -91,3 +91,13 @@ A day counts as finished when a quiz **and** a task have been submitted (not nec
 | POST   | `/payments/verify`                   | yes       | `{ orderId, paymentId, signature }` from Checkout. Bad signature → 400; someone else's order → 404. → `{ payment: { status, credits, balance } }`. Idempotent.           |
 | POST   | `/payments/orders/:orderId/simulate` | yes       | **Fake gateway only.** Returns a signed pretend payment to pass to `verify`.                                                                                             |
 | POST   | `/webhooks/razorpay`                 | signature | Raw JSON body; `X-Razorpay-Signature` required (401 if wrong), `X-Razorpay-Event-Id` deduplicates. Credits on `order.paid` / `payment.captured` when the amount matches. |
+
+## Gallery ([walkthrough](walkthroughs/08-gallery.md))
+
+| Method | Path               | Body / notes                                                                                                                                                                                                                                       |
+| ------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/gallery`         | Query: `q` (text, exact skill match first), `depth`, `minWeeks`, `maxWeeks`, `limit` (1–50, default 24). → `{ courses: [{ id, skill, title, summary, depth, weeks, minutesPerDay, days, topics, priceCredits, completions }] }`. Sign-in required. |
+| GET    | `/gallery/:id`     | Summary plus the roadmap (`outline`) and `ownedCourseId` (your copy, if you have one). Lessons are not previewed. Hidden or unknown → 404.                                                                                                         |
+| POST   | `/gallery/:id/buy` | Charges the fixed price once and creates your own copy (`source: "gallery"`) with finished lessons. 201 `{ course }`; 402 `INSUFFICIENT_CREDITS`; 409 if you already have it.                                                                      |
+
+Courses carry `source: "custom" \| "gallery"` and `galleryId`. Gallery courses cannot be re-planned (409).

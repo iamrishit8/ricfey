@@ -1,6 +1,7 @@
 export * from './api';
 export * from './auth';
 export * from './course';
+export * from './gallery';
 export * from './credits';
 export * from './llm';
 export * from './payments';

@@ -26,6 +26,9 @@ export type PublicCourse = {
   } | null;
   outlineStatus: 'none' | 'generating' | 'ready' | 'failed';
   replanMode: 'manual' | 'auto';
+  /** custom: written for this learner. gallery: a ready-made course they bought (fixed lessons). */
+  source: 'custom' | 'gallery';
+  galleryId: string | null;
   approvedOutlineVersion: number | null;
   /** Credits paid for the course, once; null until bought. */
   creditsPaid: number | null;

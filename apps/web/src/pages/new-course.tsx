@@ -2,16 +2,17 @@ import {
   COURSE_DEPTHS,
   coursePrice,
   type CourseDepth,
+  type GallerySummary,
   type PublicCourse,
   type ReplanMode,
   type TopicCheckView,
 } from '@ricfey/shared';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Page } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ApiError, post } from '@/lib/api';
+import { ApiError, api, post } from '@/lib/api';
 import { DEPTH_LABEL } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
@@ -29,7 +30,8 @@ const ADAPT: Record<ReplanMode, string> = {
 const DAYS_PER_WEEK = 5;
 
 type Msg = { from: 'bot' | 'me'; text: string };
-type Step = 'topic' | 'checking' | 'pick' | 'depth' | 'weeks' | 'minutes' | 'adapt' | 'confirm';
+type Step =
+  'topic' | 'checking' | 'pick' | 'gallery' | 'depth' | 'weeks' | 'minutes' | 'adapt' | 'confirm';
 
 /**
  * The intake as a conversation: what do you want to learn, how deep, for how long, how much a
@@ -47,6 +49,7 @@ export function NewCoursePage() {
   const [step, setStep] = useState<Step>('topic');
   const [text, setText] = useState('');
   const [options, setOptions] = useState<string[]>([]);
+  const [matches, setMatches] = useState<GallerySummary[]>([]);
   const [skill, setSkill] = useState('');
   const [depth, setDepth] = useState<CourseDepth>('intermediate');
   const [weeks, setWeeks] = useState(4);
@@ -86,12 +89,37 @@ export function NewCoursePage() {
         );
         setStep('pick');
       } else {
-        askDepth(topic.topic);
+        await offerGalleryOrAskDepth(topic.topic);
       }
     } catch (err) {
       say(bot(err instanceof ApiError ? err.message : 'Something went wrong. Try that again.'));
       setStep('topic');
     }
+  }
+
+  /** Before writing a custom course, show any ready-made course on this topic (cheaper, instant). */
+  async function offerGalleryOrAskDepth(topic: string) {
+    setSkill(topic);
+    try {
+      const { courses } = await api<{ courses: GallerySummary[] }>(
+        `/gallery?q=${encodeURIComponent(topic)}&limit=3`,
+      );
+      if (courses.length > 0) {
+        setMatches(courses);
+        say(
+          bot(
+            courses.length === 1
+              ? 'Good news: a ready-made course on this already exists. It costs less and you can start right now. Or I can write a custom one for you.'
+              : `Good news: ${courses.length} ready-made courses on this already exist. They cost less and you can start right now. Or I can write a custom one for you.`,
+          ),
+        );
+        setStep('gallery');
+        return;
+      }
+    } catch {
+      // The gallery is a convenience: if it can't be reached, carry on with a custom course.
+    }
+    askDepth(topic);
   }
 
   function askDepth(topic: string) {
@@ -203,12 +231,45 @@ export function NewCoursePage() {
               variant="outline"
               onClick={() => {
                 say(me('Keep it broad'));
-                askDepth(skill);
+                void offerGalleryOrAskDepth(skill);
               }}
             >
               Keep it broad
             </Chip>
           </Chips>
+        )}
+        {step === 'gallery' && (
+          <div className="grid gap-3">
+            <ul className="grid gap-2">
+              {matches.map((m) => (
+                <li key={m.id}>
+                  <Link
+                    to={`/gallery/${m.id}`}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-4 py-3 transition hover:bg-brand-soft"
+                  >
+                    <span>
+                      <span className="font-medium">{m.title}</span>
+                      <span className="block text-small text-muted-foreground">
+                        {DEPTH_LABEL[m.depth]} · {m.weeks} {m.weeks === 1 ? 'week' : 'weeks'} ·{' '}
+                        {m.minutesPerDay} min a day
+                      </span>
+                    </span>
+                    <span className="font-mono text-small">{m.priceCredits} credits</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Chips>
+              <Chip
+                onClick={() => {
+                  say(me('Write a custom one'));
+                  askDepth(skill);
+                }}
+              >
+                Write a custom one
+              </Chip>
+            </Chips>
+          </div>
         )}
         {step === 'depth' && (
           <div className="grid gap-2 sm:grid-cols-3">

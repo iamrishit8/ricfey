@@ -6,7 +6,7 @@ re-shape the rest of the plan. Any subject that can be taught and tested through
 Pay-as-you-go credits in rupees.
 
 **Status.** Phases 1 (foundations), 2 (course creation and the daily loop), 3 (re-planning
-from quiz scores) and 4 (credits and Razorpay, fake gateway by default) are built. Phase 5 (launch) is planned. See [ARCHITECTURE.md](ARCHITECTURE.md) for what exists and what does not.
+from quiz scores) 4 (credits and Razorpay, fake gateway by default) and 5 (chat intake, buy-once courses, gallery) are built. Phase 6 (design) and 7 (real sign-in, payments and model, then deploy) are planned. See [ARCHITECTURE.md](ARCHITECTURE.md) for what exists and what does not.
 
 **New here?** Read [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) (running it in 10 minutes),
 then the [walkthroughs](docs/walkthroughs/) (how each part works, in the order a learner meets it).
@@ -26,6 +26,13 @@ Start the API (needs `MONGODB_URI` in `.env`):
 ```sh
 bun run dev:api                     # http://127.0.0.1:4000
 curl http://127.0.0.1:4000/health   # {"success":true,"data":{"status":"ok",...}}
+```
+
+Fill the gallery with a finished course (demo data; `--provider fake` for placeholder text):
+
+```sh
+bun run seed:gallery -- --skill "Music theory" --depth intermediate --weeks 2 --minutes 30
+bun run migrate:depth      # only for a database made before the depth names changed
 ```
 
 Generate a sample course (outline + day 1) into `docs/samples/`, then the cost report:

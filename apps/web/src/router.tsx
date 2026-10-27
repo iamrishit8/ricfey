@@ -4,6 +4,8 @@ import { SiteHeader } from '@/components/site-header';
 import { CoursePage } from '@/pages/course';
 import { CreditsPage } from '@/pages/credits';
 import { DayPage } from '@/pages/day';
+import { GalleryPage } from '@/pages/gallery';
+import { GalleryDetailPage } from '@/pages/gallery-detail';
 import { NewCoursePage } from '@/pages/new-course';
 import { ProgressPage } from '@/pages/progress';
 import { TodayPage } from '@/pages/today';
@@ -67,6 +69,22 @@ export const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <ProgressPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/gallery',
+        element: (
+          <RequireAuth>
+            <GalleryPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/gallery/:id',
+        element: (
+          <RequireAuth>
+            <GalleryDetailPage />
           </RequireAuth>
         ),
       },

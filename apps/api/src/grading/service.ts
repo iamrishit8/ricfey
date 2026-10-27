@@ -14,6 +14,8 @@ import { CourseModel, type CourseDoc } from '../models/course';
 import { CourseDayModel, type CourseDayDoc } from '../models/course-day';
 import { QuizAttemptModel } from '../models/quiz-attempt';
 import { TaskAttemptModel, type TaskAttemptDoc } from '../models/task-attempt';
+import { publishToGallery } from '../gallery/service';
+import { GalleryCourseModel } from '../models/gallery-course';
 import { maybeAutoReplan } from '../replan/service';
 import { gradeQuiz } from './quiz';
 import { maxScore, taskGradingPrompt } from './task-prompt';
@@ -92,10 +94,17 @@ async function maybeCompleteDay(
   if (finished.modifiedCount !== 1) return;
   const open = await CourseDayModel.exists({ courseId: course._id, completedAt: null });
   if (!open) {
-    await CourseModel.updateOne(
+    const done = await CourseModel.findOneAndUpdate(
       { _id: course._id, status: 'active' },
       { $set: { status: 'completed' } },
+      { returnDocument: 'after' },
     );
+    if (done?.source === 'gallery') {
+      await GalleryCourseModel.updateOne({ _id: done.galleryId }, { $inc: { completions: 1 } });
+    } else if (done) {
+      // A finished custom course that passes the quality checks joins the gallery.
+      deps.background.run('gallery_publish', async () => void (await publishToGallery(done)));
+    }
     return;
   }
   // Auto re-plan mode: a newly finished day may reshape the next few days.

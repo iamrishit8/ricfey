@@ -2,8 +2,8 @@
 
 How to verify everything that exists today. Updated at the end of each checkpoint and each phase.
 
-**Snapshot (2026-10-28, P5-C2):** `bun run check` green: typecheck, lint, format, **189 tests, 0 fail**
-(27 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
+**Snapshot (2026-10-28, end of Phase 5):** `bun run check` green: typecheck, lint, format, **197 tests, 0 fail**
+(28 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
 so a green run without it proves less. Browser e2e and `smoke:real` are run by hand (they need Chrome / a
 Gemini key) and are not part of `check`.
 
@@ -290,3 +290,14 @@ Browser: `bun run e2e:learner` types a refused topic ("forbidden: …"), then "Q
 
 Manual (fake LLM): `/courses/new` → "Quantum physics" → three chips → pick → Intermediate → 2 weeks → 30 min → "When I ask" → "About 100 credits to buy" → Design my roadmap.
 An existing database: `bun run migrate:depth` renames old depths (safe to run twice).
+
+## P5-C3. Gallery
+
+Automated: `apps/api/src/routes/gallery.test.ts` (see the list in [docs/phases/phase-5.md](docs/phases/phase-5.md)). Mutation: dropping the
+"day is ready" rule in `gallery/service.ts` fails the quality-gate test.
+
+Browser: `bun run seed:gallery -- --skill Knitting --depth basic --weeks 1 --minutes 20 --provider fake` once, then `bun run e2e:learner`
+(it types "Knitting" in the chat, sees the ready-made offer, buys it for 20 credits and opens day 1).
+
+Manual: Gallery page → search "knit" → open → Buy; the copy has no "Adapt your plan" panel; day 1 opens at once; finishing all days
+raises the gallery course's "finished" count.

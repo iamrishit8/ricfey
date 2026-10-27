@@ -14,6 +14,7 @@ import { dayRoutes } from './routes/days';
 import { gradingRoutes } from './routes/grading';
 import { FakeGateway, type PaymentGateway } from './payments/gateway';
 import { creditRoutes } from './routes/credits';
+import { galleryRoutes } from './routes/gallery';
 import { healthRoutes } from './routes/health';
 import { intakeRoutes } from './routes/intake';
 import { paymentRoutes } from './routes/payments';
@@ -82,6 +83,7 @@ export function buildApp(
   app.register(creditRoutes, deps);
   app.register(paymentRoutes, deps);
   app.register(intakeRoutes, deps);
+  app.register(galleryRoutes, deps);
 
   return app;
 }

@@ -18,6 +18,9 @@ export function SiteHeader() {
         <ThemeToggle />
         {user ? (
           <>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/gallery">Gallery</Link>
+            </Button>
             <CreditBadge />
             <Button variant="ghost" size="sm" asChild>
               <Link to="/">My courses</Link>

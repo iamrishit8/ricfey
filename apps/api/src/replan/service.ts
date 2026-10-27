@@ -50,6 +50,11 @@ export async function courseMastery(course: CourseDoc): Promise<MasteryView> {
 }
 
 function assertActive(course: CourseDoc): void {
+  if (course.source === 'gallery')
+    throw new AppError(
+      'CONFLICT',
+      'Ready-made gallery courses have fixed lessons and can’t be re-planned',
+    );
   if (course.status !== 'active')
     throw new AppError('CONFLICT', 'Only a course in progress can be re-planned');
 }
@@ -361,7 +366,8 @@ export async function latestReplan(course: CourseDoc): Promise<ReplanDoc | null>
  * have passed since the last applied re-plan. Never throws: a skipped auto re-plan is fine.
  */
 export async function maybeAutoReplan(course: CourseDoc, deps: ReplanDeps): Promise<boolean> {
-  if (course.replanMode !== 'auto' || course.status !== 'active') return false;
+  if (course.source !== 'custom' || course.replanMode !== 'auto' || course.status !== 'active')
+    return false;
   const mastery = await courseMastery(course);
   if (mastery.weakTopics.length === 0) return false;
   const [completed, last] = await Promise.all([

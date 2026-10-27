@@ -31,6 +31,9 @@ const courseSchema = new Schema(
     currentOutlineVersion: { type: Number, default: null },
     approvedOutlineVersion: { type: Number, default: null },
     replanMode: { type: String, enum: REPLAN_MODES, default: 'manual', required: true },
+    /** custom: written for this learner. gallery: a copy of a gallery course (fixed lessons). */
+    source: { type: String, enum: ['custom', 'gallery'], default: 'custom', required: true },
+    galleryId: { type: Schema.Types.ObjectId, ref: 'GalleryCourse', default: null },
     placement: {
       type: new Schema(
         {
@@ -50,6 +53,11 @@ const courseSchema = new Schema(
 // "My courses, newest first" and "my active courses".
 courseSchema.index({ userId: 1, createdAt: -1 });
 courseSchema.index({ userId: 1, status: 1 });
+// A learner buys a given gallery course once.
+courseSchema.index(
+  { userId: 1, galleryId: 1 },
+  { unique: true, partialFilterExpression: { source: 'gallery' }, name: 'one_copy_per_learner' },
+);
 
 export type Course = InferSchemaType<typeof courseSchema>;
 export type CourseDoc = HydratedDocument<Course>;
@@ -75,6 +83,8 @@ export function toPublicCourse(c: CourseDoc): PublicCourse {
       : null,
     outlineStatus: c.outlineStatus,
     replanMode: c.replanMode,
+    source: c.source,
+    galleryId: c.galleryId ? c.galleryId.toString() : null,
     approvedOutlineVersion: c.approvedOutlineVersion ?? null,
     creditsPaid: c.creditsPaid ?? null,
     startedAt: c.startedAt?.toISOString() ?? null,
