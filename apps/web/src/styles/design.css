@@ -1,0 +1,130 @@
+/*
+ * Design v2 (proposal): warm paper, red and green, black pills, big condensed caps.
+ * Scoped to [data-design='v2'] so the live app keeps its current look until this is approved;
+ * then these tokens move into :root in tokens.css and the wrapper goes away.
+ * Contrast of every text/background pair below was checked (WCAG AA, 4.5:1); see docs/design.md.
+ */
+
+[data-design='v2'] {
+  --font-display: 'Anton', 'Impact', ui-sans-serif, sans-serif;
+  --font-sans: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
+
+  --background: oklch(0.967 0.014 62); /* warm paper */
+  --foreground: oklch(0.16 0.01 40); /* ink */
+  --card: oklch(0.992 0.005 70); /* near white */
+  --card-foreground: var(--foreground);
+  --muted: oklch(0.94 0.016 60);
+  --muted-foreground: oklch(0.45 0.02 50);
+  --border: oklch(0.88 0.018 55);
+  --input: var(--border);
+
+  --brand: oklch(0.56 0.21 27); /* red */
+  --brand-foreground: oklch(0.992 0.004 70);
+  --brand-soft: color-mix(in oklch, var(--brand) 11%, var(--background));
+  --brand-tint: color-mix(in oklch, var(--brand) 38%, var(--background));
+
+  --green: oklch(0.5 0.13 155);
+  --green-foreground: oklch(0.992 0.004 70);
+  --green-soft: color-mix(in oklch, var(--green) 14%, var(--background));
+
+  --pill: oklch(0.14 0.005 40); /* the black pill buttons */
+  --pill-foreground: oklch(0.97 0.01 70);
+
+  --success: var(--green);
+  --destructive: oklch(0.5 0.2 27);
+  --ring: var(--brand);
+
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--brand-soft);
+  --accent-foreground: var(--foreground);
+
+  --radius: 1.25rem;
+
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.dark [data-design='v2'] {
+  --background: oklch(0.17 0.012 40);
+  --foreground: oklch(0.95 0.014 70);
+  --card: oklch(0.21 0.014 40);
+  --muted: oklch(0.25 0.014 40);
+  --muted-foreground: oklch(0.72 0.02 60);
+  --border: oklch(0.32 0.014 40);
+
+  --brand: oklch(0.7 0.18 28);
+  --brand-foreground: oklch(0.17 0.012 40);
+  --green: oklch(0.75 0.14 155);
+  --green-foreground: oklch(0.17 0.012 40);
+
+  --pill: oklch(0.95 0.014 70); /* in the dark the pill is cream */
+  --pill-foreground: oklch(0.17 0.012 40);
+
+  --destructive: oklch(0.7 0.17 27);
+}
+
+/* Headings: tall condensed caps for h1, a friendly grotesque for the rest. */
+[data-design='v2'] h1,
+[data-design='v2'] .d-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  line-height: 0.95;
+  font-variation-settings: normal;
+}
+[data-design='v2'] h2,
+[data-design='v2'] h3,
+[data-design='v2'] .d-statement {
+  font-family: var(--font-statement);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variation-settings: normal;
+}
+[data-design='v2'] .font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+}
+
+/* Marquee: a line of text drifting left forever. Static for people who ask for less motion. */
+@keyframes d-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.d-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: d-marquee 28s linear infinite;
+}
+/* The squiggle draws itself once when it scrolls into view. */
+@keyframes d-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.d-squiggle path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: d-draw 2.4s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-marquee-track {
+    animation: none;
+  }
+  .d-squiggle path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  [data-design='v2'] * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

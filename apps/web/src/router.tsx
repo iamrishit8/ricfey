@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/site-header';
 import { CoursePage } from '@/pages/course';
 import { CreditsPage } from '@/pages/credits';
 import { DayPage } from '@/pages/day';
+import { DesignPage } from '@/pages/design';
 import { GalleryPage } from '@/pages/gallery';
 import { GalleryDetailPage } from '@/pages/gallery-detail';
 import { NewCoursePage } from '@/pages/new-course';
@@ -25,6 +26,8 @@ function Layout() {
 }
 
 export const router = createBrowserRouter([
+  // The design proposal has its own header and is outside the app layout.
+  { path: '/design', element: <DesignPage /> },
   {
     element: <Layout />,
     children: [
