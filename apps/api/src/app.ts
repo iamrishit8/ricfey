@@ -15,6 +15,7 @@ import { gradingRoutes } from './routes/grading';
 import { FakeGateway, type PaymentGateway } from './payments/gateway';
 import { creditRoutes } from './routes/credits';
 import { healthRoutes } from './routes/health';
+import { intakeRoutes } from './routes/intake';
 import { paymentRoutes } from './routes/payments';
 import { replanRoutes } from './routes/replan';
 
@@ -80,6 +81,7 @@ export function buildApp(
   app.register(replanRoutes, deps);
   app.register(creditRoutes, deps);
   app.register(paymentRoutes, deps);
+  app.register(intakeRoutes, deps);
 
   return app;
 }

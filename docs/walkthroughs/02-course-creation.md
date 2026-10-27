@@ -5,13 +5,32 @@
 
 ```
  POST /courses
-   ├─ depth = intro ────────────────────────────┐
+   ├─ depth = basic ────────────────────────────┐
    └─ depth = working | deep → status placement │
         placement bank (1 LLM call) → adaptive quiz (no LLM)
         └─ done → level + strong/weak topics ────┴─► status outline
                                                       outline generated in background (1 LLM call)
                                                       learner edits (new versions) → approve → status active
 ```
+
+## Step 0: The chat
+
+`/courses/new` is a conversation, not a form. Free text for the topic; chips for the rest.
+
+```
+"What do you want to learn?"  ─► POST /intake/topic   (one cheap model call, free for the learner)
+     refuse → a polite reason, ask again
+     broad  ("quantum physics") → three narrower options as chips | type your own | keep it broad
+     specific → straight on
+"How deep?" basic / intermediate / advanced  →  "How many weeks?"  →  "Minutes a day?"
+  →  "Adapt your plan automatically or when you ask?"  →  summary with an estimated price
+  →  "Design my roadmap" = POST /courses
+```
+
+- **Safety gate (server-side).** `POST /courses` runs the same topic check, so calling the API directly cannot skip the chat. Verdicts are remembered per learner for 24 hours (`topicChecks`), so a topic is never judged twice, and options the model itself offered count as approved. Refusals are for plainly harmful purposes or non-subjects; learning _about_ dangerous things is fine. See `intake/prompt.ts`.
+- **Cost control.** Drafting is free for the learner but costs model calls (placement quiz, roadmap), so a learner can start at most 5 unbought courses in 24 hours and 30 topic checks an hour.
+- **What the learner types is data.** It goes into the prompt only inside the escaped `<request>` block; the model is told to judge it, never obey it.
+- **Depth names** are basic, intermediate, advanced (earlier versions used intro, working, deep; `bun run migrate:depth` renames them in an existing database).
 
 ## Step 1: Intake
 

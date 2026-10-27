@@ -13,13 +13,13 @@ export type CourseRequest = {
 };
 
 const DEPTH_MEANING: Record<CourseDepth, string> = {
-  intro:
-    'INTRO: a curious beginner. Build intuition and core vocabulary. Assume no prior knowledge.',
-  working:
-    'WORKING: the learner should be able to use this independently for real, everyday tasks. ' +
+  basic:
+    'BASIC: a curious beginner. Build intuition and core vocabulary. Assume no prior knowledge.',
+  intermediate:
+    'INTERMEDIATE: the learner should be able to use this independently for real, everyday tasks. ' +
     'Practical fluency over theory; theory only where it prevents common mistakes.',
-  deep:
-    'DEEP: the learner wants expert-level understanding: underlying mechanisms, trade-offs, ' +
+  advanced:
+    'ADVANCED: the learner wants expert-level understanding: underlying mechanisms, trade-offs, ' +
     'edge cases and how practitioners reason.',
 };
 

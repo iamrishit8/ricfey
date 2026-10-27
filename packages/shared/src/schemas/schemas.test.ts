@@ -12,7 +12,7 @@ const outline = (days: number[]) => ({
   title: 'Python basics',
   summary: 'A four week course on practical Python for everyday tasks.',
   skill: 'Python',
-  depth: 'working',
+  depth: 'intermediate',
   weeks: [{ week: 1, theme: 'Foundations', days: days.map(day) }],
 });
 

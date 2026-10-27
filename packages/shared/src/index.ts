@@ -12,3 +12,4 @@ export * from './schemas/outline-edit';
 export * from './schemas/day-view';
 export * from './schemas/grading';
 export * from './schemas/replan';
+export * from './schemas/topic';

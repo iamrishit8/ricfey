@@ -52,7 +52,7 @@ describe.skipIf(!TEST_DB_URI)('grading and progress (needs MONGODB_URI_TEST)', (
       method: 'POST',
       url: '/courses',
       cookies,
-      payload: { skill: 'Budgeting', depth: 'intro', weeks, minutesPerDay: 20 },
+      payload: { skill: 'Budgeting', depth: 'basic', weeks, minutesPerDay: 20 },
     });
     await background.drain();
     const id = res.json().data.course.id as string;

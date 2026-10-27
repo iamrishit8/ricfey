@@ -1,54 +1,139 @@
 import {
   COURSE_DEPTHS,
-  REPLAN_MODES,
+  coursePrice,
   type CourseDepth,
   type PublicCourse,
   type ReplanMode,
+  type TopicCheckView,
 } from '@ricfey/shared';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
-import { ErrorNote, Page } from '@/components/page';
+import { Page } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import { ApiError, post } from '@/lib/api';
+import { DEPTH_LABEL } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
-const DEPTHS: Record<CourseDepth, { title: string; body: string }> = {
-  intro: { title: 'Intro', body: 'New to it. Build intuition and vocabulary. No placement quiz.' },
-  working: {
-    title: 'Working',
-    body: 'Use it on real tasks by yourself. Short placement quiz first.',
-  },
-  deep: { title: 'Deep', body: 'Expert-level understanding. Short placement quiz first.' },
+const DEPTH_BLURB: Record<CourseDepth, string> = {
+  basic: 'New to it. Build intuition and vocabulary. No placement quiz.',
+  intermediate: 'Use it on real tasks by yourself. A short placement quiz first.',
+  advanced: 'Expert-level understanding. A short placement quiz first.',
 };
-const REPLAN: Record<ReplanMode, { title: string; body: string }> = {
-  manual: {
-    title: 'When I ask',
-    body: 'Your quiz scores suggest changes; you decide whether to use them.',
-  },
-  auto: {
-    title: 'Automatically',
-    body: 'The next few days adapt by themselves when a topic needs more work.',
-  },
+const WEEKS = [1, 2, 4, 6, 8, 12];
+const MINUTES = [15, 30, 45, 60, 90];
+const ADAPT: Record<ReplanMode, string> = {
+  manual: 'When I ask',
+  auto: 'Automatically',
 };
-const MINUTES = [10, 15, 20, 30, 45, 60, 90, 120];
+const DAYS_PER_WEEK = 5;
 
+type Msg = { from: 'bot' | 'me'; text: string };
+type Step = 'topic' | 'checking' | 'pick' | 'depth' | 'weeks' | 'minutes' | 'adapt' | 'confirm';
+
+/**
+ * The intake as a conversation: what do you want to learn, how deep, for how long, how much a
+ * day, and how the plan should adapt. A broad topic gets three narrower suggestions. Nothing is
+ * charged here; the price is shown and the learner pays only when they buy the roadmap.
+ */
 export function NewCoursePage() {
   const navigate = useNavigate();
+  const [messages, setMessages] = useState<Msg[]>([
+    {
+      from: 'bot',
+      text: 'What do you want to learn? Anything works: a whole field like “quantum physics”, or something narrow like “how entanglement works”.',
+    },
+  ]);
+  const [step, setStep] = useState<Step>('topic');
+  const [text, setText] = useState('');
+  const [options, setOptions] = useState<string[]>([]);
   const [skill, setSkill] = useState('');
-  const [depth, setDepth] = useState<CourseDepth>('working');
+  const [depth, setDepth] = useState<CourseDepth>('intermediate');
   const [weeks, setWeeks] = useState(4);
   const [minutes, setMinutes] = useState(30);
   const [replanMode, setReplanMode] = useState<ReplanMode>('manual');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const end = useRef<HTMLDivElement>(null);
 
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
+  useEffect(() => {
+    end.current?.scrollIntoView?.({ block: 'end', behavior: 'smooth' });
+  }, [messages, step]);
+
+  const say = (...m: Msg[]) => setMessages((all) => [...all, ...m]);
+  const me = (t: string): Msg => ({ from: 'me', text: t });
+  const bot = (t: string): Msg => ({ from: 'bot', text: t });
+
+  async function submitTopic(raw: string) {
+    const typed = raw.trim();
+    if (typed.length < 2 || busy) return;
+    setText('');
+    say(me(typed));
+    setStep('checking');
+    try {
+      const { topic } = await post<{ topic: TopicCheckView }>('/intake/topic', { text: typed });
+      if (topic.verdict === 'refuse') {
+        say(bot(`${topic.reason} What else would you like to learn?`));
+        setStep('topic');
+        return;
+      }
+      setSkill(topic.topic);
+      if (topic.specificity === 'broad') {
+        setOptions(topic.options);
+        say(
+          bot(
+            `“${topic.topic}” is a big area. Pick a narrower course, type your own, or keep it broad.`,
+          ),
+        );
+        setStep('pick');
+      } else {
+        askDepth(topic.topic);
+      }
+    } catch (err) {
+      say(bot(err instanceof ApiError ? err.message : 'Something went wrong. Try that again.'));
+      setStep('topic');
+    }
+  }
+
+  function askDepth(topic: string) {
+    setSkill(topic);
+    say(bot(`Good: ${topic}. How deep do you want to go?`));
+    setStep('depth');
+  }
+
+  function chooseDepth(d: CourseDepth) {
+    setDepth(d);
+    say(me(DEPTH_LABEL[d]), bot('For how many weeks?'));
+    setStep('weeks');
+  }
+  function chooseWeeks(w: number) {
+    setWeeks(w);
+    say(me(`${w} ${w === 1 ? 'week' : 'weeks'}`), bot('How many minutes a day can you give it?'));
+    setStep('minutes');
+  }
+  function chooseMinutes(m: number) {
+    setMinutes(m);
+    say(
+      me(`${m} minutes`),
+      bot(
+        'Last one. When your quiz scores show a topic needs more work, should I adapt your next days automatically, or only when you ask?',
+      ),
+    );
+    setStep('adapt');
+  }
+  function chooseAdapt(mode: ReplanMode) {
+    setReplanMode(mode);
+    const price = coursePrice(weeks * DAYS_PER_WEEK, minutes, depth);
+    say(
+      me(ADAPT[mode]),
+      bot(
+        `Here’s the plan: ${skill}, ${DEPTH_LABEL[depth].toLowerCase()}, ${weeks} ${weeks === 1 ? 'week' : 'weeks'}, ${minutes} minutes a day. I’ll design your roadmap now. It’s free to look at; buying it costs about ${price} credits, once, and then it’s yours forever.`,
+      ),
+    );
+    setStep('confirm');
+  }
+
+  async function build() {
     setBusy(true);
-    setError(null);
     try {
       const { course } = await post<{ course: PublicCourse }>('/courses', {
         skill,
@@ -59,130 +144,178 @@ export function NewCoursePage() {
       });
       void navigate(`/courses/${course.id}`);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Something went wrong.');
+      say(bot(err instanceof ApiError ? err.message : 'Something went wrong. Try again.'));
       setBusy(false);
     }
   }
+
+  function restart() {
+    setMessages([bot('Okay, from the top. What do you want to learn?')]);
+    setStep('topic');
+    setOptions([]);
+    setText('');
+  }
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    void submitTopic(text);
+  }
+
+  const canType = step === 'topic' || step === 'pick';
+  const price = coursePrice(weeks * DAYS_PER_WEEK, minutes, depth);
 
   return (
     <Page narrow>
       <h1 className="text-h1 font-medium">
         What do you want to <em className="text-brand">learn</em>?
       </h1>
-      <form onSubmit={onSubmit} className="mt-10 grid gap-8">
-        <div className="grid gap-2">
-          <Label htmlFor="skill">Skill or subject</Label>
-          <Input
-            id="skill"
-            required
-            maxLength={120}
-            placeholder="e.g. Python, personal finance, music theory"
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-          />
-        </div>
 
-        <fieldset className="grid gap-3">
-          <legend className="mb-1 text-small font-medium">How deep?</legend>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {COURSE_DEPTHS.map((d) => (
-              <label
-                key={d}
-                className={cn(
-                  'cursor-pointer rounded-lg border p-4 transition has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/40',
-                  depth === d ? 'border-brand bg-brand-soft' : 'hover:bg-muted',
-                )}
-              >
-                <input
-                  type="radio"
-                  name="depth"
-                  value={d}
-                  checked={depth === d}
-                  onChange={() => setDepth(d)}
-                  className="sr-only"
-                />
-                <span className="font-display text-h3 font-medium">{DEPTHS[d].title}</span>
-                <span className="mt-1 block text-small text-muted-foreground">
-                  {DEPTHS[d].body}
-                </span>
-              </label>
+      <ol aria-live="polite" className="mt-8 grid gap-3">
+        {messages.map((m, i) => (
+          <li
+            key={i}
+            className={cn(
+              'max-w-[85%] rounded-2xl px-4 py-3',
+              m.from === 'bot'
+                ? 'rounded-bl-sm bg-muted'
+                : 'ml-auto rounded-br-sm bg-brand text-brand-foreground',
+            )}
+          >
+            {m.text}
+          </li>
+        ))}
+        {step === 'checking' && (
+          <li className="max-w-[85%] rounded-2xl rounded-bl-sm bg-muted px-4 py-3 text-muted-foreground">
+            Thinking…
+          </li>
+        )}
+      </ol>
+
+      <div className="mt-6 grid gap-3">
+        {step === 'pick' && (
+          <Chips>
+            {options.map((o) => (
+              <Chip key={o} onClick={() => void submitTopic(o)}>
+                {o}
+              </Chip>
             ))}
-          </div>
-        </fieldset>
-
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div className="grid gap-2">
-            <Label htmlFor="weeks">For how long?</Label>
-            <Select id="weeks" value={weeks} onChange={(e) => setWeeks(Number(e.target.value))}>
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((w) => (
-                <option key={w} value={w}>
-                  {w} {w === 1 ? 'week' : 'weeks'}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="minutes">Minutes a day</Label>
-            <Select
-              id="minutes"
-              value={minutes}
-              onChange={(e) => setMinutes(Number(e.target.value))}
+            <Chip
+              variant="outline"
+              onClick={() => {
+                say(me('Keep it broad'));
+                askDepth(skill);
+              }}
             >
-              {MINUTES.map((m) => (
-                <option key={m} value={m}>
-                  {m} minutes
-                </option>
-              ))}
-            </Select>
-          </div>
-        </div>
-        <p className="text-small text-muted-foreground">
-          Five learning days a week. Each day: a lesson, a short task and a quiz.
-        </p>
-
-        <fieldset className="grid gap-3">
-          <legend className="mb-1 text-small font-medium">
-            How should your plan adapt to your scores?
-          </legend>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {REPLAN_MODES.map((m) => (
-              <label
-                key={m}
-                className={cn(
-                  'cursor-pointer rounded-lg border p-4 transition has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/40',
-                  replanMode === m ? 'border-brand bg-brand-soft' : 'hover:bg-muted',
-                )}
+              Keep it broad
+            </Chip>
+          </Chips>
+        )}
+        {step === 'depth' && (
+          <div className="grid gap-2 sm:grid-cols-3">
+            {COURSE_DEPTHS.map((d) => (
+              <button
+                key={d}
+                type="button"
+                onClick={() => chooseDepth(d)}
+                className="rounded-lg border p-4 text-left transition hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none"
               >
-                <input
-                  type="radio"
-                  name="replanMode"
-                  value={m}
-                  checked={replanMode === m}
-                  onChange={() => setReplanMode(m)}
-                  className="sr-only"
-                />
-                <span className="font-medium">{REPLAN[m].title}</span>
+                <span className="font-display text-h3 font-medium">{DEPTH_LABEL[d]}</span>
                 <span className="mt-1 block text-small text-muted-foreground">
-                  {REPLAN[m].body}
+                  {DEPTH_BLURB[d]}
                 </span>
-              </label>
+              </button>
             ))}
           </div>
-          <p className="text-small text-muted-foreground">
-            You can change this later. Re-plans are free for your first 7 days.
-          </p>
-        </fieldset>
+        )}
+        {step === 'weeks' && (
+          <Chips>
+            {WEEKS.map((w) => (
+              <Chip key={w} onClick={() => chooseWeeks(w)}>
+                {w} {w === 1 ? 'week' : 'weeks'}
+              </Chip>
+            ))}
+          </Chips>
+        )}
+        {step === 'minutes' && (
+          <Chips>
+            {MINUTES.map((m) => (
+              <Chip key={m} onClick={() => chooseMinutes(m)}>
+                {m} min
+              </Chip>
+            ))}
+          </Chips>
+        )}
+        {step === 'adapt' && (
+          <Chips>
+            {(Object.keys(ADAPT) as ReplanMode[]).map((k) => (
+              <Chip key={k} onClick={() => chooseAdapt(k)}>
+                {ADAPT[k]}
+              </Chip>
+            ))}
+          </Chips>
+        )}
+        {step === 'confirm' && (
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="lg" disabled={busy} onClick={() => void build()}>
+              {busy ? 'Designing…' : 'Design my roadmap →'}
+            </Button>
+            <Button variant="ghost" onClick={restart} disabled={busy}>
+              Start over
+            </Button>
+            <span className="text-small text-muted-foreground">About {price} credits to buy</span>
+          </div>
+        )}
 
-        {error && <ErrorNote>{error}</ErrorNote>}
-        <Button
-          type="submit"
-          size="lg"
-          disabled={busy || skill.trim().length < 2}
-          className="justify-self-start"
-        >
-          {busy ? 'Creating…' : 'Build my course →'}
-        </Button>
-      </form>
+        {canType && (
+          <form onSubmit={onSubmit} className="flex gap-2">
+            <Input
+              id="chat-input"
+              aria-label="Your message"
+              required
+              maxLength={200}
+              autoComplete="off"
+              placeholder={
+                step === 'pick'
+                  ? 'Or type your own narrower topic'
+                  : 'e.g. Python, personal finance, quantum physics'
+              }
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
+            <Button type="submit" disabled={text.trim().length < 2}>
+              Send
+            </Button>
+          </form>
+        )}
+      </div>
+      <div ref={end} />
     </Page>
+  );
+}
+
+function Chips({ children }: { children: React.ReactNode }) {
+  return <div className="flex flex-wrap gap-2">{children}</div>;
+}
+
+function Chip({
+  children,
+  onClick,
+  variant = 'default',
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  variant?: 'default' | 'outline';
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'rounded-full border px-4 py-2 text-small font-medium transition hover:bg-brand-soft focus-visible:ring-[3px] focus-visible:ring-ring/40 focus-visible:outline-none',
+        variant === 'outline' && 'text-muted-foreground',
+      )}
+    >
+      {children}
+    </button>
   );
 }

@@ -5,7 +5,7 @@ import { FakeProvider } from './fake-provider';
 import type { CourseRequest } from './prompts';
 import { InMemoryLlmUsageStore } from './usage-store';
 
-const req: CourseRequest = { skill: 'Music theory', depth: 'intro', weeks: 2, daysPerWeek: 3 };
+const req: CourseRequest = { skill: 'Music theory', depth: 'basic', weeks: 2, daysPerWeek: 3 };
 const deps = () => ({
   usage: new InMemoryLlmUsageStore(),
   caps: { maxCallsPerDay: 10, maxTokensPerDay: 1e9 },

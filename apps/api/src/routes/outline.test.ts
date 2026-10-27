@@ -42,7 +42,7 @@ describe.skipIf(!TEST_DB_URI)('outline (needs MONGODB_URI_TEST)', () => {
       method: 'POST',
       url: '/courses',
       cookies,
-      payload: { skill: 'Knitting', depth: 'intro', weeks: 2, minutesPerDay: 30, ...extra },
+      payload: { skill: 'Knitting', depth: 'basic', weeks: 2, minutesPerDay: 30, ...extra },
     });
     await background.drain();
     return res.json().data.course.id as string;
@@ -59,7 +59,7 @@ describe.skipIf(!TEST_DB_URI)('outline (needs MONGODB_URI_TEST)', () => {
     expect(view.quote).toMatchObject({
       days: 10,
       minutesPerDay: 30,
-      depth: 'intro',
+      depth: 'basic',
       totalCredits: 80,
     });
     expect(main.purposes).toEqual(['course_outline']);
@@ -72,7 +72,7 @@ describe.skipIf(!TEST_DB_URI)('outline (needs MONGODB_URI_TEST)', () => {
       method: 'POST',
       url: '/courses',
       cookies,
-      payload: { skill: 'Knitting', depth: 'intro', weeks: 2, minutesPerDay: 30 },
+      payload: { skill: 'Knitting', depth: 'basic', weeks: 2, minutesPerDay: 30 },
     });
     const id = res.json().data.course.id;
     // Still generating (background not drained): retry must not start another job.
@@ -87,7 +87,7 @@ describe.skipIf(!TEST_DB_URI)('outline (needs MONGODB_URI_TEST)', () => {
       method: 'POST',
       url: '/courses',
       cookies,
-      payload: { skill: 'Python', depth: 'working', weeks: 2, minutesPerDay: 45 },
+      payload: { skill: 'Python', depth: 'intermediate', weeks: 2, minutesPerDay: 45 },
     });
     await background.drain();
     const id = res.json().data.course.id;

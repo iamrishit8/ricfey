@@ -95,7 +95,7 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
   return (
     <section className="grid gap-8">
       <div className="max-w-3xl">
-        <Badge>{course.depth === 'intro' ? 'Step 1 of 1' : 'Step 2 of 2'} · Your plan</Badge>
+        <Badge>{course.depth === 'basic' ? 'Step 1 of 1' : 'Step 2 of 2'} · Your plan</Badge>
         <h1 className="mt-4 text-h1 font-medium">
           {view?.outline?.title ?? `Your ${course.skill} course`}
         </h1>

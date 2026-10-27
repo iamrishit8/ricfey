@@ -1,5 +1,5 @@
 // How deep the learner wants to go. Used by the Course model and (C3) the generator.
-export const COURSE_DEPTHS = ['intro', 'working', 'deep'] as const;
+export const COURSE_DEPTHS = ['basic', 'intermediate', 'advanced'] as const;
 export type CourseDepth = (typeof COURSE_DEPTHS)[number];
 
 // placement → outline → active → completed. Intro-depth courses start at outline.

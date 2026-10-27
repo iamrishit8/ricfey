@@ -40,7 +40,7 @@ describe.skipIf(!TEST_DB_URI)('daily unlock (needs MONGODB_URI_TEST)', () => {
       method: 'POST',
       url: '/courses',
       cookies,
-      payload: { skill: 'Knitting', depth: 'intro', weeks: 2, minutesPerDay: 20 },
+      payload: { skill: 'Knitting', depth: 'basic', weeks: 2, minutesPerDay: 20 },
     });
     await background.drain();
     const id = res.json().data.course.id as string;
@@ -52,6 +52,8 @@ describe.skipIf(!TEST_DB_URI)('daily unlock (needs MONGODB_URI_TEST)', () => {
     });
     main.purposes.length = 0;
     main.prompts.length = 0;
+    check.purposes.length = 0; // drop the topic check made when the course was created
+    check.prompts.length = 0;
     return id;
   }
   const getDay = (id: string, n: number | string, cookies: Record<string, string>) =>
@@ -198,7 +200,7 @@ describe.skipIf(!TEST_DB_URI)('daily unlock (needs MONGODB_URI_TEST)', () => {
       method: 'POST',
       url: '/courses',
       cookies,
-      payload: { skill: 'Knitting', depth: 'intro', weeks: 2, minutesPerDay: 20 },
+      payload: { skill: 'Knitting', depth: 'basic', weeks: 2, minutesPerDay: 20 },
     });
     await background.drain();
     const id = res.json().data.course.id;

@@ -49,19 +49,31 @@ try {
   step('signed in; dashboard shows "Your courses"');
   await shot('dashboard-empty');
 
-  // Intake
+  // Intake, as a chat. A refused topic first, then a broad one (three options), then the course.
   await b.click('Start a new course');
-  await b.waitFor(`!!document.querySelector('#skill')`);
-  await b.fill('#skill', 'Music theory');
-  await b.evaluate(`document.querySelector('input[value=working]').click()`);
-  // 2 weeks at 30 minutes, working depth: 10 days × 2 × 4 × 1.25 = 100 credits, exactly the gift.
-  await b.evaluate(`(() => {
-    const el = document.querySelector('#weeks');
-    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(el, '2');
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-  })()`);
+  await b.waitFor(`!!document.querySelector('#chat-input')`);
+  await b.fill('#chat-input', 'forbidden: something awful');
+  await b.click('Send');
+  await b.waitFor(`document.body.innerText.includes('What else would you like to learn')`);
+  step('chat: a refused topic gets a polite reason and another try');
+  await b.fill('#chat-input', 'Quantum physics');
+  await b.click('Send');
+  await b.waitFor(`document.body.innerText.includes('is a big area')`);
+  await shot('intake-options');
+  await b.click('Quantum physics: the core ideas');
+  await b.waitFor(`document.body.innerText.includes('How deep do you want to go')`);
+  step('chat: a broad topic offered three narrower courses; one picked');
+  await b.click('Intermediate');
+  await b.waitFor(`document.body.innerText.includes('For how many weeks')`);
+  // 2 weeks at 30 minutes, intermediate: 10 days × 2 × 4 × 1.25 = 100 credits, exactly the gift.
+  await b.click('2 weeks');
+  await b.waitFor(`document.body.innerText.includes('minutes a day can you give')`);
+  await b.click('30 min');
+  await b.waitFor(`document.body.innerText.includes('adapt your next days')`);
+  await b.click('When I ask');
+  await b.waitFor(`document.body.innerText.includes('About 100 credits to buy')`);
   await shot('intake');
-  await b.click('Build my course');
+  await b.click('Design my roadmap');
   await b.waitFor(`document.body.innerText.includes('starting point')`);
   step('course created; placement shown');
 

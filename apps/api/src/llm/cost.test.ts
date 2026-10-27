@@ -18,7 +18,7 @@ const call = (
 
 const usage: SampleUsage = {
   skill: 'Python',
-  depth: 'working',
+  depth: 'intermediate',
   weeks: 4,
   daysPerWeek: 5,
   provider: 'gemini',

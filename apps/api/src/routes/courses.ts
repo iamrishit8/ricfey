@@ -7,6 +7,7 @@ import {
   PlacementAnswerSchema,
 } from '@ricfey/shared';
 import { requireUser } from '../auth/session';
+import { assertDraftAllowed, assertTopicAllowed } from '../intake/service';
 import { loadOwnCourse } from '../courses/ownership';
 import type { Background } from '../lib/background';
 import { AppError } from '../lib/errors';
@@ -48,8 +49,10 @@ export async function courseRoutes(app: FastifyInstance, opts: CourseRouteOption
   app.post('/courses', async (req, reply) => {
     const user = await requireUser(req, opts.now());
     const input = validate(CreateCourseSchema, req.body);
+    await assertDraftAllowed(user._id, opts.now());
+    await assertTopicAllowed(user._id, input.skill, { llm: opts.llm, now: opts.now });
     // Beginners (intro depth) skip placement and go straight to the outline.
-    const skipPlacement = input.depth === 'intro';
+    const skipPlacement = input.depth === 'basic';
     const course = await CourseModel.create({
       ...input,
       userId: user._id,

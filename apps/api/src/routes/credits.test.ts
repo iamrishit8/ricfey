@@ -56,7 +56,7 @@ describe.skipIf(!TEST_DB_URI)('credits (needs MONGODB_URI_TEST)', () => {
   ) {
     const res = await call('POST', '/courses', cookies, {
       skill: 'Knitting',
-      depth: 'intro',
+      depth: 'basic',
       weeks: opts.weeks ?? 2,
       minutesPerDay: 20,
       replanMode: opts.replanMode ?? 'manual',
@@ -111,7 +111,7 @@ describe.skipIf(!TEST_DB_URI)('credits (needs MONGODB_URI_TEST)', () => {
     const id = await draftCourse(cookies);
     expect((await balance(cookies)).balance).toBe(100);
     const quote = (await call('GET', `/courses/${id}/outline`, cookies)).json().data.outline.quote;
-    expect(quote).toMatchObject({ days: 10, depth: 'intro', totalCredits: 80 });
+    expect(quote).toMatchObject({ days: 10, depth: 'basic', totalCredits: 80 });
   });
 
   test('buying charges the price once and the course starts; opening days is free', async () => {

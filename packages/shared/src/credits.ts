@@ -10,9 +10,9 @@ export const WELCOME_CREDITS = 100;
 export const CREDITS_PER_15_MIN_DAY = 4;
 
 export const DEPTH_PRICE_FACTOR: Record<CourseDepth, number> = {
-  intro: 1,
-  working: 1.25,
-  deep: 1.5,
+  basic: 1,
+  intermediate: 1.25,
+  advanced: 1.5,
 };
 
 /**

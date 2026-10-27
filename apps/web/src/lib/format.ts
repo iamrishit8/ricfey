@@ -13,4 +13,8 @@ export const LEVEL_LABEL = {
   intermediate: 'Intermediate',
   advanced: 'Advanced',
 } as const;
-export const DEPTH_LABEL = { intro: 'Intro', working: 'Working', deep: 'Deep' } as const;
+export const DEPTH_LABEL = {
+  basic: 'Basic',
+  intermediate: 'Intermediate',
+  advanced: 'Advanced',
+} as const;

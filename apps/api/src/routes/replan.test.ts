@@ -57,7 +57,7 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
   async function activeCourse(cookies: Cookies, replanMode: 'manual' | 'auto' = 'manual') {
     const res = await call('POST', '/courses', cookies, {
       skill: 'Knitting',
-      depth: 'intro',
+      depth: 'basic',
       weeks: 2,
       minutesPerDay: 20,
       replanMode,

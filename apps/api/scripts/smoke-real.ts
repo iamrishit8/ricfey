@@ -35,7 +35,7 @@ const inject = (method: 'GET' | 'POST', url: string, payload?: object) =>
 try {
   const created = await inject('POST', '/courses', {
     skill: 'Personal finance',
-    depth: 'working',
+    depth: 'intermediate',
     weeks: 2,
     minutesPerDay: 20,
   });

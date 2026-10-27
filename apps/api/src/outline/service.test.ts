@@ -7,7 +7,7 @@ const base: CourseOutline = {
   title: 'Python basics',
   summary: 'A short practical course on Python for everyday automation tasks.',
   skill: 'Python',
-  depth: 'working',
+  depth: 'intermediate',
   weeks: [
     {
       week: 1,
@@ -106,8 +106,11 @@ describe('applyEdit', () => {
 
 describe('creditQuote', () => {
   test('one-time price: days × ⌈minutes ÷ 15⌉ × 4 × depth factor', () => {
-    expect(creditQuote(20, 30, 'working')).toMatchObject({ depth: 'working', totalCredits: 200 });
-    expect(creditQuote(10, 20, 'intro')).toMatchObject({ totalCredits: 80 });
-    expect(creditQuote(60, 60, 'deep')).toMatchObject({ totalCredits: 1440 });
+    expect(creditQuote(20, 30, 'intermediate')).toMatchObject({
+      depth: 'intermediate',
+      totalCredits: 200,
+    });
+    expect(creditQuote(10, 20, 'basic')).toMatchObject({ totalCredits: 80 });
+    expect(creditQuote(60, 60, 'advanced')).toMatchObject({ totalCredits: 1440 });
   });
 });

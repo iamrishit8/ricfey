@@ -25,7 +25,7 @@ const REPO_ROOT = resolve(import.meta.dir, '../../..');
 
 const Args = z.object({
   skill: z.string().min(1, '--skill is required'),
-  depth: z.enum(COURSE_DEPTHS).default('working'),
+  depth: z.enum(COURSE_DEPTHS).default('intermediate'),
   weeks: z.coerce.number().int().min(MIN_WEEKS).max(MAX_WEEKS).default(4),
   daysPerWeek: z.coerce.number().int().min(1).max(7).default(5),
   provider: z.enum(['gemini', 'fake']).default('gemini'),

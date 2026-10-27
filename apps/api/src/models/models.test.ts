@@ -59,7 +59,12 @@ describe.skipIf(!uri)('models (needs MONGODB_URI_TEST)', () => {
 
   test('course requires a status and defaults minutes and days per week', async () => {
     const userId = new mongoose.Types.ObjectId();
-    const missing = await new CourseModel({ userId, skill: 'Python', depth: 'working', weeks: 4 })
+    const missing = await new CourseModel({
+      userId,
+      skill: 'Python',
+      depth: 'intermediate',
+      weeks: 4,
+    })
       .validate()
       .then(() => null)
       .catch((e: mongoose.Error.ValidationError) => e);
@@ -67,7 +72,7 @@ describe.skipIf(!uri)('models (needs MONGODB_URI_TEST)', () => {
     const course = await CourseModel.create({
       userId,
       skill: 'Python',
-      depth: 'working',
+      depth: 'intermediate',
       weeks: 4,
       status: 'placement',
     });

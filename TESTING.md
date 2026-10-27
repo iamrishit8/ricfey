@@ -2,8 +2,8 @@
 
 How to verify everything that exists today. Updated at the end of each checkpoint and each phase.
 
-**Snapshot (2026-10-28, P5-C1):** `bun run check` green: typecheck, lint, format, **180 tests, 0 fail**
-(26 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
+**Snapshot (2026-10-28, P5-C2):** `bun run check` green: typecheck, lint, format, **189 tests, 0 fail**
+(27 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
 so a green run without it proves less. Browser e2e and `smoke:real` are run by hand (they need Chrome / a
 Gemini key) and are not part of `check`.
 
@@ -130,7 +130,7 @@ concurrent double submit records once, **another learner gets 404 on every cours
 failed bank → retry, skill passed as escaped data); `apps/api/src/llm/request-block.test.ts`.
 
 Manual (dev mode, `LLM_PROVIDER=fake`): sign in with the README curl lines, then
-`curl -b jar -X POST localhost:4000/courses -H 'content-type: application/json' -d '{"skill":"Music theory","depth":"working","weeks":3,"minutesPerDay":25}'`
+`curl -b jar -X POST localhost:4000/courses -H 'content-type: application/json' -d '{"skill":"Music theory","depth":"intermediate","weeks":3,"minutesPerDay":25}'`
 then `curl -b jar localhost:4000/courses/<id>/placement`: a `[FAKE]` question with id and
 options, no answer. Answer with `POST /courses/<id>/placement/answer {"questionId":"q7","answerIndex":0}`.
 
@@ -278,3 +278,15 @@ guard in `credits/service.ts` fails the 402 tests.
 Manual (fake LLM, fake payments): sign in → header `100 credits` → new course (working, 2 weeks, 30 min) → roadmap
 shows `Buy for 100 credits →` → buy → header `0` → open days freely → course home "Adapt days 2–8" is free →
 Credits → Buy for ₹99 → `100`. With less than the price the button reads "Get N more credits →".
+
+## P5-C2. Chat intake
+
+Automated: `apps/api/src/routes/intake.test.ts` (specific topic; broad topic → 3 options, a chosen option needs no new check;
+refused topic → reason, and **no course can be created on it, even by calling the API directly**; direct creation is checked once and remembered;
+learner text is escaped and delimited in the prompt; validation; a malformed model reply is never shown; 5 unbought drafts a day, relieved by buying;
+per-learner). Mutation: deleting the `assertTopicAllowed` line in `routes/courses.ts` fails two tests.
+
+Browser: `bun run e2e:learner` types a refused topic ("forbidden: …"), then "Quantum physics", picks an option, and finishes the chat.
+
+Manual (fake LLM): `/courses/new` → "Quantum physics" → three chips → pick → Intermediate → 2 weeks → 30 min → "When I ask" → "About 100 credits to buy" → Design my roadmap.
+An existing database: `bun run migrate:depth` renames old depths (safe to run twice).

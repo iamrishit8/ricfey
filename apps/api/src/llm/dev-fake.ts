@@ -27,7 +27,7 @@ export function devFakeResponder(prompt: string, purpose: LlmPurpose): string {
       return JSON.stringify(
         fixtureOutline({
           skill: String(req.skill ?? 'Skill'),
-          depth: (req.depth as 'intro' | 'working' | 'deep') ?? 'working',
+          depth: (req.depth as 'basic' | 'intermediate' | 'advanced') ?? 'intermediate',
           weeks: Number(req.weeks ?? 2),
           daysPerWeek: Number(req.daysPerWeek ?? 5),
         }),
@@ -39,7 +39,7 @@ export function devFakeResponder(prompt: string, purpose: LlmPurpose): string {
         title: '',
         summary: '',
         skill: '',
-        depth: 'working' as const,
+        depth: 'intermediate' as const,
         weeks: [
           {
             week: 1,
@@ -57,6 +57,30 @@ export function devFakeResponder(prompt: string, purpose: LlmPurpose): string {
         quizConsistent: true,
         issues: [],
       });
+    case 'topic_check': {
+      // Deterministic stand-in: "forbidden…" is refused, a few whole fields are broad, the rest specific.
+      const text = String(req.text ?? 'Topic').trim();
+      const key = text.toLowerCase().replace(/\s+/g, ' ');
+      const BROAD = ['quantum physics', 'physics', 'music', 'cooking', 'history', 'science'];
+      if (key.startsWith('forbidden'))
+        return JSON.stringify({
+          verdict: 'refuse',
+          reason: '[FAKE] We can’t build a course on that topic.',
+          specificity: 'specific',
+          topic: text,
+          options: [],
+        });
+      const broad = BROAD.includes(key);
+      return JSON.stringify({
+        verdict: 'ok',
+        reason: '',
+        specificity: broad ? 'broad' : 'specific',
+        topic: text,
+        options: broad
+          ? [`${text}: the core ideas`, `${text}: hands-on practice`, `${text}: a first deep dive`]
+          : [],
+      });
+    }
     case 'replan': {
       // Keep each day's number, prefix the title, and spread the weak topics across the days.
       const days = (req.days as Array<Record<string, unknown>> | undefined) ?? [];

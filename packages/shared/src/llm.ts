@@ -6,5 +6,6 @@ export const LLM_PURPOSES = [
   'self_check',
   'task_grading',
   'replan',
+  'topic_check',
 ] as const;
 export type LlmPurpose = (typeof LLM_PURPOSES)[number];

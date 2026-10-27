@@ -41,3 +41,21 @@ Mutation check: removing the balance guard fails two tests. `bun run e2e:learner
 ## P5-C1: not verified
 
 Real Razorpay; the exchange rate and model-cost inputs of [../pricing.md](../pricing.md).
+
+## P5-C2: verified
+
+`bun run check`: 189 tests, 9 of them new for intake. They cover:
+
+- a specific topic is accepted as typed
+- a broad topic returns three options, and choosing one needs no new model call
+- a refused topic gives a reason, and the course cannot be created through the API either (mutation check: removing the gate fails two tests)
+- a direct `POST /courses` is checked once and the verdict remembered
+- learner text is delimited in the prompt
+- validation, plus a rejected model reply (broad without three options → 502, never shown)
+- the 5-drafts-a-day cap, which buying a course relieves, and which is per learner
+
+`bun run e2e:learner` now drives the chat: a refused topic, a broad topic with options, then the whole course at 390px.
+
+## P5-C2: not verified
+
+How well a real model judges topics (safety and specificity) and writes narrower options; only the fake responder was run. Check with `bun run smoke:real` and a few hand-typed topics at P7-C3.
