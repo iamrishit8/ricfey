@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
-import { CourseSettingsSchema } from '@ricfey/shared';
+import { CourseSettingsSchema, ReplanRequestSchema } from '@ricfey/shared';
 import { requireUser } from '../auth/session';
 import { loadOwnCourse } from '../courses/ownership';
 import { ok } from '../lib/response';
@@ -38,7 +38,8 @@ export async function replanRoutes(app: FastifyInstance, opts: ReplanDeps): Prom
 
   /** Returns at once with status "generating"; poll GET /courses/:id/replan. */
   app.post('/courses/:id/replan', async (req, reply) => {
-    const replan = await requestReplan(await course(req), 'learner', opts);
+    const { ahead } = validate(ReplanRequestSchema, req.body ?? {});
+    const replan = await requestReplan(await course(req), 'learner', opts, ahead);
     return reply.code(202).send(ok({ replan: toReplanView(replan) }));
   });
 

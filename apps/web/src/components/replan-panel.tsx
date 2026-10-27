@@ -1,3 +1,4 @@
+import { replanPrice } from '@ricfey/shared';
 import type {
   MasteryView,
   OutlineDay,
@@ -11,6 +12,7 @@ import { NoCredits } from '@/components/no-credits';
 import { ErrorNote, Spinner } from '@/components/page';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { api, ApiError, post } from '@/lib/api';
 import { useApi } from '@/lib/use-api';
@@ -39,6 +41,7 @@ export function ReplanPanel({
     pollWhile: (d) => d.replan?.status === 'generating',
   });
   const [mode, setMode] = useState<ReplanMode>(course.replanMode);
+  const [aheadChoice, setAheadChoice] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
 
@@ -72,7 +75,13 @@ export function ReplanPanel({
   const replan = state.data?.replan;
   const policy = state.data?.policy;
   const open = replan?.status === 'generating' || replan?.status === 'proposed';
-  const price = policy?.priceNow ?? 0;
+  const available = policy?.replannableDays ?? [];
+  // Options: the free 7 (or fewer, if fewer are left), then steps of 7 up to what's available.
+  const steps = [...new Set([7, 14, 21, 28].map((n) => Math.min(n, available.length)))].filter(
+    (n) => n > 0,
+  );
+  const ahead = Math.min(aheadChoice ?? steps[0] ?? 0, available.length);
+  const price = replanPrice(ahead);
 
   return (
     <Card>
@@ -81,8 +90,8 @@ export function ReplanPanel({
           <h2 className="text-h3 font-medium">Adapt your plan</h2>
           {policy && (
             <p className="text-small text-muted-foreground">
-              Looks {policy.horizon} days ahead ·{' '}
-              {price === 0 ? `free for your first ${policy.freeDays} days` : `${price} credits`}
+              Next {policy.freeAheadDays} days free · {policy.pricePerExtraDay} credits per extra
+              day
             </p>
           )}
         </div>
@@ -166,16 +175,35 @@ export function ReplanPanel({
         {replan && !open && <LastResult replan={replan} />}
 
         {!open && policy && (
-          <Button
-            variant={m?.weakTopics.length ? 'default' : 'outline'}
-            className="justify-self-start"
-            disabled={busy || policy.replannableDays.length === 0}
-            onClick={() => void act(() => post(`/courses/${course.id}/replan`))}
-          >
-            {policy.replannableDays.length === 0
-              ? 'No upcoming days to adapt'
-              : `Adapt days ${policy.replannableDays[0]}–${policy.replannableDays.at(-1)} →`}
-          </Button>
+          <div className="flex flex-wrap items-end gap-3">
+            {steps.length > 1 && (
+              <div className="grid gap-1">
+                <label htmlFor="ahead" className="text-small font-medium">
+                  How far ahead?
+                </label>
+                <Select
+                  id="ahead"
+                  value={ahead}
+                  onChange={(e) => setAheadChoice(Number(e.target.value))}
+                >
+                  {steps.map((n) => (
+                    <option key={n} value={n}>
+                      Next {n} days · {replanPrice(n) === 0 ? 'free' : `${replanPrice(n)} credits`}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            )}
+            <Button
+              variant={m?.weakTopics.length ? 'default' : 'outline'}
+              disabled={busy || available.length === 0}
+              onClick={() => void act(() => post(`/courses/${course.id}/replan`, { ahead }))}
+            >
+              {available.length === 0
+                ? 'No upcoming days to adapt'
+                : `Adapt days ${available[0]}–${available[ahead - 1]}${price ? ` · ${price} credits` : ''} →`}
+            </Button>
+          </div>
         )}
       </CardContent>
     </Card>

@@ -1,6 +1,5 @@
 import {
   SelfCheckSchema,
-  creditsPerDay,
   toPublicContent,
   type CourseOutline,
   type DayContent,
@@ -8,7 +7,7 @@ import {
   type DayView,
   type SelfCheck,
 } from '@ricfey/shared';
-import { applyEntry, creditTransaction } from '../credits/service';
+import type { ClientSession } from 'mongoose';
 import type { Background } from '../lib/background';
 import { AppError } from '../lib/errors';
 import { generateDay } from '../llm/course-generator';
@@ -24,7 +23,11 @@ export type DayDeps = { llm: LlmProviders; background: Background; now: () => Da
 const STALE_MS = 5 * 60 * 1000;
 
 /** One row per outline day, created at approval. Safe to call twice (unique index). */
-export async function createDays(course: CourseDoc, outline: CourseOutline): Promise<void> {
+export async function createDays(
+  course: CourseDoc,
+  outline: CourseOutline,
+  session?: ClientSession,
+): Promise<void> {
   const startedAt = course.startedAt!;
   const rows = outline.weeks.flatMap((w) =>
     w.days.map((d) => ({
@@ -39,12 +42,8 @@ export async function createDays(course: CourseDoc, outline: CourseOutline): Pro
       status: 'locked' as const,
     })),
   );
-  try {
-    await CourseDayModel.insertMany(rows, { ordered: false });
-  } catch (err) {
-    // Duplicate keys mean the days already exist (a retried approval); anything else is real.
-    if ((err as { code?: number }).code !== 11000) throw err;
-  }
+  // Runs inside the purchase transaction; the unique {courseId, day} index guards against repeats.
+  await CourseDayModel.insertMany(rows, { session });
 }
 
 async function approvedOutline(course: CourseDoc): Promise<CourseOutline> {
@@ -138,38 +137,21 @@ export async function openDay(course: CourseDoc, n: number, deps: DayDeps): Prom
   await assertDayUnlocked(course, day, now);
 
   if (day.content === null) {
-    // Claim and charge together: if the learner can't pay, the claim is rolled back. The charge
-    // is keyed by course and day, so a retried or regenerated day is never charged twice.
-    const claimed = await creditTransaction(course.userId, async (session) => {
-      const c = await CourseDayModel.findOneAndUpdate(
-        {
-          _id: day._id,
-          content: null,
-          $or: [
-            { status: { $in: ['locked', 'failed'] } },
-            {
-              status: 'generating',
-              generationStartedAt: { $lt: new Date(now.getTime() - STALE_MS) },
-            },
-          ],
-        },
-        { $set: { status: 'generating', generationStartedAt: now } },
-        { returnDocument: 'after', session },
-      );
-      if (!c) return null;
-      await applyEntry(
-        {
-          userId: course.userId,
-          delta: -creditsPerDay(course.minutesPerDay),
-          reason: 'day',
-          idempotencyKey: `day:${course.id as string}:${n}`,
-          note: `Day ${n}: ${day.title}`.slice(0, 200),
-          courseId: course._id,
-        },
-        session,
-      );
-      return c;
-    });
+    const claimed = await CourseDayModel.findOneAndUpdate(
+      {
+        _id: day._id,
+        content: null,
+        $or: [
+          { status: { $in: ['locked', 'failed'] } },
+          {
+            status: 'generating',
+            generationStartedAt: { $lt: new Date(now.getTime() - STALE_MS) },
+          },
+        ],
+      },
+      { $set: { status: 'generating', generationStartedAt: now } },
+      { returnDocument: 'after' },
+    );
     if (claimed) {
       day = claimed;
       deps.background.run('day_content', () => generateAndCheck(claimed, course, deps));

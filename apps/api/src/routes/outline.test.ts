@@ -59,8 +59,8 @@ describe.skipIf(!TEST_DB_URI)('outline (needs MONGODB_URI_TEST)', () => {
     expect(view.quote).toMatchObject({
       days: 10,
       minutesPerDay: 30,
-      creditsPerDay: 2,
-      totalCredits: 20,
+      depth: 'intro',
+      totalCredits: 80,
     });
     expect(main.purposes).toEqual(['course_outline']);
     expect(main.prompts[0]).toContain('"minutesPerDay":30');

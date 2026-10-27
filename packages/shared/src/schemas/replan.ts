@@ -15,9 +15,10 @@ export const STRONG_FROM_PERCENT = 85;
 export const MASTERY_MIN_QUESTIONS = 2;
 /** At most this many weak topics are handed to a re-plan (the lowest first). */
 export const REPLAN_MAX_WEAK_TOPICS = 3;
-/** Re-plans are free until the learner has finished this many days; after that they cost credits. */
-export const REPLAN_FREE_DAYS = 7;
-export const REPLAN_CREDITS = 2;
+/** A re-plan may rewrite this many upcoming days for free; each day beyond that costs credits. */
+export const REPLAN_FREE_AHEAD_DAYS = 7;
+export const REPLAN_MAX_AHEAD_DAYS = 28;
+export const REPLAN_CREDITS_PER_EXTRA_DAY = 2;
 /** Auto mode waits this many finished days after the last re-plan before re-planning again. */
 export const AUTO_REPLAN_EVERY_DAYS = 3;
 
@@ -45,16 +46,9 @@ export function masteryStatus(correct: number, total: number): MasteryStatus {
   return 'developing';
 }
 
-/**
- * How many upcoming days a re-plan may rewrite: about a quarter of the course, at least 3,
- * at most 10. Longer courses get a longer look-ahead.
- */
-export function replanHorizon(totalDays: number): number {
-  return Math.min(10, Math.max(3, Math.ceil(totalDays / 4)));
-}
-
-export function replanPrice(daysCompleted: number): number {
-  return daysCompleted < REPLAN_FREE_DAYS ? 0 : REPLAN_CREDITS;
+/** Credits for rewriting `days` upcoming days: the first 7 are free, then 2 per extra day. */
+export function replanPrice(days: number): number {
+  return Math.max(0, days - REPLAN_FREE_AHEAD_DAYS) * REPLAN_CREDITS_PER_EXTRA_DAY;
 }
 
 /** What the model returns: the rewritten days, same numbers, plus a short reason. */
@@ -64,7 +58,7 @@ export const ReplanOutputSchema = z.object({
     .min(20)
     .max(600)
     .describe('Two or three sentences to the learner: what changed and why, based on their scores'),
-  days: z.array(OutlineDaySchema).min(1).max(10),
+  days: z.array(OutlineDaySchema).min(1).max(REPLAN_MAX_AHEAD_DAYS),
 });
 export type ReplanOutput = z.infer<typeof ReplanOutputSchema>;
 
@@ -103,12 +97,17 @@ export type ReplanView = {
 
 export type ReplanPolicy = {
   mode: ReplanMode;
-  horizon: number;
-  freeDays: number;
-  priceNow: number;
-  /** Days that a re-plan could rewrite right now (not opened, not finished). */
+  freeAheadDays: number;
+  maxAheadDays: number;
+  pricePerExtraDay: number;
+  /** Upcoming days a re-plan could rewrite right now (never opened, not finished), in order. */
   replannableDays: number[];
 };
+
+export const ReplanRequestSchema = z.object({
+  /** How many upcoming days to rewrite. Default: the free 7. */
+  ahead: z.number().int().min(1).max(REPLAN_MAX_AHEAD_DAYS).default(REPLAN_FREE_AHEAD_DAYS),
+});
 
 /** Deterministic quality measures of a re-plan, stored with it. */
 export function replanQuality(

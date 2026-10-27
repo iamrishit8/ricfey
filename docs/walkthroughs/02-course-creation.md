@@ -31,8 +31,8 @@
 - The prompt carries level, strong/weak topics, weeks, minutes per day, and the skill. The model returns a `CourseOutline` (weeks → days with title, objectives, topics); it is Zod-validated plus extra checks (day numbering, count) before storage. Failure → `outlineStatus: failed` and a Retry button.
 - **Versions.** Each save is a new row in `courseOutlines` (`generated`, then `edited`…). `GET …/outline?version=N` reads old ones.
 - **What a learner may edit** (`PUT /outline`): rename days and week themes, remove days, reorder. They reference days by `fromDay`, so **topics and objectives cannot be edited**: later prompts are built from the stored text, not from learner-typed text. A stale `baseVersion` → 409.
-- **Credit quote.** `⌈minutesPerDay ÷ 15⌉ × days`, shown before approval. Nothing is charged until Phase 4.
-- **Approve** (`POST …/approve {version}`, latest only): course becomes `active`, `startedAt` is set, and `createDays` inserts one `courseDays` row per outline day with its `unlockAt` date. Calling it twice is safe (unique index).
+- **Price (credit quote).** `days × ⌈minutesPerDay ÷ 15⌉ × 4 × depth factor`, shown with the roadmap and recomputed after every edit. See [../pricing.md](../pricing.md).
+- **Approve = buy** (`POST …/approve {version}`, latest only): in one transaction the course becomes `active`, `startedAt` is set, the price is charged (402 if the learner can't pay, and nothing changes), and one `courseDays` row per outline day is created with its `unlockAt` date. A second click gets 409 and no second charge. See [07](07-credits-and-payments.md).
 
 ## Background work
 

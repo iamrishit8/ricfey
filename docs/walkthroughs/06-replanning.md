@@ -18,7 +18,7 @@ At most the 3 weakest topics are passed to a re-plan. `GET /courses/:id/mastery`
 ## 2. What a re-plan may change
 
 - **Only the future.** Days after the last day that was opened or finished, never generated, not finished. Content a learner has seen is never rewritten.
-- **Horizon:** ⌈total days ÷ 4⌉, between 3 and 10 days (`replanHorizon`). A 20-day course looks 5 days ahead.
+- **Range:** the learner chooses how many upcoming days to adapt (default 7, at most 28, never more than are left). `POST /courses/:id/replan { ahead }`.
 - **Only outline entries.** Titles, objectives and topics of those days. Lessons are generated later, lazily, from the new entries, so a re-plan costs one model call.
 
 ## 3. Two modes (chosen by the learner at intake; switchable on the course home)
@@ -55,7 +55,7 @@ Old outline versions stay readable (`GET /courses/:id/outline?version=N`), so "w
 
 ## 6. Price
 
-Free while the learner has finished fewer than 7 days (`REPLAN_FREE_DAYS`); after that `REPLAN_CREDITS` (2). The price is fixed when the re-plan is requested and charged when it is applied (see [07-credits-and-payments.md](07-credits-and-payments.md)).
+The first 7 days ahead are **free**. Each day beyond 7 costs **2 credits** (`replanPrice`): 12 days ahead = 10 credits. The price is fixed when the re-plan is requested and charged when it is applied (see [07-credits-and-payments.md](07-credits-and-payments.md)). Rejecting costs nothing; accepting without enough credits gives 402 and the proposal stays open. Auto mode always uses 7 days, so it is always free.
 
 ## Try it (fake LLM)
 
@@ -63,7 +63,7 @@ Finish day 1 with a wrong quiz, open the course home, click **Adapt days**, then
 
 ```sh
 curl -b jar localhost:4000/courses/<id>/mastery
-curl -b jar -X POST localhost:4000/courses/<id>/replan          # 202, generating
+curl -b jar -X POST localhost:4000/courses/<id>/replan -H 'content-type: application/json' -d '{"ahead":7}'   # 202, generating
 curl -b jar localhost:4000/courses/<id>/replan                  # proposed + policy
 curl -b jar -X POST localhost:4000/courses/<id>/replan/<rid>/accept
 ```

@@ -54,6 +54,12 @@ try {
   await b.waitFor(`!!document.querySelector('#skill')`);
   await b.fill('#skill', 'Music theory');
   await b.evaluate(`document.querySelector('input[value=working]').click()`);
+  // 2 weeks at 30 minutes, working depth: 10 days × 2 × 4 × 1.25 = 100 credits, exactly the gift.
+  await b.evaluate(`(() => {
+    const el = document.querySelector('#weeks');
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(el, '2');
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  })()`);
   await shot('intake');
   await b.click('Build my course');
   await b.waitFor(`document.body.innerText.includes('starting point')`);
@@ -77,7 +83,7 @@ try {
   await b.click('See my outline');
 
   // Outline: rename a day, move one, save, approve
-  await b.waitFor(`document.body.innerText.includes('Approve and start')`, 15000);
+  await b.waitFor(`document.body.innerText.includes('Buy for 100 credits')`, 15000);
   await shot('outline');
   await b.fill('input[aria-label="Day title"]', 'My renamed first day');
   await b.evaluate(`document.querySelectorAll('button[aria-label="Move down"]')[0].click()`);
@@ -90,12 +96,12 @@ try {
   if (firstTitle !== 'My renamed first day')
     throw new Error(`rename/move not saved: ${firstTitle}`);
   step('outline edited (rename + move) and saved as version 2');
-  await b.click('Approve and start');
+  await b.click('Buy for 100 credits');
   // innerText applies CSS text-transform, so the uppercase label reads "TODAY".
   await b.waitFor(
     `/today/i.test(document.body.innerText) && document.body.innerText.includes('Start →')`,
   );
-  step('outline approved; course home shows Today');
+  step('roadmap bought for 100 credits; course home shows Today');
   await shot('course-home');
 
   // Today → day page
@@ -171,15 +177,17 @@ try {
   await b.waitFor(`document.body.innerText.includes('Revisit')`);
   step('re-plan accepted; the day list shows the rewritten days');
 
-  // Credits: welcome 30, day 1 cost 2 (30 minutes), the re-plan was free → 28. Buy 50.
+  // Credits: gift 100, the course cost 100, opening days and the 7-day re-plan are free → 0.
   await b.click('a[aria-label="Credits"]');
   await b.waitFor(`document.body.innerText.includes('Top up')`);
-  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('28')`);
+  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('0')`);
   await shot('credits');
-  await b.click('Buy for ₹149');
-  await b.waitFor(`document.body.innerText.includes('Added 50 credits')`, 15000);
-  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('78')`);
-  step('credits: 28 after day 1; bought the Starter pack (test mode) → 78');
+  await b.click('Buy for ₹99');
+  await b.waitFor(`document.body.innerText.includes('Added 100 credits')`, 15000);
+  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('100')`);
+  step(
+    'credits: 0 after buying the course (days and the re-plan free); bought Spark (test mode) → 100',
+  );
   if (b.errors.length || phone.errors.length)
     console.info('page errors:', [...b.errors, ...phone.errors]);
 } catch (e) {

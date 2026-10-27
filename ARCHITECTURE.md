@@ -9,8 +9,8 @@ A learner says what they want to learn, how deep, for how many weeks and minutes
 non-beginners an adaptive quiz measures their level. An LLM drafts a day-by-day outline, which
 the learner edits and approves. Each day then unlocks a lesson, a practice task graded by the
 model against a rubric, and an auto-graded quiz. Progress, topic scores and a streak accumulate.
-Quiz scores re-shape the next few days, on request or automatically. Learners pay per day in
-credits, bought in rupee packs through Razorpay.
+Quiz scores re-shape the next few days, on request or automatically. Learners buy each course once with
+credits (100 free at sign-up; more in rupee packs through Razorpay) and keep it forever.
 
 ## System
 

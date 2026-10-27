@@ -1,5 +1,7 @@
 # Phase 4: Credits and payments
 
+> **Superseded in part by Phase 5, P5-C1** ([phase-5.md](phase-5.md)): the per-day charging and the 30 welcome credits described here were replaced by a one-time course price and 100 welcome credits. The ledger, Razorpay and the credits page are unchanged.
+
 ## Goal
 
 Learners pay for what they use, in rupees, safely: never charged twice, never credited without paying.

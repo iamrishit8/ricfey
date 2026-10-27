@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, test } from 'bun:test';
 import mongoose from 'mongoose';
 import { buildApp } from '../app';
-import { creditTransaction, applyEntry } from '../credits/service';
+import { applyEntry, creditTransaction } from '../credits/service';
 import { RecordingBackground } from '../lib/background';
 import { devFakeResponder } from '../llm/dev-fake';
 import { FakeProvider } from '../llm/fake-provider';
 import { InMemoryLlmUsageStore } from '../llm/usage-store';
-import { CourseDayModel } from '../models/course-day';
 import { CourseModel } from '../models/course';
+import { CourseDayModel } from '../models/course-day';
 import { CreditAccountModel } from '../models/credit-account';
 import { CreditEntryModel } from '../models/credit-entry';
 import { ReplanModel } from '../models/replan';
@@ -15,6 +15,7 @@ import { signedInUser, TEST_DB_URI, useTestDb } from '../test/helpers';
 
 const caps = { maxCallsPerDay: 1000, maxTokensPerDay: 1e9 };
 const ANSWER = 'I practised the idea on two examples from my own week and wrote down what changed.';
+const WRONG = [1, 2, 3, 0, 1]; // the fake quiz key is [0, 1, 2, 3, 0]: every answer wrong
 
 describe.skipIf(!TEST_DB_URI)('credits (needs MONGODB_URI_TEST)', () => {
   useTestDb();
@@ -45,23 +46,26 @@ describe.skipIf(!TEST_DB_URI)('credits (needs MONGODB_URI_TEST)', () => {
   });
 
   type Cookies = Record<string, string>;
-  const call = (method: 'GET' | 'POST', url: string, cookies: Cookies, payload?: object) =>
+  const call = (method: 'GET' | 'POST' | 'PUT', url: string, cookies: Cookies, payload?: object) =>
     app().inject({ method, url, cookies, ...(payload ? { payload } : {}) });
 
-  /** Approved 10-day intro course at 20 minutes a day: 2 credits per day. */
-  async function activeCourse(cookies: Cookies, replanMode: 'manual' | 'auto' = 'manual') {
+  /** An intro course of `weeks` weeks at 20 minutes a day: 8 credits per day, so 80 for 2 weeks. */
+  async function draftCourse(
+    cookies: Cookies,
+    opts: { weeks?: number; replanMode?: 'manual' | 'auto' } = {},
+  ) {
     const res = await call('POST', '/courses', cookies, {
       skill: 'Knitting',
       depth: 'intro',
-      weeks: 2,
+      weeks: opts.weeks ?? 2,
       minutesPerDay: 20,
-      replanMode,
+      replanMode: opts.replanMode ?? 'manual',
     });
     await background.drain();
-    const id = res.json().data.course.id as string;
-    await call('POST', `/courses/${id}/outline/approve`, cookies, { version: 1 });
-    return id;
+    return res.json().data.course.id as string;
   }
+  const buy = (id: string, cookies: Cookies, version = 1) =>
+    call('POST', `/courses/${id}/outline/approve`, cookies, { version });
   async function balance(cookies: Cookies) {
     return (await call('GET', '/credits', cookies)).json().data.credits;
   }
@@ -75,189 +79,211 @@ describe.skipIf(!TEST_DB_URI)('credits (needs MONGODB_URI_TEST)', () => {
     }
     expect((await CreditAccountModel.findOne({ userId }).lean())!.balance).toBe(running);
   }
-
-  test('welcome credits are granted once', async () => {
-    const { user, cookies } = await signedInUser('a@example.com');
-    const first = await balance(cookies);
-    expect(first.balance).toBe(30);
-    expect(first.entries).toHaveLength(1);
-    expect(first.entries[0]).toMatchObject({ delta: 30, reason: 'welcome' });
-    await Promise.all([balance(cookies), balance(cookies), balance(cookies)]);
-    expect((await balance(cookies)).balance).toBe(30);
-    await assertLedgerConsistent(user._id);
-  });
-
-  test('approving charges nothing; opening a day charges ⌈minutes ÷ 15⌉ once', async () => {
-    const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    expect((await balance(cookies)).balance).toBe(30);
-    await call('GET', `/courses/${id}/days/1`, cookies);
-    await background.drain();
-    await call('GET', `/courses/${id}/days/1`, cookies);
-    const after = await balance(cookies);
-    expect(after.balance).toBe(28);
-    expect(after.entries[0]).toMatchObject({ delta: -2, reason: 'day', balanceAfter: 28 });
-    await assertLedgerConsistent(user._id);
-  });
-
-  test('5 concurrent first opens of a day by a brand-new learner: one charge, one generation', async () => {
-    const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    const opens = await Promise.all(
-      Array.from({ length: 5 }, () => call('GET', `/courses/${id}/days/1`, cookies)),
-    );
-    expect(opens.every((r) => r.statusCode === 200)).toBe(true);
-    await background.drain();
-    expect(main.purposes.filter((p) => p === 'day_content')).toHaveLength(1);
-    expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'day' })).toBe(1);
-    expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'welcome' })).toBe(1);
-    await assertLedgerConsistent(user._id);
-  });
-
-  test('not enough credits: 402 with details, the day is not claimed or generated', async () => {
-    const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    await creditTransaction(user._id, (session) =>
+  const adjust = (userId: mongoose.Types.ObjectId, delta: number, key: string) =>
+    creditTransaction(userId, (session) =>
       applyEntry(
-        {
-          userId: user._id,
-          delta: -29,
-          reason: 'adjustment',
-          idempotencyKey: 'test:drain',
-          note: 'test',
-        },
+        { userId, delta, reason: 'adjustment', idempotencyKey: key, note: 'test' },
         session,
       ),
     );
-    const res = await call('GET', `/courses/${id}/days/1`, cookies);
+  /** Open and finish a day with a wrong quiz, so its topic is weak. */
+  async function finishDay(id: string, n: number, cookies: Cookies) {
+    await call('GET', `/courses/${id}/days/${n}`, cookies);
+    await background.drain();
+    await call('POST', `/courses/${id}/days/${n}/quiz`, cookies, { answers: WRONG });
+    await call('POST', `/courses/${id}/days/${n}/task`, cookies, { answer: ANSWER });
+    await background.drain();
+  }
+
+  test('a new account gets 100 welcome credits, once', async () => {
+    const { user, cookies } = await signedInUser('a@example.com');
+    const first = await balance(cookies);
+    expect(first.balance).toBe(100);
+    expect(first.entries).toHaveLength(1);
+    expect(first.entries[0]).toMatchObject({ delta: 100, reason: 'welcome' });
+    await Promise.all([balance(cookies), balance(cookies), balance(cookies)]);
+    expect((await balance(cookies)).balance).toBe(100);
+    await assertLedgerConsistent(user._id);
+  });
+
+  test('drafting a course costs nothing; the quote shows the one-time price', async () => {
+    const { cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    expect((await balance(cookies)).balance).toBe(100);
+    const quote = (await call('GET', `/courses/${id}/outline`, cookies)).json().data.outline.quote;
+    expect(quote).toMatchObject({ days: 10, depth: 'intro', totalCredits: 80 });
+  });
+
+  test('buying charges the price once and the course starts; opening days is free', async () => {
+    const { user, cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    expect((await buy(id, cookies)).statusCode).toBe(200);
+    const after = await balance(cookies);
+    expect(after.balance).toBe(20);
+    expect(after.entries[0]).toMatchObject({ delta: -80, reason: 'course', balanceAfter: 20 });
+    expect(await CourseModel.findById(id)).toMatchObject({ status: 'active', creditsPaid: 80 });
+    expect(await CourseDayModel.countDocuments({ courseId: id })).toBe(10);
+
+    for (let n = 1; n <= 3; n++) {
+      await call('GET', `/courses/${id}/days/${n}`, cookies);
+      await background.drain();
+    }
+    expect((await balance(cookies)).balance).toBe(20);
+    expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'course' })).toBe(1);
+    await assertLedgerConsistent(user._id);
+  });
+
+  test('five clicks on Buy at once: one charge, one set of days', async () => {
+    const { user, cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    const results = await Promise.all(Array.from({ length: 5 }, () => buy(id, cookies)));
+    expect(results.filter((r) => r.statusCode === 200)).toHaveLength(1);
+    expect(results.filter((r) => r.statusCode === 409)).toHaveLength(4);
+    expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'course' })).toBe(1);
+    expect(await CourseDayModel.countDocuments({ courseId: id })).toBe(10);
+    expect((await balance(cookies)).balance).toBe(20);
+    await assertLedgerConsistent(user._id);
+  });
+
+  test('not enough credits: 402 with details; stays a draft; works after topping up', async () => {
+    const { user, cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    await balance(cookies); // grants the welcome credits
+    await adjust(user._id, -30, 'test:drain'); // 70 left, the price is 80
+    const res = await buy(id, cookies);
     expect(res.statusCode).toBe(402);
     expect(res.json().error).toMatchObject({
       code: 'INSUFFICIENT_CREDITS',
-      details: { needed: 2, balance: 1 },
+      details: { needed: 80, balance: 70 },
     });
-    const day = (await CourseDayModel.findOne({ courseId: id, day: 1 }).lean())!;
-    expect(day.status).toBe('locked');
-    expect(main.purposes).not.toContain('day_content');
+    const course = (await CourseModel.findById(id))!;
+    expect(course.status).toBe('outline');
+    expect(course.creditsPaid).toBeNull();
+    expect(await CourseDayModel.countDocuments({ courseId: id })).toBe(0);
+
+    await adjust(user._id, 100, 'test:topup');
+    expect((await buy(id, cookies)).statusCode).toBe(200);
+    expect((await balance(cookies)).balance).toBe(90);
     await assertLedgerConsistent(user._id);
   });
 
-  test('a day whose generation failed is retried free on the next open', async () => {
-    const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    const boom = () => {
-      throw new Error('model down');
-    };
-    main.push(boom);
-    await call('GET', `/courses/${id}/days/1`, cookies);
-    await background.drain();
-    expect((await CourseDayModel.findOne({ courseId: id, day: 1 }).lean())!.status).toBe('failed');
-    await call('GET', `/courses/${id}/days/1`, cookies);
-    await background.drain();
-    expect((await CourseDayModel.findOne({ courseId: id, day: 1 }).lean())!.content).not.toBeNull();
-    expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'day' })).toBe(1);
+  test('the price follows the version being bought: removing days makes it cheaper', async () => {
+    const { cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    const view = (await call('GET', `/courses/${id}/outline`, cookies)).json().data.outline;
+    type W = { theme: string; days: Array<{ day: number; title: string }> };
+    const weeks = (view.outline.weeks as W[]).map((w, i) => ({
+      theme: w.theme,
+      days: w.days.slice(0, i === 0 ? 5 : 2).map((d) => ({ fromDay: d.day, title: d.title })),
+    }));
+    await call('PUT', `/courses/${id}/outline`, cookies, { baseVersion: 1, weeks });
+    const v2 = (await call('GET', `/courses/${id}/outline`, cookies)).json().data.outline;
+    expect(v2.quote.totalCredits).toBe(60); // 7 days × 2 × 4 = 56 → 60
+    expect((await buy(id, cookies, 2)).statusCode).toBe(200);
+    expect((await balance(cookies)).balance).toBe(40);
   });
 
-  /** Finish days 1–7 (wrong quizzes), so the next re-plan costs 2 credits. */
-  async function sevenDaysDone(id: string, cookies: Cookies) {
-    for (let n = 1; n <= 7; n++) {
-      await call('GET', `/courses/${id}/days/${n}`, cookies);
-      await background.drain();
-      await call('POST', `/courses/${id}/days/${n}/quiz`, cookies, { answers: [1, 2, 3, 0, 1] });
-      await call('POST', `/courses/${id}/days/${n}/task`, cookies, { answer: ANSWER });
-      await background.drain();
-    }
+  test('a re-plan of the next 7 days is free', async () => {
+    const { user, cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    await buy(id, cookies);
+    await finishDay(id, 1, cookies);
+    const replan = (await call('POST', `/courses/${id}/replan`, cookies)).json().data.replan;
+    expect(replan.priceCredits).toBe(0);
+    expect(replan.before.map((d: { day: number }) => d.day)).toEqual([2, 3, 4, 5, 6, 7, 8]);
+    await background.drain();
+    expect(
+      (await call('POST', `/courses/${id}/replan/${replan.id}/accept`, cookies)).statusCode,
+    ).toBe(200);
+    expect((await balance(cookies)).balance).toBe(20);
+    await assertLedgerConsistent(user._id);
+  });
+
+  /** A 20-day course, bought, with day 1 finished: 19 upcoming days. Starts with 1000 spare credits. */
+  async function longCourse(cookies: Cookies, userId: mongoose.Types.ObjectId) {
+    await balance(cookies);
+    await adjust(userId, 1000, 'test:topup');
+    const id = await draftCourse(cookies, { weeks: 4 });
+    expect((await buy(id, cookies)).statusCode).toBe(200); // 20 × 2 × 4 = 160
+    await finishDay(id, 1, cookies);
+    return id;
   }
 
-  test('a priced re-plan is charged once when applied; rejected ones cost nothing', async () => {
+  test('beyond 7 days ahead costs 2 per extra day, charged once on accept; reject is free', async () => {
     const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    await sevenDaysDone(id, cookies); // 7 days × 2 = 14 spent → 16 left
-    const r1 = (await call('POST', `/courses/${id}/replan`, cookies)).json().data.replan;
-    expect(r1.priceCredits).toBe(2);
+    const id = await longCourse(cookies, user._id);
+    const start = (await balance(cookies)).balance;
+    expect(start).toBe(100 + 1000 - 160);
+
+    const policy = (await call('GET', `/courses/${id}/replan`, cookies)).json().data.policy;
+    expect(policy).toMatchObject({ freeAheadDays: 7, maxAheadDays: 28, pricePerExtraDay: 2 });
+    expect(policy.replannableDays).toHaveLength(19);
+
+    const r1 = (await call('POST', `/courses/${id}/replan`, cookies, { ahead: 12 })).json().data
+      .replan;
+    expect(r1.priceCredits).toBe(10); // 5 extra days × 2
+    expect(r1.before).toHaveLength(12);
     await background.drain();
     await call('POST', `/courses/${id}/replan/${r1.id}/reject`, cookies);
-    expect((await balance(cookies)).balance).toBe(16);
+    expect((await balance(cookies)).balance).toBe(start);
 
-    const r2 = (await call('POST', `/courses/${id}/replan`, cookies)).json().data.replan;
+    const r2 = (await call('POST', `/courses/${id}/replan`, cookies, { ahead: 12 })).json().data
+      .replan;
     await background.drain();
     await call('POST', `/courses/${id}/replan/${r2.id}/accept`, cookies);
     const after = await balance(cookies);
-    expect(after.balance).toBe(14);
-    expect(after.entries[0]).toMatchObject({ delta: -2, reason: 'replan' });
-    // A second accept cannot charge again.
+    expect(after.balance).toBe(start - 10);
+    expect(after.entries[0]).toMatchObject({ delta: -10, reason: 'replan' });
     expect((await call('POST', `/courses/${id}/replan/${r2.id}/accept`, cookies)).statusCode).toBe(
       409,
     );
-    expect((await balance(cookies)).balance).toBe(14);
+    expect((await balance(cookies)).balance).toBe(start - 10);
     await assertLedgerConsistent(user._id);
   });
 
-  test('accepting a priced re-plan without credits: 402, nothing applied, still proposed', async () => {
+  test('accepting a priced re-plan without credits: 402, still proposed, nothing applied', async () => {
     const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    await sevenDaysDone(id, cookies);
-    const rid = (await call('POST', `/courses/${id}/replan`, cookies)).json().data.replan.id;
+    const id = await longCourse(cookies, user._id);
+    const rid = (await call('POST', `/courses/${id}/replan`, cookies, { ahead: 12 })).json().data
+      .replan.id;
     await background.drain();
-    await creditTransaction(user._id, (session) =>
-      applyEntry(
-        {
-          userId: user._id,
-          delta: -15,
-          reason: 'adjustment',
-          idempotencyKey: 'test:drain',
-          note: 'test',
-        },
-        session,
-      ),
-    );
-    const res = await call('POST', `/courses/${id}/replan/${rid}/accept`, cookies);
-    expect(res.statusCode).toBe(402);
+    await adjust(user._id, -(await balance(cookies)).balance, 'test:drain-all');
+    const accept = await call('POST', `/courses/${id}/replan/${rid}/accept`, cookies);
+    expect(accept.statusCode).toBe(402);
     expect((await ReplanModel.findById(rid))!.status).toBe('proposed');
     expect((await CourseModel.findById(id))!.approvedOutlineVersion).toBe(1);
     await assertLedgerConsistent(user._id);
   });
 
-  test('auto mode without enough credits leaves the re-plan proposed', async () => {
-    const { user, cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies, 'auto');
-    // Make every re-plan priced by pretending 7 days are already finished.
-    await CourseDayModel.updateMany(
-      { courseId: id, day: { $gte: 2, $lte: 7 } },
-      { $set: { completedAt: clock, status: 'ready' } },
+  test('requests for more than 28 days ahead are refused', async () => {
+    const { cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies);
+    await buy(id, cookies);
+    await finishDay(id, 1, cookies);
+    expect((await call('POST', `/courses/${id}/replan`, cookies, { ahead: 29 })).statusCode).toBe(
+      400,
     );
-    await creditTransaction(user._id, (session) =>
-      applyEntry(
-        {
-          userId: user._id,
-          delta: -28,
-          reason: 'adjustment',
-          idempotencyKey: 'test:drain',
-          note: 'test',
-        },
-        session,
-      ),
-    );
-    // Day 1 costs the last 2 credits; finishing it triggers an auto re-plan that costs 2.
-    await call('GET', `/courses/${id}/days/1`, cookies);
-    await background.drain();
-    await call('POST', `/courses/${id}/days/1/quiz`, cookies, { answers: [1, 2, 3, 0, 1] });
-    await call('POST', `/courses/${id}/days/1/task`, cookies, { answer: ANSWER });
-    await background.drain();
-    const replan = (await ReplanModel.findOne({ courseId: id }))!;
-    expect(replan).toMatchObject({ status: 'proposed', trigger: 'auto', priceCredits: 2 });
-    expect((await balance(cookies)).balance).toBe(0);
   });
 
-  test('a learner sees only their own ledger', async () => {
+  test('auto mode only ever looks 7 days ahead, free', async () => {
+    const { cookies } = await signedInUser('a@example.com');
+    const id = await draftCourse(cookies, { replanMode: 'auto' });
+    await buy(id, cookies);
+    await finishDay(id, 1, cookies);
+    const replan = (await ReplanModel.findOne({ courseId: id }))!;
+    expect(replan).toMatchObject({ status: 'applied', trigger: 'auto', priceCredits: 0 });
+    expect(replan.before).toHaveLength(7);
+    expect((await balance(cookies)).balance).toBe(20);
+  });
+
+  test("a learner sees only their own ledger and can't buy someone else's course", async () => {
     const a = await signedInUser('a@example.com');
     const b = await signedInUser('b@example.com');
-    const id = await activeCourse(a.cookies);
-    await call('GET', `/courses/${id}/days/1`, a.cookies);
-    await background.drain();
+    const id = await draftCourse(a.cookies);
+    expect((await buy(id, b.cookies)).statusCode).toBe(404);
+    expect((await buy(id, a.cookies)).statusCode).toBe(200);
     const bView = await balance(b.cookies);
-    expect(bView.balance).toBe(30);
+    expect(bView.balance).toBe(100);
     expect(bView.entries).toHaveLength(1);
-    // b cannot spend a's credits by opening a's course.
-    expect((await call('GET', `/courses/${id}/days/2`, b.cookies)).statusCode).toBe(404);
   });
 });

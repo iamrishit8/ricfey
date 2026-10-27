@@ -1,10 +1,13 @@
 import {
   CourseOutlineSchema,
+  coursePrice,
   creditQuote,
   type CourseOutline,
   type OutlineEdit,
   type OutlineView,
 } from '@ricfey/shared';
+import { applyEntry, creditTransaction } from '../credits/service';
+import { createDays } from '../days/service';
 import type { Background } from '../lib/background';
 import { AppError } from '../lib/errors';
 import { generateOutline } from '../llm/course-generator';
@@ -96,7 +99,7 @@ export async function getOutlineView(course: CourseDoc, version?: number): Promi
     version: row?.version ?? null,
     approvedVersion: course.approvedOutlineVersion ?? null,
     outline,
-    quote: outline ? creditQuote(totalDays(outline), course.minutesPerDay) : null,
+    quote: outline ? creditQuote(totalDays(outline), course.minutesPerDay, course.depth) : null,
     versions: rows.map((r) => ({
       version: r.version,
       source: r.source,
@@ -185,7 +188,11 @@ export async function editOutline(course: CourseDoc, edit: OutlineEdit): Promise
   course.currentOutlineVersion = version;
 }
 
-/** Approve the current version. The course becomes active (days are created in P2-C3). */
+/**
+ * Buy the roadmap: approve this version, charge its one-time price and create the day rows, all
+ * in one transaction. If the learner can't pay (INSUFFICIENT_CREDITS) nothing changes and the
+ * course stays in "outline". Once bought, the learner has the course for good.
+ */
 export async function approveOutline(
   course: CourseDoc,
   version: number,
@@ -203,28 +210,47 @@ export async function approveOutline(
   const row = await CourseOutlineModel.findOne({ courseId: course._id, version }).lean();
   if (!row) throw new AppError('NOT_FOUND', 'Outline not found');
   const outline = row.outline as CourseOutline;
-  const updated = await CourseModel.findOneAndUpdate(
-    { _id: course._id, status: 'outline', currentOutlineVersion: version },
-    {
-      $set: {
-        status: 'active',
-        approvedOutlineVersion: version,
-        startedAt: now,
-        title: outline.title,
+  const price = coursePrice(totalDays(outline), course.minutesPerDay, course.depth);
+
+  const updated = await creditTransaction(course.userId, async (session) => {
+    const bought = await CourseModel.findOneAndUpdate(
+      { _id: course._id, status: 'outline', currentOutlineVersion: version },
+      {
+        $set: {
+          status: 'active',
+          approvedOutlineVersion: version,
+          startedAt: now,
+          title: outline.title,
+          creditsPaid: price,
+        },
       },
-    },
-    { returnDocument: 'after' },
-  );
-  if (!updated)
-    throw new AppError(
-      'CONFLICT',
-      'The outline changed since you loaded it. Reload and try again.',
+      { returnDocument: 'after', session },
     );
+    if (!bought)
+      throw new AppError(
+        'CONFLICT',
+        'The outline changed since you loaded it. Reload and try again.',
+      );
+    await applyEntry(
+      {
+        userId: course.userId,
+        delta: -price,
+        reason: 'course',
+        idempotencyKey: `course:${course.id as string}`,
+        note: `Course: ${outline.title}`.slice(0, 200),
+        courseId: course._id,
+      },
+      session,
+    );
+    await createDays(bought, outline, session);
+    return bought;
+  });
   Object.assign(course, {
     status: 'active',
     approvedOutlineVersion: version,
     startedAt: now,
     title: outline.title,
+    creditsPaid: updated.creditsPaid,
   });
   return outline;
 }

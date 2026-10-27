@@ -106,7 +106,7 @@ export async function openBrowser(width = 1280, height = 900) {
     },
     async click(selectorOrText: string) {
       await evaluate(
-        `(() => { const s = ${JSON.stringify(selectorOrText)}; const el = document.querySelector(s) ?? [...document.querySelectorAll('button,a,label')].find((e) => e.textContent.trim().includes(s)); if (!el) throw new Error('no element: ' + s); el.click(); })()`,
+        `(() => { const s = ${JSON.stringify(selectorOrText)}; let el = null; try { el = document.querySelector(s); } catch { /* not a selector: it's button text */ } el = el ?? [...document.querySelectorAll('button,a,label')].find((e) => e.textContent.trim().includes(s)); if (!el) throw new Error('no element: ' + s); el.click(); })()`,
       );
     },
     async screenshot(out: string, fullPage = false) {

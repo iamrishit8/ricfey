@@ -27,6 +27,8 @@ export type PublicCourse = {
   outlineStatus: 'none' | 'generating' | 'ready' | 'failed';
   replanMode: 'manual' | 'auto';
   approvedOutlineVersion: number | null;
+  /** Credits paid for the course, once; null until bought. */
+  creditsPaid: number | null;
   startedAt: string | null;
   createdAt: string;
 };

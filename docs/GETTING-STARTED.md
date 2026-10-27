@@ -68,7 +68,7 @@ it proves the plumbing without spending quota.
 
 ## 6. Credits
 
-Every learner starts with 30 credits (header, top right). Opening a day costs ⌈minutes ÷ 15⌉.
+Every learner starts with 100 credits (header, top right). A course is paid once, when you approve its roadmap (**Buy for N credits**); after that every day is free and the course is yours. A 2-week, 30-minute, intermediate course costs exactly 100.
 **Credits → Buy** works offline: `PAYMENTS_PROVIDER=fake` simulates the payment, labelled "Test mode".
 For real Razorpay test mode see [walkthroughs/07-credits-and-payments.md](walkthroughs/07-credits-and-payments.md).
 

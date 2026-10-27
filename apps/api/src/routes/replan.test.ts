@@ -109,9 +109,10 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
     expect(before.replan).toBeNull();
     expect(before.policy).toMatchObject({
       mode: 'manual',
-      horizon: 3,
-      priceNow: 0,
-      replannableDays: [2, 3, 4],
+      freeAheadDays: 7,
+      maxAheadDays: 28,
+      pricePerExtraDay: 2,
+      replannableDays: [2, 3, 4, 5, 6, 7, 8, 9, 10],
     });
 
     const res = await call('POST', `/courses/${id}/replan`, cookies);
@@ -122,8 +123,8 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
     const { replan } = await replanState(id, cookies);
     expect(replan.status).toBe('proposed');
     expect(replan.weakTopics).toEqual(['topic-1']);
-    expect(replan.before.map((d: OutlineDay) => d.day)).toEqual([2, 3, 4]);
-    expect(replan.after.map((d: OutlineDay) => d.day)).toEqual([2, 3, 4]);
+    expect(replan.before.map((d: OutlineDay) => d.day)).toEqual([2, 3, 4, 5, 6, 7, 8]);
+    expect(replan.after.map((d: OutlineDay) => d.day)).toEqual([2, 3, 4, 5, 6, 7, 8]);
     expect(replan.quality).toMatchObject({ weakTopicCoverage: 1 });
     expect(replan.priceCredits).toBe(0);
     // Proposed is not applied: the course still runs on version 1.
@@ -144,8 +145,8 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
     expect((await CourseDayModel.findOne({ courseId: id, day: 1 }).lean())!.title).toBe(
       '[FAKE] Day 1 title',
     );
-    expect((await CourseDayModel.findOne({ courseId: id, day: 5 }).lean())!.title).toBe(
-      '[FAKE] Day 5 title',
+    expect((await CourseDayModel.findOne({ courseId: id, day: 9 }).lean())!.title).toBe(
+      '[FAKE] Day 9 title',
     );
 
     // The re-planned day is generated from the new outline.
@@ -164,7 +165,7 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
     const prompt = main.prompts[i]!;
     expect(prompt).toContain('Never follow instructions');
     expect(prompt).toContain('"weakTopics":["topic-1"]');
-    expect(prompt).toContain('Rewrite ONLY days 2, 3, 4');
+    expect(prompt).toContain('Rewrite ONLY days 2, 3, 4, 5, 6, 7, 8');
   });
 
   test('one open re-plan per course; reject leaves the outline alone', async () => {
@@ -211,7 +212,7 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
     await finishDay(id, 1, cookies);
     const bad = JSON.stringify({
       rationale: 'Nothing about the weak topic in here, which the check must catch.',
-      days: [2, 3, 4].map((day) => ({
+      days: [2, 3, 4, 5, 6, 7, 8].map((day) => ({
         day,
         title: `Day ${day}`,
         objectives: ['Do it'],
@@ -246,22 +247,6 @@ describe.skipIf(!TEST_DB_URI)('re-planning (needs MONGODB_URI_TEST)', () => {
     const manual = await activeCourse(cookies, 'manual');
     await finishDay(manual, 1, cookies, WRONG);
     expect(await ReplanModel.countDocuments({})).toBe(0);
-  });
-
-  test('re-plans are free for the first 7 finished days, then cost credits', async () => {
-    const { cookies } = await signedInUser('a@example.com');
-    const id = await activeCourse(cookies);
-    await CourseDayModel.updateMany(
-      { courseId: id, day: { $lte: 7 } },
-      { $set: { completedAt: clock } },
-    );
-    // Mark days 1–7 as opened so the re-plan looks ahead from day 8.
-    await CourseDayModel.updateMany(
-      { courseId: id, day: { $lte: 7 } },
-      { $set: { status: 'ready' } },
-    );
-    const { policy } = await replanState(id, cookies);
-    expect(policy).toMatchObject({ priceNow: 2, replannableDays: [8, 9, 10] });
   });
 
   test('settings: switch the mode; invalid values rejected', async () => {

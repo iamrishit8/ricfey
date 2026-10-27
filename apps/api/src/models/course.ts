@@ -20,6 +20,8 @@ const courseSchema = new Schema(
     status: { type: String, enum: COURSE_STATUSES, required: true },
     title: { type: String, trim: true },
     startedAt: { type: Date },
+    /** What the learner paid when they bought the roadmap. Null until bought. */
+    creditsPaid: { type: Number, default: null },
     outlineStatus: {
       type: String,
       enum: ['none', 'generating', 'ready', 'failed'],
@@ -74,6 +76,7 @@ export function toPublicCourse(c: CourseDoc): PublicCourse {
     outlineStatus: c.outlineStatus,
     replanMode: c.replanMode,
     approvedOutlineVersion: c.approvedOutlineVersion ?? null,
+    creditsPaid: c.creditsPaid ?? null,
     startedAt: c.startedAt?.toISOString() ?? null,
     createdAt: (c.get('createdAt') as Date).toISOString(),
   };

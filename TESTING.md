@@ -2,8 +2,8 @@
 
 How to verify everything that exists today. Updated at the end of each checkpoint and each phase.
 
-**Snapshot (2026-10-25, end of Phase 4):** `bun run check` green: typecheck, lint, format, **175 tests, 0 fail**
-(25 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
+**Snapshot (2026-10-28, P5-C1):** `bun run check` green: typecheck, lint, format, **180 tests, 0 fail**
+(26 files) against a local MongoDB replica set. Without `MONGODB_URI_TEST` the DB-backed tests are skipped,
 so a green run without it proves less. Browser e2e and `smoke:real` are run by hand (they need Chrome / a
 Gemini key) and are not part of `check`.
 
@@ -263,3 +263,18 @@ buy a pack with UPI id `success@razorpay` (test mode, no money). Webhooks need a
 | Out of credits                   | Spend down (or set the balance low in the DB with an `adjustment` entry), open a new day | "You’re out of credits for this" with needed/balance and **Get credits →**                          |
 | Buy (fake)                       | Credits → Buy for ₹149                                                                   | "Test mode" note; "Added 50 credits"; history shows `Bought … +50`                                  |
 | Buy (Razorpay test) [UNVERIFIED] | `PAYMENTS_PROVIDER=razorpay` + test keys; Buy → Checkout → UPI `success@razorpay`        | credited once; closing Checkout adds nothing                                                        |
+
+## P5-C1. Credits rework (buy a course once)
+
+Automated: `apps/api/src/routes/credits.test.ts` and `packages/shared/src/credits.test.ts`: price formula and
+packs; 100 welcome credits once (also under parallel calls); drafting is free; **buying charges once, opening
+days is free**; **five simultaneous Buy clicks → one charge, one set of days**; 402 with `{needed, balance}`,
+the course stays a draft, and the purchase succeeds after a top-up; the price follows the version bought;
+re-plan 7 days free, extra days 2 credits each, charged once on accept, reject free, accept without credits →
+402 and still proposed, `ahead` > 28 → 400, auto mode 7 days free; another learner → 404. Every money test
+checks the ledger invariant (sum of entries = balance, `balanceAfter` chains). Mutation: removing the balance
+guard in `credits/service.ts` fails the 402 tests.
+
+Manual (fake LLM, fake payments): sign in → header `100 credits` → new course (working, 2 weeks, 30 min) → roadmap
+shows `Buy for 100 credits →` → buy → header `0` → open days freely → course home "Adapt days 2–8" is free →
+Credits → Buy for ₹99 → `100`. With less than the price the button reads "Get N more credits →".

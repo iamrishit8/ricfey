@@ -1,7 +1,7 @@
 # Walkthrough 7: Credits and payments
 
 **Goal.** Learners pay for what they use, in rupees, with no way to be charged twice or to get credits without paying.
-**Code:** `apps/api/src/credits/service.ts`, `payments/` (gateway, service), `routes/credits.ts`, `routes/payments.ts`, models `CreditAccount`, `CreditEntry`, `Payment`, `WebhookEvent`; shared `credits.ts`, `payments.ts`. **Web:** `pages/credits.tsx`, `lib/checkout.ts`, `components/{credit-badge,no-credits}.tsx`. **Prices and reasoning:** [../pricing.md](../pricing.md).
+**Code:** `apps/api/src/credits/service.ts`, `outline/service.ts` (`approveOutline` = the purchase), `payments/` (gateway, service), `routes/credits.ts`, `routes/payments.ts`, models `CreditAccount`, `CreditEntry`, `Payment`, `WebhookEvent`; shared `credits.ts`, `payments.ts`. **Web:** `pages/credits.tsx`, `lib/checkout.ts`, `components/{credit-badge,no-credits}.tsx`. **Prices and reasoning:** [../pricing.md](../pricing.md).
 
 ## 1. The ledger
 
@@ -19,18 +19,19 @@ Every change goes through `applyEntry` inside `creditTransaction` (a MongoDB tra
 
 The account row is created _before_ the transaction. Two concurrent transactions then both _update_ the same row, MongoDB reports a write conflict for one, and the driver retries it. On retry it sees step 1's entry and stops. (Two concurrent _inserts_ would raise a duplicate-key error instead, which is not retried.)
 
-| Key                  | When                                                             | Delta           |
-| -------------------- | ---------------------------------------------------------------- | --------------- |
-| `welcome:<userId>`   | first time credits are touched                                   | +30             |
-| `day:<courseId>:<n>` | a day is first opened (same transaction as the generation claim) | −⌈minutes ÷ 15⌉ |
-| `replan:<replanId>`  | a priced re-plan is applied                                      | −2              |
-| `payment:<orderId>`  | a pack is paid (checkout or webhook)                             | +pack credits   |
+| Key                 | When                                                 | Delta                                       |
+| ------------------- | ---------------------------------------------------- | ------------------------------------------- |
+| `welcome:<userId>`  | first time credits are touched (sign-up in practice) | +100                                        |
+| `course:<courseId>` | the learner buys the roadmap                         | −price (see [../pricing.md](../pricing.md)) |
+| `replan:<replanId>` | a re-plan beyond the free 7 days is applied          | −2 per extra day                            |
+| `payment:<orderId>` | a pack is paid (checkout or webhook)                 | +pack credits                               |
 
 ## 2. Spending
 
-- **Days.** `openDay` claims the day for generation and charges it in one transaction. Can't pay → the claim is rolled back and the page shows "Get credits". A failed generation is retried free: the key already exists.
-- **Re-plans.** Charged in `applyReplan`'s transaction. Auto mode that can't pay leaves the proposal `proposed`.
-- **Approving an outline costs nothing.** The quote shows the total if every day is opened.
+- **Buying a course.** `POST /courses/:id/outline/approve` is the purchase. In **one transaction** it approves that outline version, charges its price (`coursePrice` of the version's days, minutes per day and depth), and creates the day rows. If the learner can't pay, nothing changes and the course stays a draft (402). Five simultaneous clicks make one charge and one set of days. The price is also stored on the course (`creditsPaid`).
+- **After buying, days are free.** Opening a day, taking quizzes and submitting tasks never charge. The course is the learner's forever. Days still open on their schedule (see [03](03-daily-loop.md)).
+- **Drafts are free.** Placement and the roadmap cost the learner nothing; they pay only if they buy.
+- **Re-plans.** The next 7 upcoming days are free; each extra day (up to 28 ahead) costs 2 credits, charged in `applyReplan`'s transaction when the learner accepts. Auto mode always looks 7 days ahead, so it is always free. Auto mode never spends credits.
 
 ## 3. Buying a pack
 
@@ -59,7 +60,7 @@ Page                         API                                   Razorpay
 
 ## Try it
 
-Fake mode: sign in → header shows `30` → open a day → `28` → **Credits** → **Buy for ₹149** → `78`. With curl: see [../../TESTING.md](../../TESTING.md#p4-c2-razorpay-fake-gateway-by-default).
+Fake mode: sign in → header shows `100` → create a 2-week working course → **Buy for 100 credits** → `0` → **Credits** → **Buy for ₹99** → `100`. With curl: see [../../TESTING.md](../../TESTING.md#p4-c2-razorpay-fake-gateway-by-default).
 
 Tests: `routes/credits.test.ts`, `routes/payments.test.ts`, `config/env.test.ts`; browser: the last step of `bun run e2e:learner`.
 Not verified: real Razorpay calls, live webhook payload shape, refunds (none automated).

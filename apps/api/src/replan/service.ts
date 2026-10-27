@@ -2,11 +2,12 @@ import type { ClientSession } from 'mongoose';
 import {
   AUTO_REPLAN_EVERY_DAYS,
   CourseOutlineSchema,
-  REPLAN_FREE_DAYS,
+  REPLAN_CREDITS_PER_EXTRA_DAY,
+  REPLAN_FREE_AHEAD_DAYS,
+  REPLAN_MAX_AHEAD_DAYS,
   REPLAN_MAX_WEAK_TOPICS,
   ReplanOutputSchema,
   masteryStatus,
-  replanHorizon,
   replanPrice,
   replanQuality,
   type CourseOutline,
@@ -61,8 +62,9 @@ const daysCompleted = (course: CourseDoc) =>
   });
 
 /**
- * Days a re-plan may rewrite: after the last day that has been opened or finished, never
- * generated, not finished. Content that exists is never rewritten under the learner.
+ * Upcoming days a re-plan may rewrite: after the last day that has been opened or finished,
+ * never generated, not finished (at most the maximum look-ahead). Content that exists is never
+ * rewritten under the learner.
  */
 async function replannableDays(course: CourseDoc): Promise<number[]> {
   const days = await CourseDayModel.find({ courseId: course._id, userId: course.userId })
@@ -72,21 +74,16 @@ async function replannableDays(course: CourseDoc): Promise<number[]> {
   const touched = days.filter((d) => d.content !== null || d.completedAt || d.status !== 'locked');
   const after = touched.length ? Math.max(...touched.map((d) => d.day)) : 0;
   const open = days.filter((d) => d.day > after).map((d) => d.day);
-  return open.slice(0, replanHorizon(days.length));
+  return open.slice(0, REPLAN_MAX_AHEAD_DAYS);
 }
 
 export async function replanPolicy(course: CourseDoc): Promise<ReplanPolicy> {
-  const [completed, total, replannable] = await Promise.all([
-    daysCompleted(course),
-    CourseDayModel.countDocuments({ courseId: course._id, userId: course.userId }),
-    replannableDays(course),
-  ]);
   return {
     mode: course.replanMode,
-    horizon: replanHorizon(total),
-    freeDays: REPLAN_FREE_DAYS,
-    priceNow: replanPrice(completed),
-    replannableDays: replannable,
+    freeAheadDays: REPLAN_FREE_AHEAD_DAYS,
+    maxAheadDays: REPLAN_MAX_AHEAD_DAYS,
+    pricePerExtraDay: REPLAN_CREDITS_PER_EXTRA_DAY,
+    replannableDays: await replannableDays(course),
   };
 }
 
@@ -103,21 +100,23 @@ async function approvedOutline(course: CourseDoc, session?: ClientSession) {
 const outlineDays = (o: CourseOutline) => o.weeks.flatMap((w) => w.days);
 
 /**
- * Start a re-plan of the next few unopened days. One open re-plan per course (unique partial
+ * Start a re-plan of the next `ahead` unopened days (the first 7 are free, then 2 credits each). One open re-plan per course (unique partial
  * index); a generating one older than 5 minutes is abandoned so a new one can start.
  */
 export async function requestReplan(
   course: CourseDoc,
   trigger: 'learner' | 'auto',
   deps: ReplanDeps,
+  ahead: number = REPLAN_FREE_AHEAD_DAYS,
 ): Promise<ReplanDoc> {
   assertActive(course);
   const now = deps.now();
-  const [completed, days, mastery] = await Promise.all([
+  const [completed, upcoming, mastery] = await Promise.all([
     daysCompleted(course),
     replannableDays(course),
     courseMastery(course),
   ]);
+  const days = upcoming.slice(0, Math.min(Math.max(ahead, 1), REPLAN_MAX_AHEAD_DAYS));
   if (completed === 0)
     throw new AppError(
       'CONFLICT',
@@ -152,7 +151,7 @@ export async function requestReplan(
       weakTopics: mastery.weakTopics,
       strongTopics: mastery.strongTopics,
       daysCompletedAtRequest: completed,
-      priceCredits: replanPrice(completed),
+      priceCredits: replanPrice(days.length),
     });
   } catch (err) {
     if ((err as { code?: number }).code === 11000)

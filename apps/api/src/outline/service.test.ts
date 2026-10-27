@@ -105,10 +105,9 @@ describe('applyEdit', () => {
 });
 
 describe('creditQuote', () => {
-  test('⌈minutes ÷ 15⌉ credits per day × days', () => {
-    expect(creditQuote(20, 30)).toMatchObject({ creditsPerDay: 2, totalCredits: 40 });
-    expect(creditQuote(20, 10)).toMatchObject({ creditsPerDay: 1, totalCredits: 20 });
-    expect(creditQuote(20, 16)).toMatchObject({ creditsPerDay: 2, totalCredits: 40 });
-    expect(creditQuote(5, 120)).toMatchObject({ creditsPerDay: 8, totalCredits: 40 });
+  test('one-time price: days × ⌈minutes ÷ 15⌉ × 4 × depth factor', () => {
+    expect(creditQuote(20, 30, 'working')).toMatchObject({ depth: 'working', totalCredits: 200 });
+    expect(creditQuote(10, 20, 'intro')).toMatchObject({ totalCredits: 80 });
+    expect(creditQuote(60, 60, 'deep')).toMatchObject({ totalCredits: 1440 });
   });
 });

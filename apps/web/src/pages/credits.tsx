@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 const REASON: Record<string, string> = {
   welcome: 'Welcome',
   purchase: 'Bought',
-  day: 'Course day',
+  course: 'Course',
   replan: 'Re-plan',
   adjustment: 'Adjustment',
 };
@@ -60,16 +60,16 @@ export function CreditsPage() {
         <span className="ml-3 text-h2 text-muted-foreground">left</span>
       </h1>
       <p className="mt-4 text-lead text-muted-foreground">
-        A course day costs 1 credit per 15 minutes, charged when you first open it. Re-plans are
-        free for your first 7 days.
+        Credits are what you pay with. You pay for a course once, when you buy its roadmap, and keep
+        it forever. Re-plans cover your next 7 days free; each extra day costs 2 credits.
       </p>
 
       <section className="mt-12 grid gap-4">
         <h2 className="text-h3 font-medium">Top up</h2>
         {packs.loading && <Spinner label="Loading packs…" />}
         <div className="grid gap-4 sm:grid-cols-3">
-          {packs.data?.packs.map((p, i) => (
-            <Card key={p.id} className={cn(i === 1 && 'border-brand')}>
+          {packs.data?.packs.map((p) => (
+            <Card key={p.id} className={cn(p.id === 'regular' && 'border-brand')}>
               <CardContent className="grid gap-3">
                 <p className="text-small font-medium uppercase tracking-[0.2em] text-muted-foreground">
                   {p.label}
@@ -81,7 +81,7 @@ export function CreditsPage() {
                 </p>
                 <Button
                   disabled={busy !== null}
-                  variant={i === 1 ? 'default' : 'outline'}
+                  variant={p.id === 'regular' ? 'default' : 'outline'}
                   onClick={() => void buy(p)}
                 >
                   {busy === p.id ? 'Paying…' : `Buy for ${rupees(p.pricePaise)}`}

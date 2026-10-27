@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { creditsPerDay } from '../credits';
+import type { CourseDepth } from '../course';
+import { coursePrice } from '../credits';
 import type { CourseOutline } from './course-outline';
 
 /**
@@ -32,21 +33,21 @@ export const OutlineApproveSchema = z.object({ version: z.number().int().min(1) 
 export type CreditQuote = {
   days: number;
   minutesPerDay: number;
-  creditsPerDay: number;
+  depth: CourseDepth;
+  /** One-time price: the learner pays this when they buy the roadmap, then keeps the course. */
   totalCredits: number;
   formula: string;
 };
 
-/** Shown before approval. Each day is charged when it is first opened, not up front. */
-export function creditQuote(days: number, minutesPerDay: number): CreditQuote {
-  const perDay = creditsPerDay(minutesPerDay);
+/** Shown with the roadmap. Charged once, when the learner buys (approves) it. */
+export function creditQuote(days: number, minutesPerDay: number, depth: CourseDepth): CreditQuote {
   return {
     days,
     minutesPerDay,
-    creditsPerDay: perDay,
-    totalCredits: days * perDay,
+    depth,
+    totalCredits: coursePrice(days, minutesPerDay, depth),
     formula:
-      'credits per day = ⌈minutes per day ÷ 15⌉, charged when you first open a day; total = days × credits per day',
+      'days × credits per 15 minutes of daily study × a depth factor (basic 1, intermediate 1.25, advanced 1.5), one time',
   };
 }
 

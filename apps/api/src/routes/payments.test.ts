@@ -72,7 +72,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
   const balance = async (cookies: Cookies) =>
     (await app().inject({ method: 'GET', url: '/credits', cookies })).json().data.credits.balance;
 
-  async function order(cookies: Cookies, packId = 'starter') {
+  async function order(cookies: Cookies, packId = 'spark') {
     const res = await post('/payments/orders', cookies, { packId });
     expect(res.statusCode).toBe(201);
     return res.json().data.order;
@@ -94,7 +94,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
       },
     });
   }
-  const paidEvent = (orderId: string, paymentId: string, amount = 14900) => ({
+  const paidEvent = (orderId: string, paymentId: string, amount = 9900) => ({
     event: 'payment.captured',
     payload: { payment: { entity: { id: paymentId, order_id: orderId, amount } } },
   });
@@ -102,24 +102,24 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
   test('packs are listed with prices in paise', async () => {
     const res = await app().inject({ method: 'GET', url: '/payments/packs' });
     expect(res.json().data.packs[0]).toMatchObject({
-      id: 'starter',
-      credits: 50,
-      pricePaise: 14900,
+      id: 'spark',
+      credits: 100,
+      pricePaise: 9900,
     });
   });
 
   test('order → checkout verify credits the pack once; replaying the proof adds nothing', async () => {
     const { user, cookies } = await signedInUser('a@example.com');
     const o = await order(cookies);
-    expect(o).toMatchObject({ amountPaise: 14900, currency: 'INR', gateway: 'fake' });
+    expect(o).toMatchObject({ amountPaise: 9900, currency: 'INR', gateway: 'fake' });
     expect((await PaymentModel.findOne({ orderId: o.orderId }))!.status).toBe('created');
 
     const proof = await pay(cookies, o.orderId);
     const res = await post('/payments/verify', cookies, proof);
     expect(res.statusCode).toBe(200);
-    expect(res.json().data.payment).toMatchObject({ status: 'paid', credits: 50, balance: 80 });
+    expect(res.json().data.payment).toMatchObject({ status: 'paid', credits: 100, balance: 200 });
     await post('/payments/verify', cookies, proof);
-    expect(await balance(cookies)).toBe(80);
+    expect(await balance(cookies)).toBe(200);
     expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'purchase' })).toBe(1);
     expect((await PaymentModel.findOne({ orderId: o.orderId }))!).toMatchObject({
       status: 'paid',
@@ -137,7 +137,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
     expect(
       (await post('/payments/verify', cookies, { ...proof, signature: flipped })).statusCode,
     ).toBe(400);
-    expect(await balance(cookies)).toBe(30);
+    expect(await balance(cookies)).toBe(100);
   });
 
   test("another learner can't verify, simulate or see someone else's order", async () => {
@@ -147,7 +147,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
     const proof = await pay(a.cookies, o.orderId);
     expect((await post('/payments/verify', b.cookies, proof)).statusCode).toBe(404);
     expect((await post(`/payments/orders/${o.orderId}/simulate`, b.cookies)).statusCode).toBe(404);
-    expect(await balance(b.cookies)).toBe(30);
+    expect(await balance(b.cookies)).toBe(100);
   });
 
   test('webhook credits the order; a redelivery and a later checkout add nothing', async () => {
@@ -156,7 +156,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
     const proof = await pay(cookies, o.orderId);
     const first = await webhook(paidEvent(o.orderId, proof.paymentId), { eventId: 'evt_1' });
     expect(first.statusCode).toBe(200);
-    expect(await balance(cookies)).toBe(80);
+    expect(await balance(cookies)).toBe(200);
     expect(
       (await webhook(paidEvent(o.orderId, proof.paymentId), { eventId: 'evt_1' })).statusCode,
     ).toBe(200);
@@ -165,14 +165,14 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
       {
         event: 'order.paid',
         payload: {
-          order: { entity: { id: o.orderId, amount: 14900 } },
+          order: { entity: { id: o.orderId, amount: 9900 } },
           payment: { entity: { id: proof.paymentId, order_id: o.orderId } },
         },
       },
       { eventId: 'evt_2' },
     );
     await post('/payments/verify', cookies, proof);
-    expect(await balance(cookies)).toBe(80);
+    expect(await balance(cookies)).toBe(200);
     expect((await PaymentModel.findOne({ orderId: o.orderId }))!.paidVia).toBe('webhook');
   });
 
@@ -185,7 +185,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
       webhook(paidEvent(o.orderId, proof.paymentId), { eventId: 'evt_9' }),
       post('/payments/verify', cookies, proof),
     ]);
-    expect(await balance(cookies)).toBe(80);
+    expect(await balance(cookies)).toBe(200);
     expect(await CreditEntryModel.countDocuments({ userId: user._id, reason: 'purchase' })).toBe(1);
   });
 
@@ -198,7 +198,7 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
     expect((await webhook(paidEvent(o.orderId, 'pay_1', 100))).statusCode).toBe(200);
     expect((await webhook(paidEvent('order_unknown', 'pay_1'))).statusCode).toBe(200);
     expect((await webhook({ event: 'payment.failed', payload: {} })).statusCode).toBe(200);
-    expect(await balance(cookies)).toBe(30);
+    expect(await balance(cookies)).toBe(100);
     const notJson = await app().inject({
       method: 'POST',
       url: '/webhooks/razorpay',
@@ -214,10 +214,10 @@ describe.skipIf(!TEST_DB_URI)('payments (needs MONGODB_URI_TEST)', () => {
   test('order creation: unknown pack → 400; sign-in required; at most 10 per hour', async () => {
     const { cookies } = await signedInUser('a@example.com');
     expect((await post('/payments/orders', cookies, { packId: 'free' })).statusCode).toBe(400);
-    expect((await post('/payments/orders', {}, { packId: 'starter' })).statusCode).toBe(401);
+    expect((await post('/payments/orders', {}, { packId: 'spark' })).statusCode).toBe(401);
     for (let i = 0; i < 9; i++) await order(cookies); // 1 rejected above didn't count
-    expect((await post('/payments/orders', cookies, { packId: 'starter' })).statusCode).toBe(201);
-    expect((await post('/payments/orders', cookies, { packId: 'starter' })).statusCode).toBe(429);
+    expect((await post('/payments/orders', cookies, { packId: 'spark' })).statusCode).toBe(201);
+    expect((await post('/payments/orders', cookies, { packId: 'spark' })).statusCode).toBe(429);
   });
 
   test('the simulate route does not exist with the real gateway', async () => {

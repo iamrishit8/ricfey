@@ -1,5 +1,7 @@
-import type { CourseOutline, OutlineView, PublicCourse } from '@ricfey/shared';
+import type { CourseOutline, CreditsView, OutlineView, PublicCourse } from '@ricfey/shared';
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router';
+import { NoCredits } from '@/components/no-credits';
 import { ErrorNote, Spinner } from '@/components/page';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -36,6 +38,8 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
   const { data, error, setData, reload } = useApi<{ outline: OutlineView }>(url, {
     pollWhile: (d) => d.outline.status === 'generating' || d.outline.status === 'none',
   });
+  const credits = useApi<{ credits: CreditsView }>('/credits');
+  const balance = credits.data?.credits.balance ?? null;
   const view = data?.outline;
   const [edits, setEdits] = useState<{ version: number; weeks: EditWeek[] } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -82,7 +86,8 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
       await post(`${url}/approve`, { version: view.version });
       onDone();
     } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : 'Could not approve.');
+      setActionError(err instanceof ApiError ? err.message : 'Could not buy the course.');
+      if (err instanceof ApiError && err.code === 'INSUFFICIENT_CREDITS') credits.reload();
       setBusy(false);
     }
   }
@@ -98,8 +103,8 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
           <p className="mt-4 text-lead text-muted-foreground">{view.outline.summary}</p>
         )}
         <p className="mt-4 text-small text-muted-foreground">
-          Rename, remove or reorder anything, then approve. Lessons are written one day at a time as
-          you reach them.
+          Rename, remove or reorder anything, then buy the course with your credits. You pay once
+          and keep it forever. Lessons are written one day at a time as you reach them.
         </p>
       </div>
 
@@ -226,11 +231,17 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
                   {dirty ? '—' : view.quote.totalCredits}
                 </p>
                 <p className="text-small text-muted-foreground">
-                  credits for {dirty ? totalDays : view.quote.days} days, paid day by day
+                  credits, one time, for {dirty ? totalDays : view.quote.days} days. Yours forever.
                 </p>
               </div>
+              <p className="text-small text-muted-foreground">You have {balance ?? '–'} credits.</p>
               <p className="text-small text-muted-foreground">{view.quote.formula}.</p>
-              {actionError && <ErrorNote>{actionError}</ErrorNote>}
+              {actionError &&
+                (actionError.includes('credits') && !dirty ? (
+                  <NoCredits details={{ needed: view.quote.totalCredits, balance: balance ?? 0 }} />
+                ) : (
+                  <ErrorNote>{actionError}</ErrorNote>
+                ))}
               {dirty ? (
                 <div className="grid gap-2">
                   <Button disabled={busy} onClick={() => void save()}>
@@ -240,9 +251,13 @@ export function OutlineStep({ course, onDone }: { course: PublicCourse; onDone: 
                     Discard
                   </Button>
                 </div>
+              ) : balance !== null && balance < view.quote.totalCredits ? (
+                <Button asChild>
+                  <Link to="/credits">Get {view.quote.totalCredits - balance} more credits →</Link>
+                </Button>
               ) : (
                 <Button disabled={busy} onClick={() => void approve()}>
-                  {busy ? 'Starting…' : 'Approve and start →'}
+                  {busy ? 'Buying…' : `Buy for ${view.quote.totalCredits} credits →`}
                 </Button>
               )}
             </CardContent>
