@@ -1,0 +1,10 @@
+{
+  "skill": "Music theory",
+  "depth": "working",
+  "weeks": 4,
+  "daysPerWeek": 5,
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "generatedAt": "2026-10-25T09:31:26.954Z",
+  "calls": []
+}

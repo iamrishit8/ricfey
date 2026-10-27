@@ -1,0 +1,37 @@
+{
+  "name": "ricfey",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "bun run --filter @ricfey/web dev",
+    "dev:api": "bun run --filter @ricfey/api dev",
+    "typecheck": "bun run --filter '*' typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "bun test --pass-with-no-tests",
+    "check": "bun run typecheck && bun run lint && bun run format:check && bun run test",
+    "gen:sample": "bun --env-file=.env apps/api/scripts/gen-sample.ts",
+    "cost:report": "bun apps/api/scripts/cost-report.ts",
+    "shot": "bun tools/browser/shot.ts",
+    "e2e:login": "bun tools/browser/login-e2e.ts",
+    "e2e:learner": "bun tools/browser/learner-e2e.ts",
+    "smoke:real": "bun --env-file=.env apps/api/scripts/smoke-real.ts",
+    "migrate:depth": "bun --env-file=.env apps/api/scripts/migrate-depth.ts",
+    "seed:gallery": "bun --env-file=.env apps/api/scripts/seed-gallery.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "^1.4.3",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.0",
+    "typescript-eslint": "^8.71.2"
+  }
+}

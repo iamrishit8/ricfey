@@ -1,0 +1,24 @@
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.DS_Store
+
+# Secrets: never commit. .env.example is the only env file in git.
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+e2e-login-fail.png
+e2e-shots/
+
+# Private working docs (not for other people): agent instructions, progress log, decisions,
+# learning answers, handoff, things needed from the owner. Public docs live in README.md,
+# ARCHITECTURE.md, TESTING.md and docs/.
+/private/
+/CLAUDE.md

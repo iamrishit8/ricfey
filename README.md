@@ -1,0 +1,128 @@
+# Ricfey
+
+Tell Ricfey what you want to learn, how deep, and in how many weeks. It builds a personal
+day-by-day course: each day is a short lesson, a practice task and a quiz. Your quiz scores
+re-shape the rest of the plan. Any subject that can be taught and tested through text.
+Pay-as-you-go credits in rupees.
+
+**Status.** Phases 1 (foundations), 2 (course creation and the daily loop), 3 (re-planning
+from quiz scores) 4 (credits and Razorpay, fake gateway by default) and 5 (chat intake, buy-once courses, gallery) are built. Phase 6 (design) and 7 (real sign-in, payments and model, then deploy) are planned. See [ARCHITECTURE.md](ARCHITECTURE.md) for what exists and what does not.
+
+**New here?** Read [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) (running it in 10 minutes),
+then the [walkthroughs](docs/walkthroughs/) (how each part works, in the order a learner meets it).
+
+## Run it
+
+Requires [Bun](https://bun.sh). Tested on 1.4.2.
+
+```sh
+bun install
+cp .env.example .env   # then fill in values (see table)
+bun run check          # typecheck + lint + format check + tests
+```
+
+Start the API (needs `MONGODB_URI` in `.env`):
+
+```sh
+bun run dev:api                     # http://127.0.0.1:4000
+curl http://127.0.0.1:4000/health   # {"success":true,"data":{"status":"ok",...}}
+```
+
+Fill the gallery with a finished course (demo data; `--provider fake` for placeholder text):
+
+```sh
+bun run seed:gallery -- --skill "Music theory" --depth intermediate --weeks 2 --minutes 30
+bun run migrate:depth      # only for a database made before the depth names changed
+```
+
+Generate a sample course (outline + day 1) into `docs/samples/`, then the cost report:
+
+```sh
+bun run gen:sample -- --skill "Python" --depth working --weeks 4            # needs GEMINI_API_KEY + MONGODB_URI
+bun run gen:sample -- --skill "Python" --model gemini-3.5-flash-lite        # compare another model
+bun run gen:sample -- --skill "Python" --provider fake --out /tmp/samples   # offline, placeholder text
+bun run cost:report                                                         # writes docs/phase-1-cost-report.md
+```
+
+Sign in without a browser (dev mode prints the link to the API console):
+
+```sh
+curl -X POST localhost:4000/auth/magic/request -H 'content-type: application/json' -d '{"email":"you@example.com"}'
+# copy the token from the console line "[dev] Magic link for y***@example.com: ...?token=XXXX"
+curl -c jar -X POST localhost:4000/auth/magic/verify -H 'content-type: application/json' -d '{"token":"XXXX"}'
+curl -b jar localhost:4000/auth/me
+```
+
+Run the web app (in a second terminal, with the API running):
+
+```sh
+bun run dev:web        # http://localhost:5173  (/api/* is proxied to the API on :4000)
+```
+
+Open http://localhost:5173/login, enter any email, and click the link printed in the API console.
+`/styleguide` shows the design tokens, type scale, accent options, lesson card and quiz card.
+
+Browser checks (need Google Chrome; run against the dev servers):
+
+```sh
+bun run shot -- http://localhost:5173/styleguide out.png 390   # screenshot at 390px, flags overflow
+bun run dev:api > api.log 2>&1 &  ;  bun run e2e:login -- api.log   # full login flow in a real browser
+bun run e2e:learner -- api.log shots/   # whole learner journey (needs LLM_PROVIDER=fake)
+bun run smoke:real                      # every Phase 2 LLM step on real Gemini (~6 calls of quota)
+```
+
+## Repo layout
+
+| Path              | What                                                      |
+| ----------------- | --------------------------------------------------------- |
+| `apps/api`        | Fastify API (Bun, TypeScript)                             |
+| `apps/web`        | React + Vite web app                                      |
+| `packages/shared` | Zod schemas and types used by both                        |
+| `tools/browser`   | Chrome scripts for screenshots and browser e2e            |
+| `docs/`           | Guides, walkthroughs, phase scopes, samples, cost reports |
+
+## Environment variables
+
+Every variable lives in `.env.example`. Never commit `.env`.
+
+| Variable                  | Required           | Default                 | Purpose                                                                                                                                |
+| ------------------------- | ------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`                | no                 | `development`           | `development`, `test` or `production`                                                                                                  |
+| `HOST`                    | no                 | `127.0.0.1`             | API bind address (`0.0.0.0` in containers)                                                                                             |
+| `PORT`                    | no                 | `4000`                  | API port                                                                                                                               |
+| `LOG_LEVEL`               | no                 | `info`                  | `fatal` … `trace`                                                                                                                      |
+| `MONGODB_URI`             | yes                |                         | Atlas connection string. Secret. Must be a replica set (Atlas always is)                                                               |
+| `MONGODB_URI_TEST`        | no                 |                         | Throwaway replica set for DB tests; skipped if empty. Tests drop this DB                                                               |
+| `GEMINI_API_KEY`          | for real LLM calls |                         | From https://aistudio.google.com/apikey. Secret                                                                                        |
+| `GEMINI_MODEL`            | no                 | `gemini-3.8-flash`      | Model ID; `gen:sample --model` overrides it                                                                                            |
+| `LLM_DAILY_CALL_CAP`      | no                 | `16`                    | Max LLM calls per UTC day, retries included                                                                                            |
+| `LLM_DAILY_TOKEN_CAP`     | no                 | `1000000`               | Max tokens (in + out) per UTC day                                                                                                      |
+| `WEB_URL`                 | no                 | `http://localhost:5173` | Web origin for magic links and login redirects                                                                                         |
+| `COOKIE_SECURE`           | no                 | `true`                  | Secure session cookie. Must be `true` in production. Safari won't keep Secure cookies on http://localhost                              |
+| `TRUST_PROXY`             | no                 | `false`                 | `true` only behind a proxy that sets X-Forwarded-For                                                                                   |
+| `SESSION_TTL_DAYS`        | no                 | `30`                    | Session lifetime                                                                                                                       |
+| `GOOGLE_CLIENT_ID`        | no                 |                         | Google OAuth client ID. Set all three Google vars or none                                                                              |
+| `GOOGLE_CLIENT_SECRET`    | no                 |                         | Google OAuth client secret. Secret                                                                                                     |
+| `GOOGLE_REDIRECT_URI`     | no                 |                         | e.g. `http://localhost:4000/auth/google/callback`; must match the Google console                                                       |
+| `RESEND_API_KEY`          | prod               |                         | Empty in dev: magic links print to the API console. Secret                                                                             |
+| `EMAIL_FROM`              | prod               |                         | Sender, e.g. `Ricfey <login@yourdomain>`; domain must be verified in Resend                                                            |
+| `LLM_PROVIDER`            | no                 | `fake`                  | `fake`: offline placeholder content, no quota. `gemini`: real calls (needs `GEMINI_API_KEY`). Must be `gemini` in production           |
+| `GEMINI_CHECK_MODEL`      | no                 | `gemini-3.5-flash-lite` | Cheaper model for lesson self-checks                                                                                                   |
+| `PAYMENTS_PROVIDER`       | no                 | `fake`                  | `fake`: offline payments signed like Razorpay, no money. `razorpay`: real API (needs the three keys). Must be `razorpay` in production |
+| `RAZORPAY_KEY_ID`         | with razorpay      |                         | Dashboard → API keys. Use test-mode keys until launch                                                                                  |
+| `RAZORPAY_KEY_SECRET`     | with razorpay      |                         | Signs checkout responses. Secret                                                                                                       |
+| `RAZORPAY_WEBHOOK_SECRET` | with razorpay      |                         | Set when creating the webhook (events `order.paid`, `payment.captured`). Secret                                                        |
+
+## Docs
+
+| Doc                                                        | Read it to…                                            |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md)         | set up, run, and click through the app                 |
+| [docs/walkthroughs/](docs/walkthroughs/)                   | understand each area end to end, with code pointers    |
+| [ARCHITECTURE.md](ARCHITECTURE.md)                         | see the system shape and what is BUILT vs PLANNED      |
+| [docs/API.md](docs/API.md)                                 | look up any HTTP route                                 |
+| [docs/DATA-MODEL.md](docs/DATA-MODEL.md)                   | look up any MongoDB collection                         |
+| [TESTING.md](TESTING.md)                                   | verify each piece (automated and manual)               |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)               | follow the rules, and update docs when closing a phase |
+| [docs/phases/](docs/phases/)                               | see what each phase set out to do and its gate         |
+| [docs/phase-1-cost-report.md](docs/phase-1-cost-report.md) | see measured LLM cost per course-day                   |

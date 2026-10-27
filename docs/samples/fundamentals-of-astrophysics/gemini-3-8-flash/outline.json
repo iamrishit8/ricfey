@@ -1,0 +1,272 @@
+{
+  "title": "Working Fundamentals of Astrophysics",
+  "summary": "A practical, calculation-driven 4-week introduction to astrophysics. Master orbital mechanics, radiation laws, stellar interiors, compact remnants, and cosmological expansion using core physical equations and real observational data.",
+  "skill": "Fundamentals of astrophysics",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Celestial Mechanics, Radiation, and Spectroscopy",
+      "days": [
+        {
+          "day": 1,
+          "title": "Keplerian Orbits and Planetary Motion",
+          "objectives": [
+            "Calculate semi-major axes and orbital periods using Kepler's third law",
+            "Compute orbital velocity at periastron and apastron for eccentric orbits"
+          ],
+          "topics": [
+            "orbital-mechanics",
+            "keplers-laws"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Gravitational Potential and Escape Velocity",
+          "objectives": [
+            "Calculate the escape velocity for any spherical celestial body",
+            "Determine whether a test mass is gravitationally bound given its kinetic and potential energy"
+          ],
+          "topics": [
+            "gravitation",
+            "orbital-mechanics"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Radiation Flux and Luminosity",
+          "objectives": [
+            "Calculate radiant flux from a source using the inverse-square law",
+            "Differentiate between intrinsic luminosity and observed flux in astronomical measurements"
+          ],
+          "topics": [
+            "stellar-radiation",
+            "flux-and-luminosity"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Blackbody Radiation and Stellar Temperatures",
+          "objectives": [
+            "Determine a star's surface temperature using Wien's displacement law",
+            "Estimate total stellar luminosity using the Stefan-Boltzmann law and stellar radius"
+          ],
+          "topics": [
+            "blackbody-radiation",
+            "stellar-radiation"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Astronomical Spectroscopy and Radial Velocity",
+          "objectives": [
+            "Identify primary stellar absorption lines across spectral types",
+            "Calculate line-of-sight velocity using the non-relativistic Doppler shift equation"
+          ],
+          "topics": [
+            "spectroscopy",
+            "doppler-shift"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Stellar Properties, Interiors, and Energy Generation",
+      "days": [
+        {
+          "day": 6,
+          "title": "Astronomical Distances and Magnitude Systems",
+          "objectives": [
+            "Convert between stellar parallax angles in arcseconds and distance in parsecs",
+            "Calculate absolute magnitude and distance modulus from apparent magnitude"
+          ],
+          "topics": [
+            "stellar-distances",
+            "flux-and-luminosity"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "The Hertzsprung-Russell Diagram and Stellar Classification",
+          "objectives": [
+            "Place stars on the HR diagram using spectral type and absolute magnitude",
+            "Extract stellar radius trends from an HR diagram plot"
+          ],
+          "topics": [
+            "hr-diagram",
+            "stellar-classification"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Hydrostatic Equilibrium and Core Pressures",
+          "objectives": [
+            "Formulate the hydrostatic balance equation for a stable spherical star",
+            "Estimate central pressure and core temperature using dimensional scaling"
+          ],
+          "topics": [
+            "stellar-interiors",
+            "hydrostatic-equilibrium"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Nuclear Fusion and Stellar Energy Production",
+          "objectives": [
+            "Trace the proton-proton chain and CNO cycle energy release mechanisms",
+            "Calculate mass defect and energy release per fusion reaction using E=mc^2"
+          ],
+          "topics": [
+            "nuclear-fusion",
+            "stellar-interiors"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Mass-Luminosity Relation and Stellar Lifetimes",
+          "objectives": [
+            "Estimate main-sequence luminosity from stellar mass using power-law scaling",
+            "Compute the main-sequence lifetime of a star relative to the Sun"
+          ],
+          "topics": [
+            "stellar-evolution",
+            "hr-diagram"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Stellar Evolution and Compact Objects",
+      "days": [
+        {
+          "day": 11,
+          "title": "Post-Main-Sequence Evolution and Giant Phases",
+          "objectives": [
+            "Chart the post-main-sequence track of a 1-solar-mass star on the HR diagram",
+            "Explain physical triggers behind core helium flashes and planetary nebula ejection"
+          ],
+          "topics": [
+            "stellar-evolution",
+            "hr-diagram"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "White Dwarfs and Degeneracy Pressure",
+          "objectives": [
+            "Calculate white dwarf radius using electron degeneracy scaling",
+            "Determine the Chandrasekhar mass limit and describe the conditions under which it fails"
+          ],
+          "topics": [
+            "compact-objects",
+            "degeneracy-pressure"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Supernovae and Neutron Stars",
+          "objectives": [
+            "Distinguish between Type Ia and core-collapse supernova mechanisms",
+            "Calculate the average density and surface gravity of a 1.4-solar-mass neutron star"
+          ],
+          "topics": [
+            "supernovae",
+            "compact-objects"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Black Holes and the Schwarzschild Metric",
+          "objectives": [
+            "Calculate the Schwarzschild radius for stellar and supermassive black holes",
+            "Compute gravitational redshift for photons emitted near an event horizon"
+          ],
+          "topics": [
+            "black-holes",
+            "gravitation"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Binary Systems and Mass Transfer",
+          "objectives": [
+            "Identify Roche lobe overflow conditions in close binary systems",
+            "Calculate binary orbital separation from orbital period and component masses"
+          ],
+          "topics": [
+            "binary-stars",
+            "orbital-mechanics"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Galactic Dynamics, High-Energy Astrophysics, and Cosmology",
+      "days": [
+        {
+          "day": 16,
+          "title": "Galactic Rotation and Dark Matter",
+          "objectives": [
+            "Plot expected Keplerian versus observed flat galactic rotation curves",
+            "Calculate the dynamical mass enclosed within a given galactic radius"
+          ],
+          "topics": [
+            "galactic-dynamics",
+            "dark-matter"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Active Galactic Nuclei and the Eddington Limit",
+          "objectives": [
+            "Calculate the theoretical maximum luminosity (Eddington limit) for an accretion disk",
+            "Estimate black hole accretion rate from observed bolometric AGN luminosity"
+          ],
+          "topics": [
+            "agn-and-quasars",
+            "black-holes"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Cosmic Expansion and Hubble's Law",
+          "objectives": [
+            "Calculate recessional velocity and distance using Hubble's law",
+            "Estimate the age of the universe from Hubble constant measurements"
+          ],
+          "topics": [
+            "cosmology",
+            "hubble-law"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Cosmological Redshift and Scale Factor",
+          "objectives": [
+            "Convert between cosmological redshift z and cosmic scale factor a(t)",
+            "Calculate lookback time and distance for low-redshift astronomical targets"
+          ],
+          "topics": [
+            "cosmology",
+            "doppler-shift"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "The Cosmic Microwave Background and Energy Budget",
+          "objectives": [
+            "Interpret the Planck spectrum and peak temperature of the CMB",
+            "Calculate critical density and evaluate the cosmic energy breakdown between matter and dark energy"
+          ],
+          "topics": [
+            "cosmology",
+            "blackbody-radiation"
+          ]
+        }
+      ]
+    }
+  ]
+}

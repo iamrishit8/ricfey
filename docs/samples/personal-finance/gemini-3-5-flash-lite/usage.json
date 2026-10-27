@@ -1,0 +1,29 @@
+{
+  "skill": "Personal finance",
+  "depth": "working",
+  "weeks": 4,
+  "daysPerWeek": 5,
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "generatedAt": "2026-10-17T19:31:53.607Z",
+  "calls": [
+    {
+      "purpose": "course_outline",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 278,
+      "tokensOut": 1878,
+      "tokensThinking": 0,
+      "latencyMs": 5203
+    },
+    {
+      "purpose": "day_content",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 913,
+      "tokensOut": 2068,
+      "tokensThinking": 0,
+      "latencyMs": 6168
+    }
+  ]
+}

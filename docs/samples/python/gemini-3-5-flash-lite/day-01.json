@@ -1,0 +1,92 @@
+{
+  "day": 1,
+  "title": "Setting Up and Printing",
+  "lesson": {
+    "markdown": "Welcome to Practical Python for Everyday Tasks! Today, we take your very first step into programming by learning how to run Python code and display information on your screen. This is the foundation of every single program you will ever write, allowing your code to talk back to you.\n\n### What is Python?\n\nPython is a popular programming language known for being readable and straightforward. Think of it like giving a recipe to a very literal-minded assistant: every instruction must be precise, and Python will follow it step by step.\n\n### The Print Statement\n\nIn Python, the `print()` function is how you display text, numbers, or results to the screen. Whenever you want your program to show you an output, you use `print` followed by parentheses.\n\n```python\nprint(\"Hello, World!\")\n```\n\nWhen you run this code, Python outputs:\n```text\nHello, World!\n```\n\nNotice the quotation marks (`\" \"`) around the text. In Python, text is known as a **string**. If you want Python to treat something as literal text, you must enclose it in quotes.\n\n### Printing Numbers and Doing Math\n\nYou do not always need quotation marks. If you want Python to calculate a number or show a numerical value, you type it directly without quotes.\n\n```python\nprint(500)\nprint(100 + 50)\n```\n\nOutput:\n```text\n500\n150\n```\n\nWhen you omit the quotes, Python evaluates the math first (`100 + 50`) and then prints the result (`150`). If you had written `print(\"100 + 50\")`, Python would have just printed the literal text `100 + 50` on the screen instead of calculating it.\n\n### Printing Multiple Items\n\nYou can print multiple pieces of data at once by separating them with commas inside the `print()` function. Python automatically adds a space between them.\n\n```python\nprint(\"Your balance is:\", 4500)\n```\n\nOutput:\n```text\nYour balance is: 4500\n```\n\n### Common Mistakes to Avoid\n\n1. **Forgetting Quotes on Text:** If you write `print(Hello)` without quotes, Python thinks `Hello` is the name of a variable or command it should recognize. It will crash with a `NameError`. Always use quotes for raw text.\n2. **Mismatched Quotation Marks:** If you start a string with a double quote, you must end it with a double quote. Writing `print(\"Hello')` will cause a `SyntaxError` because Python gets confused by the mixed marks.\n\n### Quick Recap\n\n- The `print()` function is your primary tool for displaying output to the console.\n- Text strings must be enclosed in quotation marks (`\"`), while numbers and math expressions do not use quotes.\n- You can print multiple values at once by separating them with commas.",
+    "estimatedMinutes": 30
+  },
+  "task": {
+    "prompt": "Write a Python script using the print() statement to display a mock monthly grocery receipt. Your script must include: 1. A header line saying 'MONTHLY GROCERY BILL'. 2. At least three separate items, where each line shows the item name and its price separated by a comma (using commas inside the print statement). 3. A final calculation line that prints 'Total:' followed by the sum of those three prices calculated directly by Python without quotes. Write out your code clearly.",
+    "rubric": [
+      {
+        "criterion": "Header inclusion",
+        "description": "The script correctly prints the text header 'MONTHLY GROCERY BILL' enclosed in quotation marks.",
+        "points": 2
+      },
+      {
+        "criterion": "Multiple items with commas",
+        "description": "The script prints at least three items using the print function with commas to separate item names and prices.",
+        "points": 4
+      },
+      {
+        "criterion": "Calculated total",
+        "description": "The script successfully calculates and prints the total cost of the three items using Python math without quotation marks around the numbers.",
+        "points": 4
+      }
+    ]
+  },
+  "quiz": {
+    "questions": [
+      {
+        "question": "What will happen if you run the code: print(10 + 20)?",
+        "options": [
+          "It will print the text '10 + 20'",
+          "It will print the number 30",
+          "It will throw a SyntaxError",
+          "It will print '1020'"
+        ],
+        "answerIndex": 1,
+        "explanation": "Because there are no quotation marks around 10 + 20, Python evaluates the mathematical expression first and prints the resulting sum, 30. If quotes were used, it would print the literal text.",
+        "topic": "print-statement"
+      },
+      {
+        "question": "Which of the following print statements is written correctly in Python?",
+        "options": [
+          "print(Hello World)",
+          "print[\"Hello World\"]",
+          "print(\"Hello World\")",
+          "PRINT(\"Hello World\")"
+        ],
+        "answerIndex": 2,
+        "explanation": "Python requires lowercase function names (print) followed by parentheses and valid string quotes. Option 1 lacks quotes, option 2 uses square brackets instead of parentheses, and option 4 uses uppercase letters which Python does not recognize.",
+        "topic": "print-statement"
+      },
+      {
+        "question": "What is the primary purpose of the Python interactive shell?",
+        "options": [
+          "To design graphical user interfaces for desktop apps",
+          "To quickly test and run small snippets of Python code line by line",
+          "To automatically convert Python files into executable programs",
+          "To store permanent databases on your hard drive"
+        ],
+        "answerIndex": 1,
+        "explanation": "The interactive shell allows developers to type Python commands and see results immediately, making it ideal for experimentation and learning.",
+        "topic": "python-setup"
+      },
+      {
+        "question": "What will the following code output? print(\"Price:\", 100)",
+        "options": [
+          "Price: 100",
+          "Price:, 100",
+          "Price:100",
+          "An error because you cannot mix text and numbers"
+        ],
+        "answerIndex": 0,
+        "explanation": "When you separate multiple items with a comma inside a print statement, Python automatically inserts a space between them, resulting in 'Price: 100'.",
+        "topic": "print-statement"
+      },
+      {
+        "question": "Why would you get a NameError when running print(Welcome)?",
+        "options": [
+          "Because the word Welcome is spelled incorrectly",
+          "Because Python thinks Welcome is a variable name or keyword rather than literal text since it lacks quotes",
+          "Because print functions cannot take single words",
+          "Because Python requires double quotes instead of single letters"
+        ],
+        "answerIndex": 1,
+        "explanation": "Without quotation marks, Python assumes Welcome refers to a previously defined variable. Since none exists, it raises a NameError. Adding quotes turns it into a string.",
+        "topic": "print-statement"
+      }
+    ]
+  }
+}

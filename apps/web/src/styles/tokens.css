@@ -1,0 +1,80 @@
+/*
+ * Design tokens. Components use these names only, never raw colours.
+ * Light is the first token set; .dark is the second.
+ */
+
+:root {
+  /* Three accent options shown on /styleguide. */
+  --accent-1: oklch(0.57 0.19 33); /* 1 · Vermilion */
+  --accent-1-foreground: oklch(0.99 0.005 85);
+  --accent-2: oklch(0.5 0.2 266); /* 2 · Cobalt */
+  --accent-2-foreground: oklch(0.99 0.005 85);
+  --accent-3: oklch(0.5 0.1 160); /* 3 · Forest */
+  --accent-3-foreground: oklch(0.99 0.005 85);
+
+  /* ▼ THE ONE TOKEN TO CHANGE. Chosen: option 1 (Vermilion). Swap to --accent-2/3. */
+  --brand: var(--accent-1);
+  --brand-foreground: var(--accent-1-foreground);
+
+  --background: oklch(0.985 0.008 85); /* warm paper */
+  --foreground: oklch(0.22 0.02 60); /* ink */
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --muted: oklch(0.955 0.01 85);
+  --muted-foreground: oklch(0.47 0.02 60);
+  --border: oklch(0.89 0.012 85);
+  --input: var(--border);
+  --ring: var(--brand);
+  --success: oklch(0.52 0.12 150);
+  --destructive: oklch(0.55 0.2 27);
+  --brand-soft: color-mix(in oklch, var(--brand) 12%, var(--background));
+
+  /* shadcn names, mapped to ours */
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--brand-soft);
+  --accent-foreground: var(--foreground);
+
+  --radius: 0.875rem;
+}
+
+.dark {
+  --accent-1: oklch(0.72 0.16 38);
+  --accent-1-foreground: oklch(0.2 0.02 40);
+  --accent-2: oklch(0.72 0.14 266);
+  --accent-2-foreground: oklch(0.2 0.03 266);
+  --accent-3: oklch(0.72 0.11 160);
+  --accent-3-foreground: oklch(0.2 0.03 160);
+
+  --background: oklch(0.18 0.01 60);
+  --foreground: oklch(0.94 0.01 85);
+  --card: oklch(0.22 0.012 60);
+  --muted: oklch(0.26 0.012 60);
+  --muted-foreground: oklch(0.72 0.02 80);
+  --border: oklch(0.32 0.012 60);
+  --success: oklch(0.72 0.13 150);
+  --destructive: oklch(0.68 0.17 27);
+}
+
+/* Lets /styleguide preview each accent option locally. */
+[data-accent='1'] {
+  --brand: var(--accent-1);
+  --brand-foreground: var(--accent-1-foreground);
+}
+[data-accent='2'] {
+  --brand: var(--accent-2);
+  --brand-foreground: var(--accent-2-foreground);
+}
+[data-accent='3'] {
+  --brand: var(--accent-3);
+  --brand-foreground: var(--accent-3-foreground);
+}
+[data-accent] {
+  --ring: var(--brand);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --brand-soft: color-mix(in oklch, var(--brand) 12%, var(--background));
+  --accent: var(--brand-soft);
+}

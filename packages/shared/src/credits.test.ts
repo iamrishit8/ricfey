@@ -1,0 +1,34 @@
+import { describe, expect, test } from 'bun:test';
+import { CREDIT_PACKS } from './payments';
+import { WELCOME_CREDITS, coursePrice } from './credits';
+
+describe('course price', () => {
+  test('days × ⌈minutes ÷ 15⌉ × 4 × depth factor, rounded to the nearest 10', () => {
+    expect(coursePrice(10, 20, 'basic')).toBe(80); // 10 × 2 × 4
+    expect(coursePrice(20, 30, 'intermediate')).toBe(200); // 20 × 2 × 4 × 1.25
+    expect(coursePrice(60, 60, 'advanced')).toBe(1440); // 60 × 4 × 4 × 1.5
+    expect(coursePrice(5, 15, 'basic')).toBe(20);
+  });
+
+  test('never below 10, and rounds to tens', () => {
+    expect(coursePrice(1, 10, 'basic')).toBe(10);
+    expect(coursePrice(9, 10, 'intermediate')).toBe(50); // 9 × 1 × 4 × 1.25 = 45 → 50
+    expect(coursePrice(7, 25, 'intermediate')).toBe(70); // 7 × 2 × 4 × 1.25
+  });
+
+  test('deeper is dearer, longer is dearer', () => {
+    expect(coursePrice(20, 30, 'advanced')).toBeGreaterThan(coursePrice(20, 30, 'intermediate'));
+    expect(coursePrice(20, 30, 'intermediate')).toBeGreaterThan(coursePrice(20, 30, 'basic'));
+    expect(coursePrice(30, 30, 'basic')).toBeGreaterThan(coursePrice(20, 30, 'basic'));
+  });
+});
+
+describe('packs', () => {
+  test('more credits for the money as packs grow, and a new account can almost afford a short course', () => {
+    const perCredit = CREDIT_PACKS.map((p) => p.pricePaise / p.credits);
+    for (let i = 1; i < perCredit.length; i++)
+      expect(perCredit[i]!).toBeLessThan(perCredit[i - 1]!);
+    expect(WELCOME_CREDITS).toBe(100);
+    expect(coursePrice(10, 20, 'basic')).toBeLessThanOrEqual(WELCOME_CREDITS);
+  });
+});

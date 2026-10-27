@@ -1,0 +1,105 @@
+import { createBrowserRouter, Outlet } from 'react-router';
+import { RequireAuth } from '@/components/require-auth';
+import { SiteHeader } from '@/components/site-header';
+import { CoursePage } from '@/pages/course';
+import { CreditsPage } from '@/pages/credits';
+import { DayPage } from '@/pages/day';
+import { DesignPage } from '@/pages/design';
+import { GalleryPage } from '@/pages/gallery';
+import { GalleryDetailPage } from '@/pages/gallery-detail';
+import { NewCoursePage } from '@/pages/new-course';
+import { ProgressPage } from '@/pages/progress';
+import { TodayPage } from '@/pages/today';
+import { HomePage } from '@/pages/home';
+import { LoginPage } from '@/pages/login';
+import { MagicPage } from '@/pages/magic';
+import { NotFoundPage } from '@/pages/not-found';
+import { StyleguidePage } from '@/pages/styleguide';
+
+function Layout() {
+  return (
+    <>
+      <SiteHeader />
+      <Outlet />
+    </>
+  );
+}
+
+export const router = createBrowserRouter([
+  // The design proposal has its own header and is outside the app layout.
+  { path: '/design', element: <DesignPage /> },
+  {
+    element: <Layout />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/auth/magic', element: <MagicPage /> },
+      { path: '/styleguide', element: <StyleguidePage /> },
+      {
+        path: '/courses/new',
+        element: (
+          <RequireAuth>
+            <NewCoursePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/courses/:id',
+        element: (
+          <RequireAuth>
+            <CoursePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/courses/:id/today',
+        element: (
+          <RequireAuth>
+            <TodayPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/courses/:id/days/:n',
+        element: (
+          <RequireAuth>
+            <DayPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/courses/:id/progress',
+        element: (
+          <RequireAuth>
+            <ProgressPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/gallery',
+        element: (
+          <RequireAuth>
+            <GalleryPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/gallery/:id',
+        element: (
+          <RequireAuth>
+            <GalleryDetailPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/credits',
+        element: (
+          <RequireAuth>
+            <CreditsPage />
+          </RequireAuth>
+        ),
+      },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+]);

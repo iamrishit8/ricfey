@@ -1,0 +1,238 @@
+// The whole learner journey in a real browser, against the dev servers with LLM_PROVIDER=fake.
+//   bun run e2e:learner -- <api-log-file> [screenshot-dir]
+// Signs in, creates a course, takes placement, edits + approves the outline, opens Today,
+// submits the task and quiz, flags a mistake, checks progress, re-plans from the weak topic,
+// buys a credit pack (fake gateway), then finds a ready-made course in the gallery and buys it.
+// Needs one gallery course: bun run seed:gallery -- --skill Knitting --depth basic --weeks 1 --minutes 20 --provider fake
+// Screens are checked at 390px.
+import { mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { openBrowser } from './cdp';
+
+const [LOG, OUT = 'e2e-shots'] = process.argv.slice(2);
+if (!LOG)
+  throw new Error('usage: bun tools/browser/learner-e2e.ts <api-log-file> [screenshot-dir]');
+const WEB = 'http://localhost:5173';
+await mkdir(OUT, { recursive: true });
+
+const b = await openBrowser(1280, 900);
+const phone = await openBrowser(390, 844);
+const step = (s: string) => console.info('✓', s);
+const text = () => b.evaluate<string>('document.body.innerText');
+let shotNo = 0;
+async function shot(name: string) {
+  const file = join(OUT, `${String(++shotNo).padStart(2, '0')}-${name}`);
+  await b.screenshot(`${file}.png`, true);
+  // Same page at phone width, sharing the session cookie, to catch overflow.
+  const url = await b.evaluate<string>('location.href');
+  await phone.goto(url);
+  await Bun.sleep(400);
+  if (await phone.overflows()) throw new Error(`horizontal overflow at 390px on ${url}`);
+  await phone.screenshot(`${file}-phone.png`, true);
+}
+
+try {
+  // Sign in (both browsers)
+  const email = `learner-${Date.now()}@example.com`;
+  for (const browser of [b, phone]) {
+    await browser.goto(`${WEB}/login`);
+    await browser.fill('#email', email);
+    await browser.click('Email me a sign-in link');
+    await browser.waitFor(`document.body.innerText.includes('Check your inbox')`);
+    await Bun.sleep(300);
+    const line = (await Bun.file(LOG).text())
+      .split('\n')
+      .filter((l) => l.includes('[dev] Magic link for l***@example.com'))
+      .at(-1)!;
+    await browser.goto(line.match(/(http:\/\/localhost:5173\/auth\/magic\?token=[\w-]+)/)![1]!);
+    await browser.waitFor(`document.body.innerText.includes('Your courses')`);
+  }
+  step('signed in; dashboard shows "Your courses"');
+  await shot('dashboard-empty');
+
+  // Intake, as a chat. A refused topic first, then a broad one (three options), then the course.
+  await b.click('Start a new course');
+  await b.waitFor(`!!document.querySelector('#chat-input')`);
+  await b.fill('#chat-input', 'forbidden: something awful');
+  await b.click('Send');
+  await b.waitFor(`document.body.innerText.includes('What else would you like to learn')`);
+  step('chat: a refused topic gets a polite reason and another try');
+  await b.fill('#chat-input', 'Quantum physics');
+  await b.click('Send');
+  await b.waitFor(`document.body.innerText.includes('is a big area')`);
+  await shot('intake-options');
+  await b.click('Quantum physics: the core ideas');
+  await b.waitFor(`document.body.innerText.includes('How deep do you want to go')`);
+  step('chat: a broad topic offered three narrower courses; one picked');
+  await b.click('Intermediate');
+  await b.waitFor(`document.body.innerText.includes('For how many weeks')`);
+  // 2 weeks at 30 minutes, intermediate: 10 days × 2 × 4 × 1.25 = 100 credits, exactly the gift.
+  await b.click('2 weeks');
+  await b.waitFor(`document.body.innerText.includes('minutes a day can you give')`);
+  await b.click('30 min');
+  await b.waitFor(`document.body.innerText.includes('adapt your next days')`);
+  await b.click('When I ask');
+  await b.waitFor(`document.body.innerText.includes('About 100 credits to buy')`);
+  await shot('intake');
+  await b.click('Design my roadmap');
+  await b.waitFor(`document.body.innerText.includes('starting point')`);
+  step('course created; placement shown');
+
+  // Placement: answer until done
+  let answered = 0;
+  for (; answered < 14; answered++) {
+    await b.waitFor(
+      `document.body.innerText.includes('Question ') || document.body.innerText.includes('Your starting level')`,
+    );
+    if ((await text()).includes('Your starting level')) break;
+    if (answered === 0) await shot('placement-question');
+    await b.evaluate(`document.querySelector('fieldset label').click()`);
+    await b.click('Next');
+    await b.waitFor(`!document.body.innerText.includes('Saving…')`);
+  }
+  if (answered < 8 || answered > 12) throw new Error(`placement asked ${answered} questions`);
+  step(`placement finished after ${answered} questions`);
+  await shot('placement-result');
+  await b.click('See my outline');
+
+  // Outline: rename a day, move one, save, approve
+  await b.waitFor(`document.body.innerText.includes('Buy for 100 credits')`, 15000);
+  await shot('outline');
+  await b.fill('input[aria-label="Day title"]', 'My renamed first day');
+  await b.evaluate(`document.querySelectorAll('button[aria-label="Move down"]')[0].click()`);
+  await b.waitFor(`document.body.innerText.includes('Save changes')`);
+  await b.click('Save changes');
+  await b.waitFor(`document.body.innerText.includes('Version 2')`);
+  const firstTitle = await b.evaluate<string>(
+    `document.querySelectorAll('input[aria-label="Day title"]')[1].value`,
+  );
+  if (firstTitle !== 'My renamed first day')
+    throw new Error(`rename/move not saved: ${firstTitle}`);
+  step('outline edited (rename + move) and saved as version 2');
+  await b.click('Buy for 100 credits');
+  // innerText applies CSS text-transform, so the uppercase label reads "TODAY".
+  await b.waitFor(
+    `/today/i.test(document.body.innerText) && document.body.innerText.includes('Start →')`,
+  );
+  step('roadmap bought for 100 credits; course home shows Today');
+  await shot('course-home');
+
+  // Today → day page
+  await b.click('Start →');
+  await b.waitFor(`document.body.innerText.includes('Practice task')`, 20000);
+  if (await b.evaluate<boolean>(`document.body.innerHTML.includes('answerIndex')`))
+    throw new Error('answers leaked into the page');
+  step('day 1 generated and shown (lesson, task, quiz); no answers in the page');
+  await shot('day-lesson');
+
+  // Task
+  await b.fill(
+    '#task-answer',
+    'I would compare the intervals by counting semitones, then check the chord against the scale.',
+  );
+  await b.click('Submit for feedback');
+  await b.waitFor(
+    `/\\d+ \\/ \\d+/.test(document.querySelector('[role=status]')?.innerText ?? '')`,
+    15000,
+  );
+  step(
+    'task graded: ' +
+      (await b.evaluate<string>(
+        `document.querySelector('[role=status]').innerText.split('\\n')[0]`,
+      )),
+  );
+
+  // Quiz: pick the first option everywhere
+  const qCount = await b.evaluate<number>(
+    `document.querySelectorAll('input[type=radio][name^=q]').length / 4`,
+  );
+  for (let i = 0; i < qCount; i++)
+    await b.evaluate(`document.querySelector('input[name=q${i}]').parentElement.click()`);
+  await b.click('Check my answers');
+  await b.waitFor(`document.body.innerText.includes('Retake quiz')`);
+  step(
+    'quiz checked: ' +
+      (await b.evaluate<string>(
+        `[...document.querySelectorAll('h2')].find((h) => h.innerText === 'Quiz').parentElement.querySelector('p').innerText`,
+      )),
+  );
+  await shot('day-graded');
+
+  // Flag a mistake
+  await b.click('Flag a mistake');
+  await b.fill('#report-message', 'Question 2 looks wrong to me.');
+  await b.click('Send report');
+  await b.waitFor(`document.body.innerText.includes('your report was saved')`);
+  step('mistake flagged');
+
+  // Progress
+  await b.goto(
+    `${(await b.evaluate<string>('location.href')).replace(/\/days\/\d+$/, '')}/progress`,
+  );
+  await b.waitFor(`document.body.innerText.includes('Score by topic')`);
+  const prog = await text();
+  const done = prog.match(/(\d+)\/(\d+)\s*days done/);
+  if (!done || done[1] !== '1')
+    throw new Error(`progress should show 1 day done, got: ${done?.[0]}`);
+  step(`progress: ${done[0]}, topic score shown`);
+  await shot('progress');
+
+  // Re-plan: the quiz above scored 2/5, so day 1's topic is weak.
+  await b.goto((await b.evaluate<string>('location.href')).replace(/\/progress$/, ''));
+  await b.waitFor(`document.body.innerText.includes('Adapt your plan')`);
+  if (!(await text()).includes('Needs work')) throw new Error('weak topic not shown');
+  await b.click('Adapt days');
+  await b.waitFor(`document.body.innerText.includes('Use the new plan')`, 20000);
+  step('re-plan proposed: old and new days shown');
+  await shot('replan-proposed');
+  await b.click('Use the new plan');
+  await b.waitFor(`document.body.innerText.includes('Your new plan is in place')`);
+  await b.waitFor(`document.body.innerText.includes('Revisit')`);
+  step('re-plan accepted; the day list shows the rewritten days');
+
+  // Credits: gift 100, the course cost 100, opening days and the 7-day re-plan are free → 0.
+  await b.click('a[aria-label="Credits"]');
+  await b.waitFor(`document.body.innerText.includes('Top up')`);
+  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('0')`);
+  await shot('credits');
+  await b.click('Buy for ₹99');
+  await b.waitFor(`document.body.innerText.includes('Added 100 credits')`, 15000);
+  await b.waitFor(`document.querySelector('h1')?.innerText.startsWith('100')`);
+  step(
+    'credits: 0 after buying the course (days and the re-plan free); bought Spark (test mode) → 100',
+  );
+
+  // Gallery: the chat offers the ready-made course before writing a custom one.
+  await b.goto(`${WEB}/courses/new`);
+  await b.waitFor(`!!document.querySelector('#chat-input')`);
+  await b.fill('#chat-input', 'Knitting');
+  await b.click('Send');
+  await b.waitFor(`document.body.innerText.includes('ready-made course')`);
+  await shot('chat-gallery-offer');
+  step('chat: a topic with a ready-made course offers it first');
+  await b.evaluate(
+    `[...document.querySelectorAll('a')].find((a) => a.href.includes('/gallery/')).click()`,
+  );
+  await b.waitFor(`document.body.innerText.includes('The roadmap')`);
+  await shot('gallery-detail');
+  await b.click('Buy for 20 credits');
+  await b.waitFor(`document.body.innerText.includes('Start →')`);
+  step('gallery: bought the ready-made course for 20 credits (60% of 40)');
+  if ((await text()).includes('Adapt your plan'))
+    throw new Error('a re-plan panel is shown on a gallery course');
+  await b.click('Start →');
+  await b.waitFor(`document.body.innerText.includes('Practice task')`, 8000);
+  step('gallery copy: day 1 opens at once with its lesson');
+  await b.goto(`${WEB}/gallery`);
+  await b.waitFor(`document.body.innerText.includes('Ready-made courses')`);
+  await shot('gallery');
+  if (b.errors.length || phone.errors.length)
+    console.info('page errors:', [...b.errors, ...phone.errors]);
+} catch (e) {
+  console.info('✗', (e as Error).message);
+  await b.screenshot(join(OUT, 'FAIL.png'));
+  process.exitCode = 1;
+} finally {
+  b.close();
+  phone.close();
+}

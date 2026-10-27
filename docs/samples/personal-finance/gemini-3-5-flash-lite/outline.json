@@ -1,0 +1,269 @@
+{
+  "title": "Mastering Personal Finance in India",
+  "summary": "A practical 4-week guide for adults in India to take control of their income, expenses, investments, and taxes with confidence.",
+  "skill": "Personal finance",
+  "depth": "working",
+  "weeks": [
+    {
+      "week": 1,
+      "theme": "Cash Flow and Budgeting Basics",
+      "days": [
+        {
+          "day": 1,
+          "title": "Mapping Your Net Worth",
+          "objectives": [
+            "List all personal assets and liabilities",
+            "Calculate total net worth in Indian Rupees"
+          ],
+          "topics": [
+            "net-worth",
+            "assets-liabilities"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Tracking Income and Fixed Expenses",
+          "objectives": [
+            "Categorize monthly income sources",
+            "Identify and list all fixed monthly expenses"
+          ],
+          "topics": [
+            "income-tracking",
+            "fixed-expenses"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Controlling Variable Expenses",
+          "objectives": [
+            "Analyze discretionary spending habits",
+            "Set realistic monthly caps for variable categories"
+          ],
+          "topics": [
+            "variable-expenses",
+            "spending-caps"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Applying the 50/30/20 Rule",
+          "objectives": [
+            "Allocate income into needs, wants, and savings using the 50/30/20 framework"
+          ],
+          "topics": [
+            "budgeting-rule",
+            "net-worth"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Building an Emergency Fund Target",
+          "objectives": [
+            "Calculate the required size of a 6-month emergency fund",
+            "Select safe, liquid parking spaces for emergency cash"
+          ],
+          "topics": [
+            "emergency-fund",
+            "liquidity"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "theme": "Debt Management and Banking Essentials",
+      "days": [
+        {
+          "day": 6,
+          "title": "Evaluating Good Debt vs Bad Debt",
+          "objectives": [
+            "Differentiate between wealth-building and depreciating consumer debt"
+          ],
+          "topics": [
+            "debt-types",
+            "loans"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Credit Cards and CIBIL Scores",
+          "objectives": [
+            "Explain how CIBIL scores are calculated",
+            "List actions to maintain a credit score above 750"
+          ],
+          "topics": [
+            "credit-score",
+            "credit-cards"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Choosing Debt Payoff Strategies",
+          "objectives": [
+            "Compare the debt avalanche and debt snowball methods",
+            "Choose a payoff strategy for existing liabilities"
+          ],
+          "topics": [
+            "debt-payoff",
+            "loans"
+          ]
+        },
+        {
+          "day": 9,
+          "title": "Optimizing Bank Accounts",
+          "objectives": [
+            "Select appropriate savings and current accounts based on interest and fees",
+            "Identify hidden banking charges"
+          ],
+          "topics": [
+            "bank-accounts",
+            "fees"
+          ]
+        },
+        {
+          "day": 10,
+          "title": "Understanding Digital Payments Security",
+          "objectives": [
+            "Apply safe practices for UPI and net banking",
+            "Identify common financial scams in India"
+          ],
+          "topics": [
+            "digital-security",
+            "upi"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "theme": "Investing Fundamentals",
+      "days": [
+        {
+          "day": 11,
+          "title": "Beating Inflation with Asset Allocation",
+          "objectives": [
+            "Calculate the impact of inflation on purchasing power",
+            "Define personal risk tolerance"
+          ],
+          "topics": [
+            "inflation",
+            "risk-tolerance"
+          ]
+        },
+        {
+          "day": 12,
+          "title": "Fixed Income: FDs, RDs, and EPF",
+          "objectives": [
+            "Compare returns of Fixed Deposits, Recurring Deposits, and Employee Provident Fund"
+          ],
+          "topics": [
+            "fixed-income",
+            "epf"
+          ]
+        },
+        {
+          "day": 13,
+          "title": "Introduction to Mutual Funds",
+          "objectives": [
+            "Explain the difference between direct and regular mutual fund plans",
+            "Distinguish active from passive funds"
+          ],
+          "topics": [
+            "mutual-funds",
+            "direct-plans"
+          ]
+        },
+        {
+          "day": 14,
+          "title": "Setting Up a SIP",
+          "objectives": [
+            "Calculate compound growth using a Systematic Investment Plan calculator",
+            "Execute a monthly SIP setup process"
+          ],
+          "topics": [
+            "sip",
+            "compounding"
+          ]
+        },
+        {
+          "day": 15,
+          "title": "Basics of Direct Equity",
+          "objectives": [
+            "Explain basic stock market terminology like P/E ratio and market cap",
+            "Differentiate stocks from mutual funds"
+          ],
+          "topics": [
+            "stocks",
+            "market-cap"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "theme": "Insurance, Taxes, and Retirement Planning",
+      "days": [
+        {
+          "day": 16,
+          "title": "Securing Life Insurance",
+          "objectives": [
+            "Calculate required life cover using the human life value or income multiplier method",
+            "Differentiate term insurance from ULIPs"
+          ],
+          "topics": [
+            "life-insurance",
+            "term-insurance"
+          ]
+        },
+        {
+          "day": 17,
+          "title": "Health Insurance Essentials",
+          "objectives": [
+            "Evaluate health insurance policies for room rent limits and copay clauses",
+            "Calculate optimal health cover amount"
+          ],
+          "topics": [
+            "health-insurance",
+            "medical-cover"
+          ]
+        },
+        {
+          "day": 18,
+          "title": "Tax Planning Under Old and New Regimes",
+          "objectives": [
+            "Compare income tax liabilities under the old and new tax regimes in India",
+            "List common tax deduction sections like 80C and 80D"
+          ],
+          "topics": [
+            "tax-planning",
+            "deductions"
+          ]
+        },
+        {
+          "day": 19,
+          "title": "Planning for Retirement",
+          "objectives": [
+            "Calculate the corpus needed for retirement based on current expenses",
+            "Utilize NPS for retirement savings"
+          ],
+          "topics": [
+            "retirement",
+            "nps"
+          ]
+        },
+        {
+          "day": 20,
+          "title": "Building Your Lifetime Financial Masterplan",
+          "objectives": [
+            "Draft a comprehensive, personal financial roadmap for the next 5 years",
+            "Establish an annual financial review habit"
+          ],
+          "topics": [
+            "financial-roadmap",
+            "net-worth"
+          ]
+        }
+      ]
+    }
+  ]
+}

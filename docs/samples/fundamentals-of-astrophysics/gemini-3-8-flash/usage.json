@@ -1,0 +1,29 @@
+{
+  "skill": "Fundamentals of astrophysics",
+  "depth": "working",
+  "weeks": 4,
+  "daysPerWeek": 5,
+  "provider": "gemini",
+  "model": "gemini-3.8-flash",
+  "generatedAt": "2026-10-25T09:30:56.735Z",
+  "calls": [
+    {
+      "purpose": "course_outline",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 372,
+      "tokensOut": 2026,
+      "tokensThinking": 795,
+      "latencyMs": 156598
+    },
+    {
+      "purpose": "day_content",
+      "attempt": 1,
+      "status": "ok",
+      "tokensIn": 1089,
+      "tokensOut": 4079,
+      "tokensThinking": 723,
+      "latencyMs": 106095
+    }
+  ]
+}
