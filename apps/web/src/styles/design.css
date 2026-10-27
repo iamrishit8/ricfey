@@ -1,130 +1,364 @@
 /*
- * Design v2 (proposal): warm paper, red and green, black pills, big condensed caps.
- * Scoped to [data-design='v2'] so the live app keeps its current look until this is approved;
- * then these tokens move into :root in tokens.css and the wrapper goes away.
- * Contrast of every text/background pair below was checked (WCAG AA, 4.5:1); see docs/design.md.
+ * Design directions (proposal, waiting for the owner's choice): three complete looks that share
+ * one set of components. Each direction is a token set on [data-direction]; the components only
+ * use the dz-* classes and variables below. Nothing outside /design uses these yet.
+ * Text contrast of every pair used for body text was checked (WCAG AA); see docs/design.md.
  */
 
-[data-design='v2'] {
-  --font-display: 'Anton', 'Impact', ui-sans-serif, sans-serif;
-  --font-sans: 'Inter Tight', ui-sans-serif, system-ui, sans-serif;
-
-  --background: oklch(0.967 0.014 62); /* warm paper */
-  --foreground: oklch(0.16 0.01 40); /* ink */
-  --card: oklch(0.992 0.005 70); /* near white */
-  --card-foreground: var(--foreground);
-  --muted: oklch(0.94 0.016 60);
-  --muted-foreground: oklch(0.45 0.02 50);
-  --border: oklch(0.88 0.018 55);
-  --input: var(--border);
-
-  --brand: oklch(0.56 0.21 27); /* red */
-  --brand-foreground: oklch(0.992 0.004 70);
-  --brand-soft: color-mix(in oklch, var(--brand) 11%, var(--background));
-  --brand-tint: color-mix(in oklch, var(--brand) 38%, var(--background));
-
-  --green: oklch(0.5 0.13 155);
-  --green-foreground: oklch(0.992 0.004 70);
-  --green-soft: color-mix(in oklch, var(--green) 14%, var(--background));
-
-  --pill: oklch(0.14 0.005 40); /* the black pill buttons */
-  --pill-foreground: oklch(0.97 0.01 70);
-
-  --success: var(--green);
-  --destructive: oklch(0.5 0.2 27);
-  --ring: var(--brand);
-
-  --primary: var(--brand);
-  --primary-foreground: var(--brand-foreground);
-  --secondary: var(--muted);
-  --secondary-foreground: var(--foreground);
-  --accent: var(--brand-soft);
-  --accent-foreground: var(--foreground);
-
-  --radius: 1.25rem;
-
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+[data-design] {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
 
-.dark [data-design='v2'] {
-  --background: oklch(0.17 0.012 40);
-  --foreground: oklch(0.95 0.014 70);
-  --card: oklch(0.21 0.014 40);
-  --muted: oklch(0.25 0.014 40);
-  --muted-foreground: oklch(0.72 0.02 60);
-  --border: oklch(0.32 0.014 40);
+/* ── A · Sticker Club: chunky rounded type, ink outlines, hard shadows, stickers everywhere. */
+[data-direction='sticker'] {
+  --font-head: 'Bagel Fat One', 'Arial Black', sans-serif;
+  --font-accent: 'Bagel Fat One', 'Arial Black', sans-serif;
+  --font-body: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Caveat', 'Comic Sans MS', cursive;
+  --head-case: none;
+  --head-tracking: -0.01em;
+  --head-weight: 400;
+  --accent-style: normal;
 
-  --brand: oklch(0.7 0.18 28);
-  --brand-foreground: oklch(0.17 0.012 40);
-  --green: oklch(0.75 0.14 155);
-  --green-foreground: oklch(0.17 0.012 40);
+  --paper: oklch(0.97 0.025 85);
+  --surface: oklch(0.995 0.005 85);
+  --ink: oklch(0.2 0.02 270);
+  --muted: oklch(0.42 0.03 270);
+  --red: oklch(0.63 0.22 29);
+  --on-red: var(--ink);
+  --green: oklch(0.72 0.17 150);
+  --on-green: var(--ink);
+  --c3: oklch(0.9 0.15 95); /* butter yellow */
+  --c4: oklch(0.83 0.1 355); /* bubblegum pink */
+  --c5: oklch(0.8 0.1 235); /* sky blue */
+  --on-c: oklch(0.2 0.02 270); /* text on the bright fills, in both themes */
+  --on-c5: var(--on-c);
+  --pill: var(--ink);
+  --on-pill: var(--paper);
 
-  --pill: oklch(0.95 0.014 70); /* in the dark the pill is cream */
-  --pill-foreground: oklch(0.17 0.012 40);
-
-  --destructive: oklch(0.7 0.17 27);
+  --bw: 3px;
+  --r: 1.25rem;
+  --r-lg: 2rem;
+  --shadow: 5px 5px 0 var(--ink);
+  --shadow-hover: 8px 8px 0 var(--ink);
+  --tilt: 1;
 }
 
-/* Headings: tall condensed caps for h1, a friendly grotesque for the rest. */
-[data-design='v2'] h1,
-[data-design='v2'] .d-display {
-  font-family: var(--font-display);
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  line-height: 0.95;
-  font-variation-settings: normal;
-}
-[data-design='v2'] h2,
-[data-design='v2'] h3,
-[data-design='v2'] .d-statement {
-  font-family: var(--font-statement);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  font-variation-settings: normal;
-}
-[data-design='v2'] .font-display {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-variation-settings: normal;
-  letter-spacing: 0;
+/* ── B · Big Poster: wide heavy capitals with serif italics, colour blocks, halftone dots. */
+[data-direction='poster'] {
+  --font-head: 'Unbounded', 'Arial Black', sans-serif;
+  --font-accent: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Instrument Serif', Georgia, serif;
+  --head-case: uppercase;
+  --head-tracking: -0.03em;
+  --head-weight: 900;
+  --accent-style: italic;
+
+  --paper: oklch(0.955 0.02 80);
+  --surface: oklch(0.99 0.008 80);
+  --ink: oklch(0.17 0.01 40);
+  --muted: oklch(0.42 0.02 50);
+  --red: oklch(0.55 0.22 27);
+  --on-red: oklch(0.955 0.02 80); /* fixed cream: stays light in dark mode */
+  --green: oklch(0.42 0.11 155);
+  --on-green: oklch(0.955 0.02 80);
+  --c3: oklch(0.74 0.16 58); /* orange */
+  --c4: oklch(0.82 0.08 300); /* lilac */
+  --c5: oklch(0.17 0.01 40); /* black block */
+  --on-c: oklch(0.17 0.01 40);
+  --on-c5: oklch(0.955 0.02 80);
+  --pill: var(--ink);
+  --on-pill: var(--paper);
+
+  --bw: 0px;
+  --r: 0.25rem;
+  --r-lg: 0.5rem;
+  --shadow: none;
+  --shadow-hover: none;
+  --tilt: 0;
 }
 
-/* Marquee: a line of text drifting left forever. Static for people who ask for less motion. */
-@keyframes d-marquee {
+/* ── C · Soft Garden: soft wonky serif, organic blobs, warm saturated pastels, grain. */
+[data-direction='garden'] {
+  --font-head: 'Fraunces', Georgia, serif;
+  --font-accent: 'Fraunces', Georgia, serif;
+  --font-body: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Gochi Hand', 'Comic Sans MS', cursive;
+  --head-case: none;
+  --head-tracking: -0.035em;
+  --head-weight: 800;
+  --accent-style: italic;
+
+  --paper: oklch(0.975 0.015 95);
+  --surface: oklch(0.995 0.006 95);
+  --ink: oklch(0.27 0.04 155);
+  --muted: oklch(0.45 0.04 155);
+  --red: oklch(0.68 0.17 30); /* coral */
+  --on-red: var(--ink);
+  --green: oklch(0.42 0.1 155); /* deep leaf */
+  --on-green: var(--paper);
+  --c3: oklch(0.94 0.11 100); /* lemon */
+  --c4: oklch(0.89 0.07 55); /* peach */
+  --c5: oklch(0.86 0.06 300); /* lilac */
+  --on-c: oklch(0.27 0.04 155);
+  --on-c5: var(--on-c);
+  --pill: var(--green);
+  --on-pill: var(--paper);
+
+  --bw: 0px;
+  --r: 1.75rem;
+  --r-lg: 3rem;
+  --shadow: 0 18px 40px -18px color-mix(in oklch, var(--green) 45%, transparent);
+  --shadow-hover: 0 24px 50px -18px color-mix(in oklch, var(--green) 55%, transparent);
+  --tilt: 0.5;
+}
+
+/* Dark: same roles, ink and paper swap. Kept simple for the proposal. */
+.dark [data-direction] {
+  --paper: oklch(0.18 0.015 270);
+  --surface: oklch(0.23 0.018 270);
+  --ink: oklch(0.96 0.015 85);
+  --muted: oklch(0.75 0.02 85);
+  --on-pill: oklch(0.18 0.015 270);
+  --pill: oklch(0.96 0.015 85);
+}
+.dark [data-direction='sticker'] {
+  --on-red: oklch(0.18 0.015 270);
+  --on-green: oklch(0.18 0.015 270);
+}
+.dark [data-direction='garden'] {
+  --green: oklch(0.72 0.12 155);
+  --on-green: oklch(0.18 0.015 270);
+  --red: oklch(0.72 0.16 30);
+  --on-red: oklch(0.18 0.015 270);
+}
+.dark [data-direction='poster'] {
+  --c5: oklch(0.3 0.02 270);
+}
+
+/* ── Shared building blocks. In the components layer, so Tailwind utilities (hidden, w-full…) win. */
+@layer components {
+  .dz-head {
+    font-family: var(--font-head);
+    font-weight: var(--head-weight);
+    text-transform: var(--head-case);
+    letter-spacing: var(--head-tracking);
+    line-height: 0.92;
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+  }
+  .dz-accent {
+    font-family: var(--font-accent);
+    font-style: var(--accent-style);
+    text-transform: none;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  [data-direction='garden'] .dz-accent {
+    font-weight: 700;
+  }
+  [data-direction='sticker'] .dz-accent {
+    font-weight: 400;
+  }
+  .dz-hand {
+    font-family: var(--font-hand);
+    line-height: 1.1;
+  }
+  .dz-card {
+    background: var(--surface);
+    color: var(--ink);
+    border: var(--bw) solid var(--ink);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+  }
+  .dz-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    height: 3.25rem;
+    padding: 0 0.35rem 0 1.5rem;
+    border-radius: 999px;
+    background: var(--pill);
+    color: var(--on-pill);
+    font-weight: 600;
+    border: var(--bw) solid var(--ink);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition:
+      transform 150ms,
+      box-shadow 150ms;
+  }
+  .dz-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-hover);
+  }
+  .dz-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+  .dz-btn .dz-btn-dot {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    background: var(--red);
+    color: var(--on-red);
+    transition: transform 200ms;
+  }
+  .dz-btn:hover .dz-btn-dot {
+    transform: rotate(45deg);
+  }
+  .dz-btn-quiet {
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .dz-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 2.5rem;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    background: var(--surface);
+    border: var(--bw) solid var(--ink);
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+  [data-direction='poster'] .dz-chip,
+  [data-direction='garden'] .dz-chip {
+    border: 1.5px solid color-mix(in oklch, var(--ink) 25%, transparent);
+  }
+  .dz-sticker {
+    transform: rotate(calc(var(--rot, -6deg) * var(--tilt)));
+    transition: transform 250ms;
+  }
+  .dz-sticker:hover {
+    transform: rotate(0deg) scale(1.06);
+  }
+  :focus-visible {
+    outline: 3px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  /* Sizes that depend on how wide each direction's display face is. */
+  .dz-hero-title {
+    font-size: clamp(3.25rem, 10vw, 8rem);
+  }
+  .dz-card-title {
+    font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+  [data-direction='poster'] .dz-hero-title {
+    font-size: clamp(2.5rem, 7vw, 6rem);
+  }
+  [data-direction='poster'] .dz-card-title {
+    font-size: clamp(1.25rem, 1.7vw, 1.6rem);
+    line-height: 1;
+  }
+
+  /* Pack numbers: big, but a 4-digit number must fit a narrow card in the widest face. */
+  .dz-pack-num {
+    font-size: clamp(2.25rem, 3.4vw, 3rem);
+  }
+  [data-direction='poster'] .dz-pack-num {
+    font-size: clamp(1.6rem, 2.3vw, 2.1rem);
+  }
+
+  /* The hand-drawn underline under "at a time": just below the baseline, whatever the face. */
+  .dz-swash {
+    bottom: -0.16em;
+    height: 0.22em;
+  }
+  [data-direction='poster'] .dz-swash {
+    bottom: -0.3em;
+  }
+
+  /* Textures */
+  .dz-dots {
+    background-image: radial-gradient(currentColor 1.4px, transparent 1.6px);
+    background-size: 14px 14px;
+  }
+  .dz-checker {
+    background-image:
+      linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%),
+      linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%);
+    background-size: 24px 24px;
+    background-position:
+      0 0,
+      12px 12px;
+  }
+  .dz-stripes {
+    background-image: repeating-linear-gradient(-45deg, currentColor 0 10px, transparent 10px 22px);
+  }
+  .dz-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.18;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+  }
+}
+
+/* Motion: marquee, self-drawing lines, gentle float. All stop for reduced motion. */
+@keyframes dz-marquee {
   to {
     transform: translateX(-50%);
   }
 }
-.d-marquee-track {
+.dz-marquee-track {
   display: flex;
   width: max-content;
-  animation: d-marquee 28s linear infinite;
+  animation: dz-marquee 30s linear infinite;
 }
-/* The squiggle draws itself once when it scrolls into view. */
-@keyframes d-draw {
+@keyframes dz-draw {
   to {
     stroke-dashoffset: 0;
   }
 }
-.d-squiggle path {
+.dz-draw path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: d-draw 2.4s ease-out forwards;
+  animation: dz-draw 2.4s ease-out forwards;
+}
+@keyframes dz-float {
+  50% {
+    translate: 0 -8px;
+  }
+}
+.dz-float {
+  animation: dz-float 5s ease-in-out infinite;
+}
+@keyframes dz-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+.dz-spin {
+  animation: dz-spin 24s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .d-marquee-track {
+  .dz-marquee-track,
+  .dz-float,
+  .dz-spin {
     animation: none;
   }
-  .d-squiggle path {
+  .dz-draw path {
     animation: none;
     stroke-dashoffset: 0;
   }
-  [data-design='v2'] * {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+  .dz-btn,
+  .dz-sticker,
+  .dz-btn .dz-btn-dot {
+    transition: none;
   }
 }
